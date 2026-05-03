@@ -1,0 +1,191 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { projets } from '../../data/projets';
+---
+
+<BaseLayout
+  title="Projets — KLIP KLAP | Portfolio audiovisuel"
+  description="Découvrez les projets de KLIP KLAP : aftermovies, clips musicaux, interviews, corporate, drone. Portfolio audiovisuel."
+>
+  <div class="page-header">
+    <div class="container">
+      <p class="page-eyebrow">PORTFOLIO</p>
+      <h1 class="page-title">Projets</h1>
+    </div>
+  </div>
+
+  <div class="projets-grid-wrap">
+    <div class="container">
+      <ul class="projets-grid">
+        {projets.map((p) => (
+          <li>
+            <a href={`/projets/${p.slug}`} class="projet-card">
+              <div class="projet-thumb">
+                <img
+                  src={p.thumbnail}
+                  alt={p.titre}
+                  loading="lazy"
+                  width="640"
+                  height="360"
+                  onerror="this.src='/images/thumb-fallback.jpg'"
+                />
+                <div class="projet-overlay">
+                  <span class="projet-cta">Voir le projet</span>
+                </div>
+              </div>
+              <div class="projet-info">
+                <h2 class="projet-titre">{p.titre}</h2>
+                <span class="projet-date">{p.date}</span>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding: 160px 0 80px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  .page-eyebrow {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin-bottom: 12px;
+  }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 8vw, 80px);
+    color: #fff;
+    line-height: 1;
+    letter-spacing: 2px;
+  }
+
+  .projets-grid-wrap {
+    padding: 80px 0 120px;
+  }
+
+  .projets-grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--color-border);
+  }
+
+  .projet-card {
+    display: block;
+    background: var(--color-bg);
+    overflow: hidden;
+  }
+
+  .projet-thumb {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+
+  .projet-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 400ms ease;
+    filter: grayscale(15%);
+  }
+
+  .projet-card:hover .projet-thumb img {
+    transform: scale(1.04);
+    filter: grayscale(0%);
+  }
+
+  .projet-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+  }
+
+  .projet-card:hover .projet-overlay {
+    opacity: 1;
+  }
+
+  .projet-cta {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 10px 24px;
+    border-radius: 2px;
+  }
+
+  .projet-info {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .projet-titre {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--color-text-muted);
+    line-height: 1.3;
+    transition: color var(--transition-fast);
+  }
+
+  .projet-card:hover .projet-titre {
+    color: #fff;
+  }
+
+  .projet-date {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    color: var(--color-text-subtle);
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 900px) {
+    .projets-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .container {
+      padding: 0 20px;
+    }
+
+    .page-header {
+      padding: 120px 0 56px;
+    }
+
+    .projets-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

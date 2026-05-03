@@ -1,0 +1,347 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const prestations = [
+  'Live multicam',
+  'Réseaux sociaux',
+  'Drone',
+  'Film corporate',
+  'Clip musical',
+  'Autre',
+];
+---
+
+<BaseLayout
+  title="Contact — KLIP KLAP | Demande de devis"
+  description="Contactez KLIP KLAP pour votre projet audiovisuel : live multicam, drone, clips, corporate. Réponse rapide."
+>
+  <div class="contact-page">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-left">
+          <p class="page-eyebrow">CONTACT</p>
+          <h1 class="page-title">Parlons de<br />votre projet</h1>
+          <p class="contact-intro">
+            Décrivez votre projet et je reviendrai vers vous rapidement pour
+            discuter des détails et établir un devis.
+          </p>
+          <div class="contact-info">
+            <div class="info-item">
+              <span class="info-label">Adresse</span>
+              <span class="info-value">39 rue Jean Groslier<br />Châtel-Guyon</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-right">
+          <form
+            name="contact"
+            method="POST"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+            class="contact-form"
+            novalidate
+          >
+            <input type="hidden" name="form-name" value="contact" />
+            <p class="hidden" aria-hidden="true">
+              <label>Ne pas remplir : <input name="bot-field" /></label>
+            </p>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="nom">Nom <span class="required">*</span></label>
+                <input type="text" id="nom" name="nom" required autocomplete="name" />
+              </div>
+              <div class="field">
+                <label for="email">Email <span class="required">*</span></label>
+                <input type="email" id="email" name="email" required autocomplete="email" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="telephone">Téléphone</label>
+              <input type="tel" id="telephone" name="telephone" autocomplete="tel" />
+            </div>
+
+            <div class="field">
+              <label for="prestation">Type de prestation <span class="required">*</span></label>
+              <select id="prestation" name="prestation" required>
+                <option value="" disabled selected>Sélectionnez une prestation</option>
+                {prestations.map((p) => (
+                  <option value={p}>{p}</option>
+                ))}
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="message">Message <span class="required">*</span></label>
+              <textarea id="message" name="message" rows="6" required placeholder="Décrivez votre projet, vos dates, votre budget..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">Envoyer le message</button>
+
+            <div class="form-success" id="form-success" aria-live="polite" hidden>
+              Message envoyé. Je vous répondrai dans les meilleurs délais.
+            </div>
+            <div class="form-error" id="form-error" aria-live="polite" hidden>
+              Une erreur est survenue. Veuillez réessayer.
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .contact-page {
+    padding: 140px 0 120px;
+  }
+
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 100px;
+    align-items: start;
+  }
+
+  .page-eyebrow {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin-bottom: 16px;
+  }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(42px, 6vw, 64px);
+    color: #fff;
+    line-height: 1;
+    letter-spacing: 2px;
+    margin-bottom: 28px;
+  }
+
+  .contact-intro {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 300;
+    color: #999;
+    line-height: 1.8;
+    margin-bottom: 48px;
+  }
+
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    border-top: 1px solid var(--color-border);
+    padding-top: 32px;
+  }
+
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .info-label {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+
+  .info-value {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  /* FORM */
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  label {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .required {
+    color: var(--color-primary);
+  }
+
+  input,
+  select,
+  textarea {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 300;
+    color: #fff;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 2px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color var(--transition-fast);
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-text-subtle);
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--color-primary);
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+    cursor: none;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 140px;
+  }
+
+  .btn-submit {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #000;
+    background: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    border-radius: 2px;
+    padding: 16px 40px;
+    align-self: flex-start;
+    cursor: none;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  .btn-submit:hover {
+    background: var(--color-primary-glow);
+    border-color: var(--color-primary-glow);
+  }
+
+  .form-success {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    padding: 12px 16px;
+    border-radius: 2px;
+  }
+
+  .form-error {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 300;
+    color: #ff4444;
+    border: 1px solid #ff4444;
+    padding: 12px 16px;
+    border-radius: 2px;
+  }
+
+  @media (max-width: 900px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: 56px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .container {
+      padding: 0 20px;
+    }
+
+    .contact-page {
+      padding: 110px 0 80px;
+    }
+
+    .field-row {
+      grid-template-columns: 1fr;
+    }
+
+    .btn-submit {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>
+
+<script>
+  const form = document.querySelector('.contact-form') as HTMLFormElement;
+  const success = document.getElementById('form-success');
+  const error = document.getElementById('form-error');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const data = new FormData(form);
+
+    try {
+      const res = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(data as any).toString(),
+      });
+
+      if (res.ok) {
+        form.reset();
+        success?.removeAttribute('hidden');
+        error?.setAttribute('hidden', '');
+      } else {
+        throw new Error('network');
+      }
+    } catch {
+      error?.removeAttribute('hidden');
+      success?.setAttribute('hidden', '');
+    }
+  });
+</script>

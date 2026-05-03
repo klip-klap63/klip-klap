@@ -1,0 +1,119 @@
+---
+---
+
+<canvas id="cursor-canvas" aria-hidden="true"></canvas>
+<div id="cursor-dot" aria-hidden="true"></div>
+
+<style>
+  #cursor-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+  }
+
+  #cursor-dot {
+    position: fixed;
+    z-index: 9999;
+    width: 6px;
+    height: 6px;
+    background: #F5C800;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: width 150ms ease, height 150ms ease, background 150ms ease;
+    will-change: transform;
+  }
+
+  #cursor-dot.hover {
+    width: 10px;
+    height: 10px;
+    background: #ffffff;
+  }
+
+  @media (pointer: coarse) {
+    #cursor-canvas,
+    #cursor-dot {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+
+    const canvas = document.getElementById('cursor-canvas') as HTMLCanvasElement;
+    const dot = document.getElementById('cursor-dot') as HTMLDivElement;
+    const ctx = canvas.getContext('2d')!;
+
+    const MAX_TRAIL = 18;
+    const FADE_SPEED = 4;
+    const TRAIL_WIDTH = 2;
+
+    let mouseX = -100;
+    let mouseY = -100;
+    const trail: { x: number; y: number; age: number }[] = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dot.style.left = mouseX + 'px';
+      dot.style.top = mouseY + 'px';
+      trail.push({ x: mouseX, y: mouseY, age: 0 });
+      if (trail.length > MAX_TRAIL) trail.shift();
+    }, { passive: true });
+
+    const clickables = 'a, button, [role="button"], input, select, textarea, label';
+
+    document.addEventListener('mouseover', (e) => {
+      if ((e.target as Element).closest(clickables)) {
+        dot.classList.add('hover');
+      }
+    });
+
+    document.addEventListener('mouseout', (e) => {
+      if ((e.target as Element).closest(clickables)) {
+        dot.classList.remove('hover');
+      }
+    });
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 1; i < trail.length; i++) {
+        const prev = trail[i - 1];
+        const curr = trail[i];
+        const progress = i / trail.length;
+        const alpha = Math.max(0, progress - curr.age / (MAX_TRAIL * FADE_SPEED));
+
+        ctx.beginPath();
+        ctx.moveTo(prev.x, prev.y);
+        ctx.lineTo(curr.x, curr.y);
+        ctx.strokeStyle = `rgba(245, 200, 0, ${alpha * 0.7})`;
+        ctx.lineWidth = TRAIL_WIDTH * progress;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+      }
+
+      for (const point of trail) {
+        point.age++;
+      }
+
+      while (trail.length > 0 && trail[0].age > MAX_TRAIL * FADE_SPEED) {
+        trail.shift();
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    requestAnimationFrame(draw);
+  })();
+</script>
