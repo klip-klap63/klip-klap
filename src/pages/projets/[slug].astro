@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { projets } from '../../data/projets';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths: GetStaticPaths = () => {
+  return projets.map((p) => ({
+    params: { slug: p.slug },
+    props: { projet: p },
+  }));
+};
+
+const { projet } = Astro.props;
+---
+
+<BaseLayout
+  title={`${projet.titre} — KLIP KLAP`}
+  description={projet.description}
+  ogImage={projet.thumbnail}
+>
+  <div class="projet-page">
+    <div class="container">
+      <a href="/projets" class="back-link">
+        <span class="back-arrow">←</span> Tous les projets
+      </a>
+
+      <div class="projet-hero">
+        <div class="yt-wrapper">
+          <iframe
+            src={`https://www.youtube.com/embed/${projet.youtube_id}?rel=0&modestbranding=1`}
+            title={projet.titre}
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+
+      <div class="projet-content">
+        <div class="projet-meta">
+          <span class="projet-year">{projet.date}</span>
+        </div>
+        <h1 class="projet-titre">{projet.titre}</h1>
+        <p class="projet-desc">{projet.description}</p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .projet-page {
+    padding: 140px 0 120px;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+    transition: color var(--transition-fast);
+    margin-bottom: 56px;
+  }
+
+  .back-link:hover {
+    color: var(--color-primary);
+  }
+
+  .back-arrow {
+    transition: transform var(--transition-fast);
+  }
+
+  .back-link:hover .back-arrow {
+    transform: translateX(-4px);
+  }
+
+  .projet-hero {
+    margin-bottom: 48px;
+  }
+
+  .yt-wrapper {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    background: #0d0d0d;
+  }
+
+  .yt-wrapper iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .projet-content {
+    max-width: 640px;
+  }
+
+  .projet-meta {
+    margin-bottom: 12px;
+  }
+
+  .projet-year {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    color: var(--color-primary);
+    text-transform: uppercase;
+  }
+
+  .projet-titre {
+    font-family: var(--font-body);
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 300;
+    color: #fff;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+
+  .projet-desc {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 300;
+    color: #999;
+    line-height: 1.8;
+    margin-bottom: 40px;
+  }
+
+  .btn-primary {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #000;
+    background: var(--color-primary);
+    padding: 14px 32px;
+    border: 1px solid var(--color-primary);
+    border-radius: 2px;
+    display: inline-block;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  .btn-primary:hover {
+    background: var(--color-primary-glow);
+    border-color: var(--color-primary-glow);
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 20px;
+    }
+
+    .projet-page {
+      padding: 110px 0 80px;
+    }
+  }
+</style>
