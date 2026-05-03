@@ -1,0 +1,247 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { services } from '../data/services';
+---
+
+<BaseLayout
+  title="Services — KLIP KLAP | Live Multicam, Drone, Clips, Corporate"
+  description="Découvrez tous les services KLIP KLAP : live multicam jusqu'à 8 caméras, drone DGAC, réseaux sociaux, film corporate, clips musicaux."
+>
+  <div class="page-header">
+    <div class="container">
+      <p class="page-eyebrow">SAVOIR-FAIRE</p>
+      <h1 class="page-title">Services</h1>
+    </div>
+  </div>
+
+  <div class="services-list">
+    <div class="container">
+      {services.map((s, i) => (
+        <article id={s.id} class="service-block">
+          <div class="service-video-col">
+            <div class="video-wrapper">
+              <div class="video-skeleton" aria-hidden="true"></div>
+              <iframe
+                src={s.vimeo_embed}
+                frameborder="0"
+                allow="autoplay; fullscreen"
+                title={s.titre}
+                loading="lazy"
+              ></iframe>
+            </div>
+          </div>
+          <div class="service-text-col">
+            <span class="service-num">{s.numero}</span>
+            <h2 class="service-title">{s.titre}</h2>
+            <p class="service-desc">{s.description}</p>
+            <ul class="service-tags">
+              {s.tags.map((tag) => (
+                <li class="tag">{tag}</li>
+              ))}
+            </ul>
+            <a href="/contact" class="btn-primary">Demander un devis</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-header {
+    padding: 160px 0 80px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  .page-eyebrow {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin-bottom: 12px;
+  }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 8vw, 80px);
+    color: #fff;
+    line-height: 1;
+    letter-spacing: 2px;
+  }
+
+  .services-list {
+    padding: 80px 0 120px;
+  }
+
+  .service-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    padding: 80px 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .service-block:nth-child(even) .service-video-col {
+    order: 2;
+  }
+
+  .service-block:nth-child(even) .service-text-col {
+    order: 1;
+  }
+
+  .video-wrapper {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #1a1a1a;
+  }
+
+  .video-skeleton {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: #1a1a1a;
+    background-image: linear-gradient(
+      105deg,
+      transparent 20%,
+      rgba(245, 200, 0, 0.07) 40%,
+      rgba(245, 200, 0, 0.12) 50%,
+      rgba(245, 200, 0, 0.07) 60%,
+      transparent 80%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+    transition: opacity 300ms ease;
+  }
+
+  .video-skeleton.loaded {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .video-wrapper iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .service-num {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    color: var(--color-primary);
+    margin-bottom: 16px;
+  }
+
+  .service-title {
+    font-family: var(--font-body);
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 300;
+    color: #fff;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+
+  .service-desc {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 300;
+    color: #999;
+    line-height: 1.8;
+    margin-bottom: 28px;
+  }
+
+  .service-tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 36px;
+  }
+
+  .tag {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+    border: 1px solid var(--color-border);
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  .btn-primary {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #000;
+    background: var(--color-primary);
+    padding: 14px 32px;
+    border: 1px solid var(--color-primary);
+    border-radius: 2px;
+    display: inline-block;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  .btn-primary:hover {
+    background: var(--color-primary-glow);
+    border-color: var(--color-primary-glow);
+  }
+
+  @media (max-width: 900px) {
+    .service-block {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .service-block:nth-child(even) .service-video-col,
+    .service-block:nth-child(even) .service-text-col {
+      order: unset;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 20px;
+    }
+
+    .page-header {
+      padding: 120px 0 56px;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLDivElement>('.video-wrapper').forEach((wrapper) => {
+    const skeleton = wrapper.querySelector<HTMLDivElement>('.video-skeleton');
+    if (!skeleton) return;
+
+    setTimeout(() => {
+      skeleton.classList.add('loaded');
+      skeleton.addEventListener('transitionend', () => skeleton.remove(), { once: true });
+    }, 3000);
+  });
+</script>
