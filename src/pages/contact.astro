@@ -35,17 +35,10 @@ const prestations = [
 
         <div class="contact-right">
           <form
-            name="contact"
+            action="https://formspree.io/f/xykoepad"
             method="POST"
-            data-netlify="true"
-            netlify-honeypot="bot-field"
             class="contact-form"
-            novalidate
           >
-            <input type="hidden" name="form-name" value="contact" />
-            <p class="hidden" aria-hidden="true">
-              <label>Ne pas remplir : <input name="bot-field" /></label>
-            </p>
 
             <div class="field-row">
               <div class="field">
@@ -315,33 +308,3 @@ const prestations = [
   }
 </style>
 
-<script>
-  const form = document.querySelector('.contact-form') as HTMLFormElement;
-  const success = document.getElementById('form-success');
-  const error = document.getElementById('form-error');
-
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const data = new FormData(form);
-
-    try {
-      const res = await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(data as any).toString(),
-      });
-
-      if (res.ok) {
-        form.reset();
-        success?.removeAttribute('hidden');
-        error?.setAttribute('hidden', '');
-      } else {
-        throw new Error('network');
-      }
-    } catch {
-      error?.removeAttribute('hidden');
-      success?.setAttribute('hidden', '');
-    }
-  });
-</script>
