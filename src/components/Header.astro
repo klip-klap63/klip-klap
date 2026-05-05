@@ -66,10 +66,15 @@ function isActive(href: string): boolean {
     left: 0;
     right: 0;
     z-index: 100;
-    background: rgba(0, 0, 0, 0.85);
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    transition: background var(--transition-base), border-color var(--transition-base), backdrop-filter var(--transition-base);
+  }
+
+  #site-header.scrolled {
+    background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--color-border);
-    transition: background var(--transition-base);
   }
 
   .header-inner {
@@ -207,15 +212,12 @@ function isActive(href: string): boolean {
     }
 
     .mobile-nav {
-      display: block;
-      transform: translateY(-100%);
-      opacity: 0;
-      pointer-events: none;
-      transition: transform var(--transition-base), opacity var(--transition-base);
+      display: none;
     }
 
     .mobile-nav.open {
-      transform: translateY(0);
+      display: block;
+      transform: none;
       opacity: 1;
       pointer-events: auto;
     }
@@ -231,6 +233,10 @@ function isActive(href: string): boolean {
     burger.setAttribute('aria-expanded', String(isOpen));
     mobileNav?.setAttribute('aria-hidden', String(!isOpen));
 
+    if (mobileNav) {
+      mobileNav.style.display = isOpen ? 'block' : 'none';
+    }
+
     const spans = burger.querySelectorAll('span');
     if (isOpen) {
       spans[0].style.transform = 'translateY(6px) rotate(45deg)';
@@ -245,10 +251,6 @@ function isActive(href: string): boolean {
 
   const header = document.getElementById('site-header');
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 20) {
-      header?.style.setProperty('background', 'rgba(0,0,0,0.95)');
-    } else {
-      header?.style.setProperty('background', 'rgba(0,0,0,0.85)');
-    }
+    header?.classList.toggle('scrolled', window.scrollY > 20);
   }, { passive: true });
 </script>
