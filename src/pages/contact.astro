@@ -246,10 +246,12 @@ const prestations = [
     font-weight: 500;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: #000;
-    background: var(--color-primary);
-    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(245, 200, 0, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(245, 200, 0, 0.3);
     border-radius: 2px;
+    box-shadow: inset 0 1px 0 rgba(245, 200, 0, 0.25);
     padding: 16px 40px;
     align-self: flex-start;
     cursor: none;
@@ -257,8 +259,8 @@ const prestations = [
   }
 
   .btn-submit:hover {
-    background: var(--color-primary-glow);
-    border-color: var(--color-primary-glow);
+    background: rgba(245, 200, 0, 0.28);
+    border-color: rgba(245, 200, 0, 0.55);
   }
 
   .form-success {
