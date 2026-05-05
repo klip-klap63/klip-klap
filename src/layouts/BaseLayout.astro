@@ -17,6 +17,7 @@ const {
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const isHome = Astro.url.pathname === '/';
 ---
 
 <!doctype html>
@@ -76,7 +77,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <body>
     <CustomCursor />
     <Header />
-    <main>
+    <main class:list={[{ 'page-offset': !isHome }]}>
       <slot />
     </main>
     <Footer />
