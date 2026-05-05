@@ -86,7 +86,7 @@ import { heroVideo, services } from '../data/services';
         </div>
         <div class="about-photo">
           <img
-            src="/photo_profil.jpg"
+            src="/images/photo_profil.jpg"
             alt="KLIP KLAP — Réalisateur"
             loading="lazy"
             width="480"
@@ -234,17 +234,19 @@ import { heroVideo, services } from '../data/services';
     font-weight: 500;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: #000;
-    background: var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(245, 200, 0, 0.15);
+    backdrop-filter: blur(10px);
     padding: 14px 32px;
-    border: 1px solid var(--color-primary);
+    border: 1px solid rgba(245, 200, 0, 0.3);
     border-radius: 2px;
-    transition: background var(--transition-fast), color var(--transition-fast);
+    box-shadow: inset 0 1px 0 rgba(245, 200, 0, 0.25);
+    transition: background var(--transition-fast), border-color var(--transition-fast);
   }
 
   .btn-primary:hover {
-    background: var(--color-primary-glow);
-    border-color: var(--color-primary-glow);
+    background: rgba(245, 200, 0, 0.28);
+    border-color: rgba(245, 200, 0, 0.55);
   }
 
   .btn-secondary {
@@ -254,16 +256,19 @@ import { heroVideo, services } from '../data/services';
     letter-spacing: 3px;
     text-transform: uppercase;
     color: #fff;
-    background: transparent;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
     padding: 14px 32px;
-    border: 1px solid var(--color-border);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 2px;
-    transition: border-color var(--transition-fast), color var(--transition-fast);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
   }
 
   .btn-secondary:hover {
-    border-color: var(--color-primary);
+    border-color: rgba(245, 200, 0, 0.4);
     color: var(--color-primary);
+    background: rgba(245, 200, 0, 0.05);
   }
 
   /* CONTAINER */
@@ -301,23 +306,50 @@ import { heroVideo, services } from '../data/services';
   .services-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 1px;
-    background: var(--color-border);
-    border: 1px solid var(--color-border);
+    gap: 12px;
   }
 
   .service-card {
-    background: var(--color-bg);
+    background: rgba(255, 255, 255, 0.035);
+    backdrop-filter: blur(20px) saturate(200%) brightness(1.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
     padding: 40px 32px;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    transition: background var(--transition-base);
+    transition: background var(--transition-base), border-color var(--transition-base);
     position: relative;
+    overflow: hidden;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(245, 200, 0, 0.35), transparent);
+    pointer-events: none;
+  }
+
+  .service-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, transparent 100%);
+    pointer-events: none;
+    border-radius: 16px 16px 0 0;
   }
 
   .service-card:hover {
-    background: var(--color-surface);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.22);
   }
 
   .service-card:hover .service-arrow {
