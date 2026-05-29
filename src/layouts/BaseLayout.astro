@@ -26,6 +26,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    <meta name="keywords" content="vidéaste Clermont-Ferrand, production audiovisuelle Auvergne, live multicam Clermont-Ferrand, télépilote drone DGAC Puy-de-Dôme, clips musicaux Clermont-Ferrand, régie multicaméra Auvergne, captation vidéo événementiel, film corporate Clermont-Ferrand, aftermovie Auvergne, KLIP KLAP" />
+    <meta name="geo.region" content="FR-63" />
+    <meta name="geo.placename" content="Châtel-Guyon, Puy-de-Dôme" />
     <link rel="canonical" href={canonical} />
 
     <!-- Open Graph -->
@@ -58,19 +61,48 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 
     <title>{title}</title>
 
-    <!-- Schema.org LocalBusiness -->
+    <!-- Schema.org VideoProductionService -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "VideoProductionService",
         "name": "KLIP KLAP",
+        "description": "Production audiovisuelle indépendante en Auvergne : live multicam jusqu'à 8 caméras, télépilote drone diplômé DGAC, clips musicaux, films corporate, réseaux sociaux. Basé à Châtel-Guyon, intervenant sur Clermont-Ferrand et le Puy-de-Dôme.",
+        "url": "https://klipklap.fr",
+        "logo": "https://klipklap.fr/logo/logo_klip_klap.svg",
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "39 rue Jean Groslier",
           "addressLocality": "Châtel-Guyon",
+          "postalCode": "63140",
+          "addressRegion": "Puy-de-Dôme",
           "addressCountry": "FR"
         },
-        "url": "https://klipklap.fr"
+        "areaServed": [
+          {
+            "@type": "City",
+            "name": "Clermont-Ferrand"
+          },
+          {
+            "@type": "AdministrativeArea",
+            "name": "Puy-de-Dôme"
+          },
+          {
+            "@type": "AdministrativeArea",
+            "name": "Auvergne-Rhône-Alpes"
+          }
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Services audiovisuels",
+          "itemListElement": [
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Diffusion en direct & Multi-caméra" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Contenu réseaux sociaux" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Drone DGAC" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Film corporate" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Clips musicaux" } }
+          ]
+        }
       }
     </script>
   </head>
