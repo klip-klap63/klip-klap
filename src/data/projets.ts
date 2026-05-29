@@ -4,6 +4,33 @@
 
 export const projets = [
   {
+    slug: "fc-chatel-rc-riorges-feminin",
+    titre: "FC CHATEL - RC RIORGES FEMININ",
+    youtube_id: "_zmBWPMwbeA",
+    youtube_url: "https://youtu.be/_zmBWPMwbeA",
+    thumbnail: "https://img.youtube.com/vi/_zmBWPMwbeA/maxresdefault.jpg",
+    description: "Captation du match FC Châtel contre RC Riorges Féminin.",
+    date: "2025",
+  },
+  {
+    slug: "making-of-yavanti-episode-7",
+    titre: "MAKING-OF Y'AVANTI EPISODE 7",
+    youtube_id: "sHLetqUg2T8",
+    youtube_url: "https://youtu.be/sHLetqUg2T8",
+    thumbnail: "https://img.youtube.com/vi/sHLetqUg2T8/maxresdefault.jpg",
+    description: "Coulisses de la série Y'Avanti — épisode 7.",
+    date: "2025",
+  },
+  {
+    slug: "formation-hypnotherapeute-laetitia",
+    titre: "FORMATION HYPNOTHÉRAPEUTE LAETITIA",
+    youtube_id: "LKWMit9rHJ8",
+    youtube_url: "https://youtube.com/shorts/LKWMit9rHJ8",
+    thumbnail: "https://img.youtube.com/vi/LKWMit9rHJ8/maxresdefault.jpg",
+    description: "Présentation de la formation hypnothérapeute de Laetitia.",
+    date: "2025",
+  },
+  {
     slug: "halleatoires-2-aftermovie",
     titre: "Halléatoires 2 — Aftermovie",
     youtube_id: "dWNUEOTkceA",
