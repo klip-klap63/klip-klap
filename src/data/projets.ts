@@ -6,9 +6,9 @@ export const projets = [
   {
     slug: "fc-chatel-rc-riorges-feminin",
     titre: "FC CHATEL - RC RIORGES FEMININ",
-    youtube_id: "_zmBWPMwbeA",
-    youtube_url: "https://youtu.be/_zmBWPMwbeA",
-    thumbnail: "https://img.youtube.com/vi/_zmBWPMwbeA/maxresdefault.jpg",
+    youtube_id: "zPpQNie58MY",
+    youtube_url: "https://youtu.be/zPpQNie58MY",
+    thumbnail: "https://img.youtube.com/vi/zPpQNie58MY/maxresdefault.jpg",
     description: "Captation du match FC Châtel contre RC Riorges Féminin.",
     date: "2025",
   },
