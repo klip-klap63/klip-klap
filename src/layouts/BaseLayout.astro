@@ -63,46 +63,57 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 
     <title>{title}</title>
 
-    <!-- Schema.org VideoProductionService -->
+    <!-- Schema.org LocalBusiness -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "VideoProductionService",
-        "name": "KLIP KLAP",
-        "description": "Production audiovisuelle indépendante en Auvergne : live multicam jusqu'à 8 caméras, télépilote drone diplômé DGAC, clips musicaux, films corporate, réseaux sociaux. Basé à Châtel-Guyon, intervenant sur Clermont-Ferrand et le Puy-de-Dôme.",
-        "url": "https://klipklap.fr",
-        "logo": "https://klipklap.fr/logo/logo_klip_klap.svg",
+        "@type": "LocalBusiness",
+        "name": "Klip Klap",
+        "description": "Production audiovisuelle à Châtel-Guyon et en Auvergne. Live multicam jusqu'à 8 caméras, télépilote drone certifié DGAC, clips musicaux, films corporate, vidéo événementielle.",
+        "url": "https://klip-klap.fr",
+        "logo": "https://klip-klap.fr/og-default.jpg",
+        "image": "https://klip-klap.fr/og-default.jpg",
+        "telephone": "+33663292671",
+        "email": "klipklap63@hotmail.com",
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "39 rue Jean Groslier",
           "addressLocality": "Châtel-Guyon",
           "postalCode": "63140",
-          "addressRegion": "Puy-de-Dôme",
+          "addressRegion": "Auvergne-Rhône-Alpes",
           "addressCountry": "FR"
         },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 45.9167,
+          "longitude": 3.0667
+        },
         "areaServed": [
-          {
-            "@type": "City",
-            "name": "Clermont-Ferrand"
-          },
-          {
-            "@type": "AdministrativeArea",
-            "name": "Puy-de-Dôme"
-          },
-          {
-            "@type": "AdministrativeArea",
-            "name": "Auvergne-Rhône-Alpes"
-          }
+          "Châtel-Guyon",
+          "Clermont-Ferrand",
+          "Riom",
+          "Vichy",
+          "Thiers",
+          "Issoire",
+          "Puy-de-Dôme",
+          "Auvergne-Rhône-Alpes"
+        ],
+        "priceRange": "€€",
+        "openingHours": "Mo-Fr 09:00-19:00",
+        "sameAs": [
+          "https://www.instagram.com/klip.klap__/",
+          "https://www.facebook.com/p/KLIP-KLAP-100075680977037/",
+          "https://www.linkedin.com/in/ronan-fayt-5a7227268/"
         ],
         "hasOfferCatalog": {
           "@type": "OfferCatalog",
           "name": "Services audiovisuels",
           "itemListElement": [
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Diffusion en direct & Multi-caméra" } },
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Contenu réseaux sociaux" } },
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Drone DGAC" } },
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Film corporate" } },
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Clips musicaux" } }
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Live multicam", "description": "Diffusion en direct multicaméra jusqu'à 8 caméras — concerts, festivals, événements en Auvergne" }},
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Drone DGAC", "description": "Prises de vue aériennes par drone, télépilote certifié DGAC A1/A2/A3 CATS STS-01 STS-02" }},
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Clips musicaux", "description": "Réalisation de clips musicaux pour artistes à Clermont-Ferrand et en Auvergne" }},
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Film corporate", "description": "Films d'entreprise cinématographiques pour sociétés en Auvergne et Clermont-Ferrand" }},
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Vidéo événementielle", "description": "Captation vidéo événementielle tous supports — réseaux sociaux, web, TV, diffusion live" }}
           ]
         }
       }
