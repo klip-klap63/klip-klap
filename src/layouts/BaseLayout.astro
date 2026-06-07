@@ -47,6 +47,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
+    <!-- Google Fonts — Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet" />
+
     <!-- Road Rage — auto-hébergé, préchargé pour affichage immédiat -->
     <link rel="preload" href="/fonts/Road_Rage.otf" as="font" type="font/otf" crossorigin />
 
