@@ -1,186 +1,214 @@
 ---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CustomCursor from '../components/CustomCursor.astro';
+import BackgroundFX from '../components/BackgroundFX.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = 'KLIP KLAP — Production audiovisuelle : live multicam, drone DGAC, clips, corporate, réseaux sociaux.',
+  ogImage = '/og-default.jpg',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
-<canvas id="bg-fx" aria-hidden="true"></canvas>
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="description" content={description} />
+    <meta name="keywords" content="vidéaste Clermont-Ferrand, production audiovisuelle Auvergne, live multicam Clermont-Ferrand, télépilote drone DGAC Puy-de-Dôme, clips musicaux Clermont-Ferrand, régie multicaméra Auvergne, captation vidéo événementiel, film corporate Clermont-Ferrand, aftermovie Auvergne, KLIP KLAP" />
+    <meta name="geo.region" content="FR-63" />
+    <meta name="geo.placename" content="Châtel-Guyon, Puy-de-Dôme" />
+    <link rel="canonical" href={canonical} />
 
-<style>
-  #bg-fx {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    display: block;
-  }
-</style>
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="fr_FR" />
 
-<script>
-  // Désactivé sur mobile / touch
-  if (!window.matchMedia('(pointer: fine)').matches) {
-    // rien à faire
-  } else {
-    const canvas = document.getElementById('bg-fx') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d')!;
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
-    const CELL        = 40;       // taille de la cellule de grille en px
-    const MAX_DISP    = 7;        // déplacement max d'un point vers le curseur
-    const INFLUENCE   = 220;      // rayon d'influence du curseur sur la grille
-    const LERP        = 0.06;     // vitesse d'interpolation (doux)
-    const ALPHA_REST  = 0.08;     // opacité des traits au repos
-    const ALPHA_NEAR  = 0.22;     // opacité des traits près du curseur
-    const PART_RADIUS = 120;      // rayon de spawn des particules
-    const PART_RATE   = 0.35;     // probabilité de spawn par événement mousemove
+    <!-- Google Fonts — Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet" />
 
-    let cols = 0;
-    let rows = 0;
+    <!-- Road Rage — auto-hébergé, préchargé pour affichage immédiat -->
+    <link rel="preload" href="/fonts/Road_Rage.otf" as="font" type="font/otf" crossorigin />
 
-    interface GridPoint {
-      ox: number; oy: number; // position d'origine
-      cx: number; cy: number; // position courante (interpolée)
-    }
+    <!-- Vimeo — preconnect pour réduire la latence d'initialisation -->
+    <link rel="preconnect" href="https://player.vimeo.com" />
+    <link rel="preconnect" href="https://i.vimeocdn.com" />
+    <link rel="preconnect" href="https://f.vimeocdn.com" />
+    <link rel="dns-prefetch" href="https://fresnel.vimeocdn.com" />
 
-    interface Particle {
-      x: number; y: number;
-      vx: number; vy: number;
-      size: number;
-      baseAlpha: number;
-      life: number;
-      maxLife: number;
-    }
+    <title>{title}</title>
 
-    let grid: GridPoint[] = [];
-    const particles: Particle[] = [];
-    const mouse = { x: -9999, y: -9999 };
+    <style>
+      #page-curtain {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000000;
+        transform: scaleY(0);
+        transform-origin: top;
+        z-index: 9999;
+        pointer-events: none;
+      }
+    </style>
 
-    // --- Grille ---
-    function buildGrid() {
-      cols = Math.ceil(canvas.width  / CELL) + 2;
-      rows = Math.ceil(canvas.height / CELL) + 2;
-      grid = [];
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const ox = c * CELL;
-          const oy = r * CELL;
-          grid.push({ ox, oy, cx: ox, cy: oy });
+    <!-- Schema.org LocalBusiness -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Klip Klap",
+        "description": "Production audiovisuelle à Châtel-Guyon et en Auvergne. Live multicam jusqu'à 8 caméras, télépilote drone certifié DGAC, clips musicaux, films corporate, vidéo événementielle.",
+        "url": "https://klip-klap.fr",
+        "logo": "https://klip-klap.fr/og-default.jpg",
+        "image": "https://klip-klap.fr/og-default.jpg",
+        "telephone": "+33663292671",
+        "email": "klipklap63@hotmail.com",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "39 rue Jean Groslier",
+          "addressLocality": "Châtel-Guyon",
+          "postalCode": "63140",
+          "addressRegion": "Auvergne-Rhône-Alpes",
+          "addressCountry": "FR"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 45.9167,
+          "longitude": 3.0667
+        },
+        "areaServed": [
+          "Châtel-Guyon",
+          "Clermont-Ferrand",
+          "Riom",
+          "Vichy",
+          "Thiers",
+          "Issoire",
+          "Puy-de-Dôme",
+          "Auvergne-Rhône-Alpes"
+        ],
+        "priceRange": "€€",
+        "openingHours": "Mo-Fr 09:00-19:00",
+        "sameAs": [
+          "https://www.instagram.com/klip.klap__/",
+          "https://www.facebook.com/p/KLIP-KLAP-100075680977037/",
+          "https://www.linkedin.com/in/ronan-fayt-5a7227268/"
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Services audiovisuels",
+          "itemListElement": [
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Live multicam", "description": "Diffusion en direct multicaméra jusqu'à 8 caméras — concerts, festivals, événements en Auvergne" }},
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Drone DGAC", "description": "Prises de vue aériennes par drone, télépilote certifié DGAC A1/A2/A3 CATS STS-01 STS-02" }},
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Clips musicaux", "description": "Réalisation de clips musicaux pour artistes à Clermont-Ferrand et en Auvergne" }},
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Film corporate", "description": "Films d'entreprise cinématographiques pour sociétés en Auvergne et Clermont-Ferrand" }},
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Vidéo événementielle", "description": "Captation vidéo événementielle tous supports — réseaux sociaux, web, TV, diffusion live" }}
+          ]
         }
       }
-    }
+    </script>
 
-    function pt(c: number, r: number): GridPoint {
-      return grid[r * cols + c];
-    }
+    <!-- GSAP via CDN -->
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  </head>
+  <body>
+    <div id="page-curtain"></div>
+    <BackgroundFX />
+    <CustomCursor />
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
 
-    function resize() {
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
-      buildGrid();
-    }
+    <!-- Transition rideau noir -->
+    <script is:inline>
+      (function () {
+        const curtain = document.getElementById('page-curtain');
 
-    // --- Update ---
-    function update() {
-      // Déplacement des points de grille vers le curseur
-      for (const p of grid) {
-        const dx   = mouse.x - p.ox;
-        const dy   = mouse.y - p.oy;
-        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        const fall = Math.max(0, 1 - dist / INFLUENCE);
-        const tx   = p.ox + (dx / dist) * MAX_DISP * fall * fall;
-        const ty   = p.oy + (dy / dist) * MAX_DISP * fall * fall;
-        p.cx += (tx - p.cx) * LERP;
-        p.cy += (ty - p.cy) * LERP;
-      }
+        // Arrivée : rideau remonte depuis le bas
+        gsap.fromTo(curtain,
+          { scaleY: 1, transformOrigin: 'bottom' },
+          { scaleY: 0, duration: 0.6, ease: 'power3.inOut', delay: 0.05 }
+        );
 
-      // Particules
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.life--;
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.life <= 0) particles.splice(i, 1);
-      }
-    }
+        // Clic lien interne : rideau descend depuis le haut
+        document.addEventListener('click', function (e) {
+          const link = e.target.closest('a');
+          if (!link) return;
+          const href = link.getAttribute('href');
+          if (
+            !href ||
+            href.startsWith('#') ||
+            href.startsWith('http') ||
+            href.startsWith('mailto') ||
+            link.target === '_blank'
+          ) return;
 
-    // --- Draw ---
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.lineWidth = 1;
+          e.preventDefault();
 
-      // Lignes horizontales
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols - 1; c++) {
-          const a = pt(c,     r);
-          const b = pt(c + 1, r);
-          const dist = Math.sqrt((a.ox - mouse.x) ** 2 + (a.oy - mouse.y) ** 2);
-          const t    = Math.max(0, 1 - dist / INFLUENCE);
-          const alpha = ALPHA_REST + (ALPHA_NEAR - ALPHA_REST) * t * t;
-          ctx.strokeStyle = `rgba(245,200,0,${alpha.toFixed(3)})`;
-          ctx.beginPath();
-          ctx.moveTo(a.cx, a.cy);
-          ctx.lineTo(b.cx, b.cy);
-          ctx.stroke();
-        }
-      }
-
-      // Lignes verticales
-      for (let r = 0; r < rows - 1; r++) {
-        for (let c = 0; c < cols; c++) {
-          const a = pt(c, r);
-          const b = pt(c, r + 1);
-          const dist = Math.sqrt((a.ox - mouse.x) ** 2 + (a.oy - mouse.y) ** 2);
-          const t    = Math.max(0, 1 - dist / INFLUENCE);
-          const alpha = ALPHA_REST + (ALPHA_NEAR - ALPHA_REST) * t * t;
-          ctx.strokeStyle = `rgba(245,200,0,${alpha.toFixed(3)})`;
-          ctx.beginPath();
-          ctx.moveTo(a.cx, a.cy);
-          ctx.lineTo(b.cx, b.cy);
-          ctx.stroke();
-        }
-      }
-
-      // Particules
-      for (const p of particles) {
-        const progress = p.life / p.maxLife;
-        const alpha    = progress * p.baseAlpha;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(245,200,0,${alpha.toFixed(3)})`;
-        ctx.fill();
-      }
-    }
-
-    // --- Loop ---
-    function loop() {
-      update();
-      draw();
-      requestAnimationFrame(loop);
-    }
-
-    // --- Événements ---
-    window.addEventListener('mousemove', (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-
-      if (Math.random() < PART_RATE) {
-        const angle   = Math.random() * Math.PI * 2;
-        const r       = Math.random() * PART_RADIUS;
-        const maxLife = 30 + Math.floor(Math.random() * 21); // 30–50
-        particles.push({
-          x:         mouse.x + Math.cos(angle) * r,
-          y:         mouse.y + Math.sin(angle) * r,
-          vx:        (Math.random() - 0.5) * 0.6,
-          vy:        (Math.random() - 0.5) * 0.6,
-          size:      1 + Math.random() * 2,             // 1–3 px
-          baseAlpha: 0.1 + Math.random() * 0.3,         // 0.1–0.4
-          life:      maxLife,
-          maxLife,
+          gsap.fromTo(curtain,
+            { scaleY: 0, transformOrigin: 'top' },
+            {
+              scaleY: 1,
+              duration: 0.55,
+              ease: 'power3.inOut',
+              onComplete: function () {
+                window.location.href = href;
+              }
+            }
+          );
         });
-      }
-    });
+      })();
+    </script>
 
-    window.addEventListener('resize', resize, { passive: true });
+    <!-- Magnetic buttons -->
+    <script is:inline>
+      (function () {
+        document.querySelectorAll('.btn-primary, .btn-secondary').forEach(function (btn) {
+          const xTo = gsap.quickTo(btn, 'x', { duration: 0.6, ease: 'power3.out' });
+          const yTo = gsap.quickTo(btn, 'y', { duration: 0.6, ease: 'power3.out' });
 
-    resize();
-    loop();
-  }
-</script>
+          btn.addEventListener('mousemove', function (e) {
+            const rect = btn.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            xTo((e.clientX - cx) * 0.35);
+            yTo((e.clientY - cy) * 0.35);
+          });
+
+          btn.addEventListener('mouseleave', function () {
+            xTo(0);
+            yTo(0);
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>
