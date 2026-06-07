@@ -36,7 +36,7 @@ const projetsJSON = JSON.stringify(projets);
     </div>
 
     <!-- Grille -->
-    <div class="container">
+    <div class="grid-wrapper">
       <ul class="projets-grid" id="projets-grid">
         {projets.map((p) => (
           <li class="projet-item" data-categorie={p.categorie}>
@@ -170,11 +170,16 @@ const projetsJSON = JSON.stringify(projets);
   }
 
   /* Grille */
+  .grid-wrapper {
+    width: 100%;
+  }
+
   .projets-grid {
     list-style: none;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0;
+    width: 100%;
   }
 
   .projet-item {
@@ -271,6 +276,7 @@ const projetsJSON = JSON.stringify(projets);
       grid-template-columns: 1fr;
     }
   }
+
 </style>
 
 <script define:vars={{ projetsJSON }}>
