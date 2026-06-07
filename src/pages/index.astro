@@ -97,12 +97,81 @@ import { heroVideo, services } from '../data/services';
     </div>
   </section>
 
-  <!-- PROJETS APERCU -->
-  <section class="projets-cta">
+  <!-- PROJETS SELECTION -->
+  <section class="projets-selection">
     <div class="container">
-      <p class="section-eyebrow">PORTFOLIO</p>
-      <h2 class="section-title">Derniers projets</h2>
-      <a href="/projets" class="btn-primary">Voir les projets</a>
+      <p class="section-eyebrow">PROJETS</p>
+      <h2 class="section-title-projets">SÉLECTION</h2>
+    </div>
+
+    <div class="projets-grid-home">
+      <a href="/projets" class="projet-card-home">
+        <div class="thumb-wrap">
+          <img
+            src="https://img.youtube.com/vi/zPpQNie58MY/maxresdefault.jpg"
+            alt="FC CHATEL — RC RIORGES FÉMININ"
+            loading="lazy"
+            width="640"
+            height="360"
+          />
+          <div class="projet-hover">
+            <p class="projet-hover-titre">FC CHATEL — RC RIORGES FÉMININ</p>
+          </div>
+          <span class="projet-badge">LIVE MULTICAM</span>
+        </div>
+      </a>
+
+      <a href="/projets" class="projet-card-home">
+        <div class="thumb-wrap">
+          <img
+            src="https://img.youtube.com/vi/sHLetqUg2T8/maxresdefault.jpg"
+            alt="MAKING-OF Y'AVANTI EPISODE 7"
+            loading="lazy"
+            width="640"
+            height="360"
+          />
+          <div class="projet-hover">
+            <p class="projet-hover-titre">MAKING-OF Y'AVANTI EPISODE 7</p>
+          </div>
+          <span class="projet-badge">CORPORATE</span>
+        </div>
+      </a>
+
+      <a href="/projets" class="projet-card-home">
+        <div class="thumb-wrap">
+          <img
+            src="https://img.youtube.com/vi/dWNUEOTkceA/maxresdefault.jpg"
+            alt="HALLÉATOIRES 2 — AFTERMOVIE"
+            loading="lazy"
+            width="640"
+            height="360"
+          />
+          <div class="projet-hover">
+            <p class="projet-hover-titre">HALLÉATOIRES 2 — AFTERMOVIE</p>
+          </div>
+          <span class="projet-badge">RÉSEAUX SOCIAUX</span>
+        </div>
+      </a>
+
+      <a href="/projets" class="projet-card-home">
+        <div class="thumb-wrap">
+          <img
+            src="https://img.youtube.com/vi/EjVWHof0bkA/maxresdefault.jpg"
+            alt="STJEPAN — SCARABÉ"
+            loading="lazy"
+            width="640"
+            height="360"
+          />
+          <div class="projet-hover">
+            <p class="projet-hover-titre">STJEPAN — SCARABÉ</p>
+          </div>
+          <span class="projet-badge">CLIPS</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="projets-cta-wrap">
+      <a href="/projets" class="btn-secondary">VOIR TOUS LES PROJETS</a>
     </div>
   </section>
 </BaseLayout>
@@ -425,15 +494,102 @@ import { heroVideo, services } from '../data/services';
     filter: grayscale(20%);
   }
 
-  /* PROJETS CTA */
-  .projets-cta {
+  /* PROJETS SELECTION */
+  .projets-selection {
     padding: 80px 0 120px;
     border-top: 1px solid var(--color-border);
-    text-align: center;
   }
 
-  .projets-cta .section-title {
-    margin-bottom: 32px;
+  .projets-selection .container {
+    margin-bottom: 48px;
+  }
+
+  .section-title-projets {
+    font-family: var(--font-body);
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 300;
+    color: #fff;
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+
+  .projets-grid-home {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border-top: 1px solid var(--color-primary);
+    border-left: 1px solid var(--color-primary);
+  }
+
+  .projet-card-home {
+    display: block;
+    border-right: 1px solid var(--color-primary);
+    border-bottom: 1px solid var(--color-primary);
+  }
+
+  .thumb-wrap {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+
+  .thumb-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 400ms ease;
+  }
+
+  .projet-card-home:hover .thumb-wrap img {
+    transform: scale(1.04);
+  }
+
+  .projet-hover {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.62);
+    opacity: 0;
+    transition: opacity 250ms ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .projet-card-home:hover .projet-hover {
+    opacity: 1;
+  }
+
+  .projet-hover-titre {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #fff;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .projet-badge {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    font-family: var(--font-body);
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #000;
+    background: var(--color-primary);
+    padding: 3px 8px;
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .projets-cta-wrap {
+    margin-top: 48px;
+    text-align: center;
   }
 
   @media (max-width: 900px) {
@@ -472,6 +628,10 @@ import { heroVideo, services } from '../data/services';
     .about-photo img {
       height: 360px;
       max-width: 100%;
+    }
+
+    .projets-grid-home {
+      grid-template-columns: 1fr;
     }
   }
 </style>
