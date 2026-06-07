@@ -41,9 +41,7 @@ const projetsJSON = JSON.stringify(projets);
         {projets.map((p) => (
           <li class="projet-item" data-categorie={p.categorie}>
             <a
-              href={`https://youtu.be/${p.youtube_id}`}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={`/projets/${p.slug}`}
               class="projet-card"
               aria-label={p.titre}
             >
