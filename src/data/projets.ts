@@ -19,6 +19,13 @@ export const projets = [
     youtube_id: "BtvS1ThUIns",
     thumbnail: "https://img.youtube.com/vi/BtvS1ThUIns/maxresdefault.jpg",
   },
+  {
+    slug: "rediffusion-live-team-sr63",
+    titre: "REDIFFUSION LIVE TEAM SR63",
+    categorie: "live-multicam",
+    youtube_id: "FC8GvcLru-k",
+    thumbnail: "https://img.youtube.com/vi/FC8GvcLru-k/maxresdefault.jpg",
+  },
 
   // RÉSEAUX SOCIAUX
   {
