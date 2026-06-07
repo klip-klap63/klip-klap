@@ -16,8 +16,8 @@ export const projets = [
     slug: "raw-real-6-cleon",
     titre: "RAW&REAL #6 — CLÉON",
     categorie: "live-multicam",
-    youtube_id: "BtvS1ThUIns",
-    thumbnail: "https://img.youtube.com/vi/BtvS1ThUIns/maxresdefault.jpg",
+    youtube_id: "RxSbnf67aIQ",
+    thumbnail: "https://img.youtube.com/vi/RxSbnf67aIQ/maxresdefault.jpg",
   },
   {
     slug: "rediffusion-live-team-sr63",
