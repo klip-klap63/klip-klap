@@ -15,7 +15,7 @@ const { projet } = Astro.props;
 
 <BaseLayout
   title={`${projet.titre} — KLIP KLAP`}
-  description={projet.description}
+  description={`${projet.titre} — Production vidéo KLIP KLAP`}
   ogImage={projet.thumbnail}
 >
   <div class="projet-page">
@@ -38,11 +38,15 @@ const { projet } = Astro.props;
       </div>
 
       <div class="projet-content">
-        <div class="projet-meta">
-          <span class="projet-year">{projet.date}</span>
-        </div>
         <h1 class="projet-titre">{projet.titre}</h1>
-        <p class="projet-desc">{projet.description}</p>
+        <a
+          href={`https://youtu.be/${projet.youtube_id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-primary"
+        >
+          Voir sur YouTube
+        </a>
       </div>
     </div>
   </div>
