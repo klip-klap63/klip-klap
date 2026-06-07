@@ -1,223 +1,96 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { heroVideo, services } from '../data/services';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { projets, categories } from '../../data/projets';
+
+const projetsJSON = JSON.stringify(projets);
 ---
 
 <BaseLayout
-  title="KLIP KLAP — Vidéaste Clermont-Ferrand | Live Multicam, Drone DGAC, Clips Auvergne"
-  description="KLIP KLAP — Production audiovisuelle à Clermont-Ferrand et en Auvergne. Live multicam jusqu'à 8 caméras, télépilote drone diplômé DGAC Puy-de-Dôme, clips musicaux, film corporate."
+  title="Projets — KLIP KLAP | Portfolio vidéaste Clermont-Ferrand & Auvergne"
+  description="Portfolio de KLIP KLAP, vidéaste à Clermont-Ferrand : aftermovies, clips musicaux, interviews, films corporate, captations drone en Auvergne et Puy-de-Dôme."
 >
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-video-wrapper">
-      <iframe
-        src={heroVideo.vimeo_embed}
-        frameborder="0"
-        allow="autoplay; fullscreen"
-        title="KLIP KLAP — Showreel"
-        aria-hidden="true"
-      ></iframe>
-    </div>
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <p class="eyebrow">PRODUCTION AUDIOVISUELLE</p>
-      <h1>KLIP KLAP</h1>
-      <p class="hero-sub">Live multicam — Drone — Clips — Corporate</p>
-      <div class="hero-ctas">
-        <a href="/services" class="btn-primary">Nos services</a>
-        <a href="/contact" class="btn-secondary">Prendre contact</a>
-      </div>
-    </div>
-    <div class="hero-stats">
-      <div class="stat">
-        <span class="stat-value">8</span>
-        <span class="stat-label">caméras max</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat">
-        <span class="stat-value">DGAC</span>
-        <span class="stat-label">télépilote diplômé</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat">
-        <span class="stat-value">360°</span>
-        <span class="stat-label">prestation complète</span>
-      </div>
-    </div>
-  </section>
+  <section class="projets-page">
 
-  <!-- SERVICES APERCU -->
-  <section class="services-preview">
-    <div class="container">
-      <p class="section-eyebrow">SAVOIR-FAIRE</p>
-      <h2 class="section-title">Mes prestations</h2>
+    <div class="page-header container">
+      <p class="eyebrow">PORTFOLIO</p>
+      <h1 class="page-title">PROJETS</h1>
+    </div>
 
-      <div class="services-grid">
-        {services.map((s) => (
-          <a href={`/services#${s.id}`} class="service-card">
-            <span class="service-num">{s.numero}</span>
-            <h3 class="service-name">{s.titre}</h3>
-            <p class="service-desc">{s.description.slice(0, 80)}...</p>
-            <span class="service-arrow">—</span>
-          </a>
+    <!-- Filtres sticky -->
+    <div class="filters-bar">
+      <div class="filters-inner">
+        {categories.map((cat) => (
+          <button
+            class={`filter-btn${cat.id === 'tous' ? ' active' : ''}`}
+            data-filter={cat.id}
+          >
+            {cat.label}
+          </button>
         ))}
       </div>
-
-      <div class="services-cta">
-        <a href="/services" class="btn-secondary">Voir tous les services</a>
-      </div>
     </div>
-  </section>
 
-  <!-- A PROPOS -->
-  <section class="about">
+    <!-- Compteur -->
     <div class="container">
-      <div class="about-grid">
-        <div class="about-text">
-          <p class="section-eyebrow">KLIP KLAP</p>
-          <p class="about-body">
-            KLIP KLAP conçoit vos images cinématographiques où le regard, le temps et le contraste
-            occupent une place centrale. Mon travail consiste à transformer une intention en récit
-            visuel, en croisant ma vision créative avec celle du client. À travers des projets pour
-            des artistes, des événements, des entreprises, le sport ou l'automobile, je cherche à
-            créer des images qui racontent, qui respirent, et qui laissent une trace.
-          </p>
-          <a href="/contact" class="btn-primary" style="margin-top: 32px; display: inline-block;">Travaillons ensemble</a>
-        </div>
-        <div class="about-photo">
-          <img
-            src="/photo_profil.jpg"
-            alt="Ronan — Vidéaste et télépilote drone Klip Klap, Châtel-Guyon Auvergne"
-            loading="lazy"
-            width="480"
-            height="600"
-          />
-        </div>
-      </div>
+      <p class="compteur"><span id="count">{projets.length}</span> PROJETS</p>
     </div>
-  </section>
 
-  <!-- PROJETS SELECTION -->
-  <section class="projets-selection">
+    <!-- Grille -->
     <div class="container">
-      <p class="section-eyebrow">PROJETS</p>
-      <h2 class="section-title-projets">SÉLECTION</h2>
+      <ul class="projets-grid" id="projets-grid">
+        {projets.map((p) => (
+          <li class="projet-item" data-categorie={p.categorie}>
+            <a
+              href={`https://youtu.be/${p.youtube_id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="projet-card"
+              aria-label={p.titre}
+            >
+              <div class="thumb-wrapper">
+                <img
+                  src={p.thumbnail}
+                  alt={p.titre}
+                  loading="lazy"
+                  width="640"
+                  height="360"
+                  onerror="this.src='/images/thumb-fallback.jpg'"
+                />
+                <div class="projet-overlay">
+                  <svg class="play-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="24" cy="24" r="23" stroke="white" stroke-width="1.5"/>
+                    <polygon points="19,14 38,24 19,34" fill="white"/>
+                  </svg>
+                  <p class="overlay-titre">{p.titre}</p>
+                </div>
+                <span class="badge">{
+                  categories.find(c => c.id === p.categorie)?.label ?? p.categorie
+                }</span>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
 
-    <div class="projets-grid-home">
-      <a href="/projets" class="projet-card-home">
-        <div class="thumb-wrap">
-          <img
-            src="https://img.youtube.com/vi/zPpQNie58MY/maxresdefault.jpg"
-            alt="FC CHATEL — RC RIORGES FÉMININ"
-            loading="lazy"
-            width="640"
-            height="360"
-          />
-          <div class="projet-hover">
-            <p class="projet-hover-titre">FC CHATEL — RC RIORGES FÉMININ</p>
-          </div>
-          <span class="projet-badge">LIVE MULTICAM</span>
-        </div>
-      </a>
-
-      <a href="/projets" class="projet-card-home">
-        <div class="thumb-wrap">
-          <img
-            src="https://img.youtube.com/vi/sHLetqUg2T8/maxresdefault.jpg"
-            alt="MAKING-OF Y'AVANTI EPISODE 7"
-            loading="lazy"
-            width="640"
-            height="360"
-          />
-          <div class="projet-hover">
-            <p class="projet-hover-titre">MAKING-OF Y'AVANTI EPISODE 7</p>
-          </div>
-          <span class="projet-badge">CORPORATE</span>
-        </div>
-      </a>
-
-      <a href="/projets" class="projet-card-home">
-        <div class="thumb-wrap">
-          <img
-            src="https://img.youtube.com/vi/dWNUEOTkceA/maxresdefault.jpg"
-            alt="HALLÉATOIRES 2 — AFTERMOVIE"
-            loading="lazy"
-            width="640"
-            height="360"
-          />
-          <div class="projet-hover">
-            <p class="projet-hover-titre">HALLÉATOIRES 2 — AFTERMOVIE</p>
-          </div>
-          <span class="projet-badge">RÉSEAUX SOCIAUX</span>
-        </div>
-      </a>
-
-      <a href="/projets" class="projet-card-home">
-        <div class="thumb-wrap">
-          <img
-            src="https://img.youtube.com/vi/EjVWHof0bkA/maxresdefault.jpg"
-            alt="STJEPAN — SCARABÉ"
-            loading="lazy"
-            width="640"
-            height="360"
-          />
-          <div class="projet-hover">
-            <p class="projet-hover-titre">STJEPAN — SCARABÉ</p>
-          </div>
-          <span class="projet-badge">CLIPS</span>
-        </div>
-      </a>
-    </div>
-
-    <div class="projets-cta-wrap">
-      <a href="/projets" class="btn-secondary">VOIR TOUS LES PROJETS</a>
-    </div>
   </section>
 </BaseLayout>
 
 <style>
-  /* HERO */
-  .hero {
-    position: relative;
-    height: 100vh;
-    min-height: 600px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+  .projets-page {
+    padding-top: 140px;
+    padding-bottom: 120px;
   }
 
-  .hero-video-wrapper {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
   }
 
-  .hero-video-wrapper iframe {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: max(100vw, 177.78vh);
-    height: max(56.25vw, 100vh);
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1;
-  }
-
-  .hero-content {
-    position: relative;
-    z-index: 10;
-    text-align: center;
-    padding: 0 20px;
+  /* Header */
+  .page-header {
+    padding-bottom: 56px;
   }
 
   .eyebrow {
@@ -225,314 +98,111 @@ import { heroVideo, services } from '../data/services';
     font-size: 11px;
     font-weight: 400;
     letter-spacing: 5px;
-    text-transform: uppercase;
     color: var(--color-primary);
-    margin-bottom: 16px;
-  }
-
-  .hero-content h1 {
-    font-family: var(--font-display);
-    font-size: clamp(64px, 12vw, 120px);
-    color: #fff;
-    line-height: 0.9;
-    letter-spacing: 4px;
-    margin-bottom: 20px;
-  }
-
-  .hero-sub {
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 300;
-    letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--color-text-muted);
-    margin-bottom: 48px;
-  }
-
-  .hero-ctas {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .hero-stats {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 32px;
-  }
-
-  .stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .stat-value {
-    font-family: var(--font-display);
-    font-size: 28px;
-    color: var(--color-primary);
-    line-height: 1;
-  }
-
-  .stat-label {
-    font-family: var(--font-body);
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--color-text-subtle);
-  }
-
-  .stat-divider {
-    width: 1px;
-    height: 32px;
-    background: var(--color-border);
-  }
-
-  /* BUTTONS */
-  .btn-primary {
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--color-primary);
-    background: rgba(245, 200, 0, 0.15);
-    backdrop-filter: blur(10px);
-    padding: 14px 32px;
-    border: 1px solid rgba(245, 200, 0, 0.3);
-    border-radius: 2px;
-    box-shadow: inset 0 1px 0 rgba(245, 200, 0, 0.25);
-    transition: background var(--transition-fast), border-color var(--transition-fast);
-  }
-
-  .btn-primary:hover {
-    background: rgba(245, 200, 0, 0.28);
-    border-color: rgba(245, 200, 0, 0.55);
-  }
-
-  .btn-secondary {
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: #fff;
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    padding: 14px 32px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
-  }
-
-  .btn-secondary:hover {
-    border-color: rgba(245, 200, 0, 0.4);
-    color: var(--color-primary);
-    background: rgba(245, 200, 0, 0.05);
-  }
-
-  /* CONTAINER */
-  .container {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 32px;
-  }
-
-  /* SECTION TYPOGRAPHY */
-  .section-eyebrow {
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 5px;
-    text-transform: uppercase;
-    color: var(--color-primary);
     margin-bottom: 12px;
   }
 
-  .section-title {
-    font-family: var(--font-body);
-    font-size: clamp(32px, 4vw, 42px);
-    font-weight: 300;
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(56px, 9vw, 96px);
     color: #fff;
-    letter-spacing: -0.5px;
-    margin-bottom: 56px;
+    line-height: 1;
+    letter-spacing: 2px;
   }
 
-  /* SERVICES PREVIEW */
-  .services-preview {
-    padding: 120px 0 80px;
+  /* Filtres sticky */
+  .filters-bar {
+    position: sticky;
+    top: 72px; /* hauteur header */
+    z-index: 50;
+    background: rgba(0, 0, 0, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+    padding: 14px 32px;
+    margin-bottom: 32px;
   }
 
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
-  }
-
-  .service-card {
-    background: rgba(255, 255, 255, 0.035);
-    backdrop-filter: blur(20px) saturate(200%) brightness(1.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 16px;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
-    padding: 40px 32px;
+  .filters-inner {
+    max-width: 1280px;
+    margin: 0 auto;
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-    transition: background var(--transition-base), border-color var(--transition-base);
-    position: relative;
-    overflow: hidden;
+    gap: 8px;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
-  .service-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 20%;
-    right: 20%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(245, 200, 0, 0.35), transparent);
-    pointer-events: none;
+  .filters-inner::-webkit-scrollbar {
+    display: none;
   }
 
-  .service-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, transparent 100%);
-    pointer-events: none;
-    border-radius: 16px 16px 0 0;
-  }
-
-  .service-card:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.22);
-  }
-
-  .service-card:hover .service-arrow {
-    color: var(--color-primary);
-    transform: translateX(4px);
-  }
-
-  .service-num {
+  .filter-btn {
+    flex-shrink: 0;
     font-family: var(--font-body);
     font-size: 10px;
     font-weight: 400;
     letter-spacing: 3px;
-    color: var(--color-primary);
+    text-transform: uppercase;
+    padding: 8px 16px;
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
   }
 
-  .service-name {
+  .filter-btn:hover:not(.active) {
+    border-color: rgba(255, 255, 255, 1);
+  }
+
+  .filter-btn.active {
+    background: var(--color-primary);
+    color: #000;
+    border-color: var(--color-primary);
+    font-weight: 500;
+  }
+
+  /* Compteur */
+  .compteur {
     font-family: var(--font-body);
-    font-size: 18px;
+    font-size: 11px;
     font-weight: 400;
-    color: #fff;
-    line-height: 1.3;
+    letter-spacing: 3px;
+    color: var(--color-text-muted);
+    margin-bottom: 24px;
+    text-transform: uppercase;
   }
 
-  .service-desc {
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 300;
-    color: var(--color-text-subtle);
-    line-height: 1.6;
-    flex: 1;
-  }
-
-  .service-arrow {
-    font-family: var(--font-body);
-    font-size: 14px;
-    color: var(--color-border);
-    transition: color var(--transition-fast), transform var(--transition-fast);
-    align-self: flex-end;
-  }
-
-  .services-cta {
-    margin-top: 48px;
-    text-align: center;
-  }
-
-  /* A PROPOS */
-  .about {
-    padding: 120px 0;
-    border-top: 1px solid var(--color-border);
-  }
-
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-  }
-
-  .about-body {
-    font-family: var(--font-body);
-    font-size: 15px;
-    font-weight: 300;
-    color: #999;
-    line-height: 1.8;
-  }
-
-  .about-photo img {
-    width: 100%;
-    max-width: 480px;
-    height: 580px;
-    object-fit: cover;
-    object-position: center top;
-    filter: grayscale(20%);
-  }
-
-  /* PROJETS SELECTION */
-  .projets-selection {
-    padding: 80px 0 120px;
-    border-top: 1px solid var(--color-border);
-  }
-
-  .projets-selection .container {
-    margin-bottom: 48px;
-  }
-
-  .section-title-projets {
-    font-family: var(--font-body);
-    font-size: clamp(40px, 6vw, 72px);
-    font-weight: 300;
-    color: #fff;
-    letter-spacing: -0.5px;
-    line-height: 1;
-  }
-
-  .projets-grid-home {
+  /* Grille */
+  .projets-grid {
+    list-style: none;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    /* séparateurs or entre cellules */
     border-top: 1px solid var(--color-primary);
     border-left: 1px solid var(--color-primary);
   }
 
-  .projet-card-home {
-    display: block;
+  .projet-item {
     border-right: 1px solid var(--color-primary);
     border-bottom: 1px solid var(--color-primary);
   }
 
-  .thumb-wrap {
+  /* Card */
+  .projet-card {
+    display: block;
+    position: relative;
+  }
+
+  .thumb-wrapper {
     position: relative;
     aspect-ratio: 16 / 9;
     overflow: hidden;
   }
 
-  .thumb-wrap img {
+  .thumb-wrapper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -540,27 +210,36 @@ import { heroVideo, services } from '../data/services';
     transition: transform 400ms ease;
   }
 
-  .projet-card-home:hover .thumb-wrap img {
+  .projet-card:hover .thumb-wrapper img {
     transform: scale(1.04);
   }
 
-  .projet-hover {
+  /* Overlay hover */
+  .projet-overlay {
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.62);
     opacity: 0;
     transition: opacity 250ms ease;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 16px;
     padding: 20px;
   }
 
-  .projet-card-home:hover .projet-hover {
+  .projet-card:hover .projet-overlay {
     opacity: 1;
   }
 
-  .projet-hover-titre {
+  .play-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+  }
+
+  .overlay-titre {
     font-family: var(--font-body);
     font-size: 11px;
     font-weight: 400;
@@ -571,7 +250,8 @@ import { heroVideo, services } from '../data/services';
     line-height: 1.5;
   }
 
-  .projet-badge {
+  /* Badge catégorie */
+  .badge {
     position: absolute;
     bottom: 10px;
     left: 10px;
@@ -587,51 +267,87 @@ import { heroVideo, services } from '../data/services';
     pointer-events: none;
   }
 
-  .projets-cta-wrap {
-    margin-top: 48px;
-    text-align: center;
+  /* Masqué par filtrage */
+  .projet-item.hidden {
+    display: none;
   }
 
-  @media (max-width: 900px) {
-    .services-grid {
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .projets-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 600px) {
+    .projets-page {
+      padding-top: 110px;
+    }
+
     .container {
       padding: 0 20px;
     }
 
-    .hero-stats {
-      gap: 20px;
-      bottom: 24px;
+    .filters-bar {
+      padding: 12px 20px;
     }
 
-    .stat-value {
-      font-size: 22px;
-    }
-
-    .services-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .about-grid {
-      grid-template-columns: 1fr;
-      gap: 48px;
-    }
-
-    .about-photo {
-      order: -1;
-    }
-
-    .about-photo img {
-      height: 360px;
-      max-width: 100%;
-    }
-
-    .projets-grid-home {
+    .projets-grid {
       grid-template-columns: 1fr;
     }
   }
 </style>
+
+<script define:vars={{ projetsJSON }}>
+  const projets = JSON.parse(projetsJSON);
+  const grid = document.getElementById('projets-grid');
+  const countEl = document.getElementById('count');
+  const btns = document.querySelectorAll('.filter-btn');
+
+  // GSAP optionnel — fallback CSS si absent
+  const hasGsap = typeof window !== 'undefined' && typeof window.gsap !== 'undefined';
+
+  function filterProjects(filterId) {
+    const items = grid.querySelectorAll('.projet-item');
+    const visible = [];
+    const hidden = [];
+
+    items.forEach((item) => {
+      const cat = item.dataset.categorie;
+      if (filterId === 'tous' || cat === filterId) {
+        visible.push(item);
+      } else {
+        hidden.push(item);
+      }
+    });
+
+    // Masquer immédiatement les éléments cachés
+    hidden.forEach((el) => {
+      el.classList.add('hidden');
+    });
+
+    // Révéler les visibles
+    visible.forEach((el) => {
+      el.classList.remove('hidden');
+    });
+
+    // Animation GSAP si disponible
+    if (hasGsap && visible.length) {
+      window.gsap.fromTo(
+        visible,
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.35, stagger: 0.04, ease: 'power2.out' }
+      );
+    }
+
+    if (countEl) countEl.textContent = String(visible.length);
+  }
+
+  btns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      btns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      filterProjects(btn.dataset.filter);
+    });
+  });
+</script>
