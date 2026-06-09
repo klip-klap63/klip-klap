@@ -86,6 +86,13 @@ export const projets = [
     youtube_id: "XYQWMIa7wRg",
     thumbnail: "https://img.youtube.com/vi/XYQWMIa7wRg/maxresdefault.jpg",
   },
+  {
+    slug: "onyx-festival-2026-aftermovie",
+    titre: "ONYX FESTIVAL 2026 AFTERMOVIE",
+    categorie: "corporate",
+    youtube_id: "WvHa-59oMFY",
+    thumbnail: "https://img.youtube.com/vi/WvHa-59oMFY/maxresdefault.jpg",
+  },
 
   // CLIPS
   {
