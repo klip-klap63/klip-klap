@@ -93,6 +93,13 @@ export const projets = [
     youtube_id: "WvHa-59oMFY",
     thumbnail: "https://img.youtube.com/vi/WvHa-59oMFY/maxresdefault.jpg",
   },
+  {
+    slug: "idee-sante-retours-formation",
+    titre: "IDÉE SANTÉ RETOURS FORMATION",
+    categorie: "corporate",
+    youtube_id: "gbVwFZc9CmM",
+    thumbnail: "https://img.youtube.com/vi/gbVwFZc9CmM/maxresdefault.jpg",
+  },
 
   // CLIPS
   {
