@@ -100,6 +100,13 @@ export const projets = [
     youtube_id: "gbVwFZc9CmM",
     thumbnail: "https://img.youtube.com/vi/gbVwFZc9CmM/maxresdefault.jpg",
   },
+  {
+    slug: "ratz-attak-2026-aftermovie",
+    titre: "RATZ ATTAK 2026 AFTERMOVIE",
+    categorie: "corporate",
+    youtube_id: "e0ANc6ManxA",
+    thumbnail: "https://img.youtube.com/vi/e0ANc6ManxA/maxresdefault.jpg",
+  },
 
   // CLIPS
   {
