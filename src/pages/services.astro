@@ -31,7 +31,6 @@ import { services } from '../data/services';
             </div>
           </div>
           <div class="service-text-col">
-            <span class="service-num">{s.numero}</span>
             <h2 class="service-title">{s.titre}</h2>
             <p class="service-desc">{s.description}</p>
             <ul class="service-tags">
@@ -88,9 +87,12 @@ import { services } from '../data/services';
     align-items: center;
     padding: 64px 48px;
     margin-bottom: 24px;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09);
+    border-radius: 20px;
   }
 
   .service-block:nth-child(even) .service-video-col {
@@ -143,16 +145,6 @@ import { services } from '../data/services';
     height: 100%;
     pointer-events: none;
     z-index: 1;
-  }
-
-  .service-num {
-    display: block;
-    font-family: var(--font-body);
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 3px;
-    color: var(--color-primary);
-    margin-bottom: 16px;
   }
 
   .service-title {
