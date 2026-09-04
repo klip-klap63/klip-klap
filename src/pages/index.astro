@@ -5,7 +5,7 @@ import { heroVideo, services } from '../data/services';
 
 <BaseLayout
   title="KLIP KLAP — Vidéaste Clermont-Ferrand | Live Multicam, Drone DGAC, Clips Auvergne"
-  description="KLIP KLAP — Production audiovisuelle à Clermont-Ferrand et en Auvergne. Live multicam jusqu'à 8 caméras, télépilote drone diplômé DGAC Puy-de-Dôme, clips musicaux, film corporate."
+  description="KLIP KLAP — Production audiovisuelle à Clermont-Ferrand et en Auvergne. Live multicam, télépilote drone diplômé DGAC Puy-de-Dôme, clips musicaux, film corporate."
 >
   <!-- HERO -->
   <section class="hero">
@@ -34,7 +34,7 @@ import { heroVideo, services } from '../data/services';
       </h1>
       <p class="hero-sub">Live multicam — Drone — Clips — Corporate</p>
       <div class="hero-ctas">
-        <a href="/services" class="btn-primary">Nos services</a>
+        <a href="/services" class="btn-primary">Prestations</a>
         <a href="/contact" class="btn-secondary">Prendre contact</a>
       </div>
     </div>
@@ -56,23 +56,26 @@ import { heroVideo, services } from '../data/services';
     </div>
   </section>
 
-  <!-- SERVICES APERCU -->
+  <!-- PRESTATIONS -->
   <section class="services-preview" id="services-preview">
-    <div class="container">
-      <h2 class="section-title">Mes prestations</h2>
-    </div>
-    <div class="services-track" id="services-track">
-      {services.map((s) => (
-        <a href={`/services#${s.id}`} class="service-card">
-          <h3 class="service-name">{s.titre}</h3>
-          <p class="service-desc">{s.description.slice(0, 80)}...</p>
-          <span class="service-arrow">—</span>
-        </a>
-      ))}
+    <div class="services-pin-container">
+      <h2 class="services-label">Mes prestations</h2>
+      <div class="services-list" id="services-list">
+        {services.map((s, i) => (
+          <a
+            href={`/services#${s.id}`}
+            class:list={['service-item', { 'service-item--hidden': i > 0 }]}
+          >
+            {i > 0 && <span class="service-divider" aria-hidden="true"></span>}
+            <h3 class="service-name">{s.titre}</h3>
+          </a>
+        ))}
+      </div>
     </div>
   </section>
+
   <div class="services-cta container">
-    <a href="/services" class="btn-secondary">Voir tous les services</a>
+    <a href="/services" class="btn-secondary">Voir toutes les prestations</a>
   </div>
 
   <!-- A PROPOS -->
@@ -80,6 +83,7 @@ import { heroVideo, services } from '../data/services';
     <div class="container">
       <div class="about-grid">
         <div class="about-text">
+          <p class="about-eyebrow">KLIP KLAP</p>
           <p class="about-body">
             KLIP KLAP conçoit vos images cinématographiques où le regard, le temps et le contraste
             occupent une place centrale. Mon travail consiste à transformer une intention en récit
@@ -103,20 +107,13 @@ import { heroVideo, services } from '../data/services';
   </section>
 
   <!-- PROJETS SELECTION -->
-  <section class="projets-selection">
+  <section class="projets-selection" id="projets-selection">
     <div class="container">
       <h2 class="section-title-projets">SÉLECTION</h2>
     </div>
 
-    <!-- Runner latéral -->
-    <div class="projets-runner-outer" aria-hidden="true">
-      <div class="projets-runner" id="projets-runner">
-        <span>PROJETS — SÉLECTION — PROJETS — SÉLECTION — PROJETS — SÉLECTION — PROJETS — SÉLECTION — </span>
-        <span>PROJETS — SÉLECTION — PROJETS — SÉLECTION — PROJETS — SÉLECTION — PROJETS — SÉLECTION — </span>
-      </div>
-    </div>
-
-    <div class="projets-grid-home">
+    <div class="projets-scroll-outer">
+    <div class="projets-grid-home" id="projets-scroll-track">
       <a href="/projets/fc-chatel-rc-riorges-feminin" class="projet-card-home">
         <div class="card-thumb">
           <img
@@ -182,6 +179,8 @@ import { heroVideo, services } from '../data/services';
       </a>
     </div>
 
+    </div><!-- /projets-scroll-outer -->
+
     <div class="projets-cta-wrap">
       <a href="/projets" class="btn-secondary">VOIR TOUS LES PROJETS</a>
     </div>
@@ -194,40 +193,49 @@ import { heroVideo, services } from '../data/services';
 
     gsap.registerPlugin(ScrollTrigger);
 
-    // --- Scroll horizontal des prestations ---
-    var track = document.getElementById('services-track');
+    // --- Prestations : pinning + révélation séquentielle ---
     var preview = document.getElementById('services-preview');
-    if (track && preview) {
-      // Recalcul après rendu
-      var travelX = track.scrollWidth - window.innerWidth;
-      if (travelX > 0) {
-        gsap.to(track, {
-          x: -travelX,
+    var items = document.querySelectorAll('.service-item');
+
+    if (preview && items.length > 1) {
+      var pinDuration = (items.length - 1) * 280;
+
+      var tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: preview,
+          start: 'top top+=72',
+          end: '+=' + pinDuration,
+          pin: true,
+          scrub: 0.6,
+          invalidateOnRefresh: true,
+        }
+      });
+
+      // Révèle items 1-4 à 0%, 25%, 50%, 75% du scroll
+      for (var i = 1; i < items.length; i++) {
+        tl.to(items[i], {
+          opacity: 1,
+          duration: 0.06,
           ease: 'none',
-          scrollTrigger: {
-            trigger: preview,
-            start: 'top top+=72',
-            end: function () { return '+=' + travelX; },
-            pin: true,
-            scrub: 0.6,
-            invalidateOnRefresh: true,
-          }
-        });
+        }, (i - 1) * 0.24);
       }
     }
 
-    // --- Runner latéral sur la section projets ---
-    var runner = document.getElementById('projets-runner');
-    var selection = document.querySelector('.projets-selection');
-    if (runner && selection) {
-      gsap.to(runner, {
-        x: '-50%',
+    // --- Sélection : scroll horizontal piloté par le scroll vertical ---
+    var selection = document.getElementById('projets-selection');
+    var track = document.getElementById('projets-scroll-track');
+
+    if (selection && track) {
+      gsap.to(track, {
+        x: function() { return -(track.scrollWidth - window.innerWidth); },
         ease: 'none',
         scrollTrigger: {
           trigger: selection,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1.5,
+          start: 'top top+=72',
+          end: function() { return '+=' + (track.scrollWidth - window.innerWidth); },
+          pin: true,
+          scrub: 0.6,
+          invalidateOnRefresh: true,
         }
       });
     }
@@ -236,7 +244,7 @@ import { heroVideo, services } from '../data/services';
 </BaseLayout>
 
 <style>
-  /* HERO */
+  /* ═══ HERO ═══ */
   .hero {
     position: relative;
     height: 100vh;
@@ -380,26 +388,23 @@ import { heroVideo, services } from '../data/services';
     background: var(--color-border);
   }
 
-  /* BUTTONS */
+  /* ═══ BOUTONS ═══ */
   .btn-primary {
     font-family: var(--font-body);
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--color-primary);
-    background: rgba(245, 200, 0, 0.15);
-    backdrop-filter: blur(10px);
+    color: #000;
+    background: var(--color-primary);
     padding: 14px 32px;
-    border: 1px solid rgba(245, 200, 0, 0.3);
+    border: none;
     border-radius: 2px;
-    box-shadow: inset 0 1px 0 rgba(245, 200, 0, 0.25);
-    transition: background var(--transition-fast), border-color var(--transition-fast);
+    transition: background var(--transition-fast);
   }
 
   .btn-primary:hover {
-    background: rgba(245, 200, 0, 0.28);
-    border-color: rgba(245, 200, 0, 0.55);
+    background: var(--color-primary-glow);
   }
 
   .btn-secondary {
@@ -409,151 +414,95 @@ import { heroVideo, services } from '../data/services';
     letter-spacing: 3px;
     text-transform: uppercase;
     color: #fff;
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
+    background: transparent;
     padding: 14px 32px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 2px;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+    transition: border-color var(--transition-fast), color var(--transition-fast);
   }
 
   .btn-secondary:hover {
-    border-color: rgba(245, 200, 0, 0.4);
+    border-color: var(--color-primary);
     color: var(--color-primary);
-    background: rgba(245, 200, 0, 0.05);
   }
 
-  /* CONTAINER */
+  /* ═══ CONTAINER ═══ */
   .container {
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 32px;
   }
 
-  /* SECTION TYPOGRAPHY */
-  .section-eyebrow {
+  /* ═══ PRESTATIONS ═══ */
+  .services-preview {
+    padding: 120px 0 100px;
+  }
+
+  .services-pin-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  .services-label {
     font-family: var(--font-body);
     font-size: 11px;
     font-weight: 400;
-    letter-spacing: 5px;
-    text-transform: uppercase;
-    color: var(--color-primary);
-    margin-bottom: 12px;
-  }
-
-  .section-title {
-    font-family: var(--font-body);
-    font-size: clamp(32px, 4vw, 42px);
-    font-weight: 300;
-    color: #fff;
-    letter-spacing: -0.5px;
-    margin-bottom: 56px;
-  }
-
-  /* SERVICES PREVIEW */
-  .services-preview {
-    padding: 120px 0 48px;
-    overflow: hidden;
-  }
-
-  .services-track {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 12px;
-    padding: 0 32px;
-    will-change: transform;
-  }
-
-  .service-card {
-    flex: 0 0 clamp(240px, 22vw, 320px);
-    background: rgba(255, 255, 255, 0.035);
-    backdrop-filter: blur(20px) saturate(200%) brightness(1.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 4px;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
-    padding: 40px 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    transition: background var(--transition-base), border-color var(--transition-base);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .service-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 20%;
-    right: 20%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(245, 200, 0, 0.35), transparent);
-    pointer-events: none;
-  }
-
-  .service-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, transparent 100%);
-    pointer-events: none;
-    border-radius: 16px 16px 0 0;
-  }
-
-  .service-card:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.22);
-  }
-
-  .service-card:hover .service-arrow {
-    color: var(--color-primary);
-    transform: translateX(4px);
-  }
-
-  .service-num {
-    font-family: var(--font-body);
-    font-size: 10px;
-    font-weight: 400;
     letter-spacing: 3px;
     color: var(--color-primary);
+    margin-bottom: 48px;
+    text-transform: none;
+  }
+
+  .services-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .service-item {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* Desktop : items 1-4 cachés jusqu'à révélation par GSAP */
+  .service-item--hidden {
+    opacity: 0;
+  }
+
+  @media (max-width: 768px) {
+    .service-item--hidden {
+      opacity: 1;
+    }
+  }
+
+  .service-divider {
+    display: block;
+    height: 1px;
+    background: var(--color-border);
+    margin: 20px 0;
   }
 
   .service-name {
     font-family: var(--font-body);
-    font-size: 18px;
-    font-weight: 400;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 200;
     color: #fff;
-    line-height: 1.3;
+    line-height: 0.95;
+    letter-spacing: -1px;
+    transition: color var(--transition-fast);
   }
 
-  .service-desc {
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 300;
-    color: var(--color-text-subtle);
-    line-height: 1.6;
-    flex: 1;
-  }
-
-  .service-arrow {
-    font-family: var(--font-body);
-    font-size: 14px;
-    color: var(--color-border);
-    transition: color var(--transition-fast), transform var(--transition-fast);
-    align-self: flex-end;
+  .service-item:hover .service-name {
+    color: var(--color-primary);
   }
 
   .services-cta {
-    margin-top: 32px;
-    margin-bottom: 80px;
-    text-align: center;
+    margin-top: 56px;
+    margin-bottom: 120px;
   }
 
-  /* A PROPOS */
+  /* ═══ À PROPOS ═══ */
   .about {
     padding: 120px 0;
     border-top: 1px solid var(--color-border);
@@ -564,6 +513,16 @@ import { heroVideo, services } from '../data/services';
     grid-template-columns: 1fr 1fr;
     gap: 80px;
     align-items: center;
+  }
+
+  .about-eyebrow {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin-bottom: 20px;
   }
 
   .about-body {
@@ -583,39 +542,15 @@ import { heroVideo, services } from '../data/services';
     filter: grayscale(20%);
   }
 
-  /* RUNNER latéral */
-  .projets-runner-outer {
-    overflow: hidden;
-    padding: 20px 0;
-    border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
-    margin-bottom: 48px;
-  }
-
-  .projets-runner {
-    display: flex;
-    white-space: nowrap;
-    width: max-content;
-    will-change: transform;
-  }
-
-  .projets-runner span {
-    font-family: var(--font-body);
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 5px;
-    text-transform: uppercase;
-    color: var(--color-text-subtle);
-  }
-
-  /* PROJETS SELECTION */
+  /* ═══ SÉLECTION PROJETS ═══ */
   .projets-selection {
-    padding: 80px 0 120px;
+    padding: 80px 0 0;
     border-top: 1px solid var(--color-border);
+    overflow: hidden;
   }
 
   .projets-selection .container {
-    margin-bottom: 0;
+    margin-bottom: 40px;
   }
 
   .section-title-projets {
@@ -627,19 +562,28 @@ import { heroVideo, services } from '../data/services';
     line-height: 1;
   }
 
+  .projets-scroll-outer {
+    overflow: hidden;
+  }
+
+  /* Desktop : piste horizontale débordante */
   .projets-grid-home {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
     gap: 16px;
-    padding: 0 32px;
-    max-width: 1280px;
-    margin: 0 auto;
+    padding: 0 32px 80px;
+    will-change: transform;
+  }
+
+  .projets-grid-home .projet-card-home {
+    flex: 0 0 42vw;
   }
 
   .projet-card-home {
     display: flex;
     flex-direction: column;
-    border-radius: 8px;
+    border-radius: 4px;
     overflow: hidden;
     background: #0d0d0d;
     border: 1px solid var(--color-border);
@@ -654,7 +598,6 @@ import { heroVideo, services } from '../data/services';
   .card-thumb {
     aspect-ratio: 16 / 9;
     overflow: hidden;
-    border-radius: 8px 8px 0 0;
   }
 
   .card-thumb img {
@@ -707,12 +650,7 @@ import { heroVideo, services } from '../data/services';
     text-align: center;
   }
 
-  @media (max-width: 1024px) and (min-width: 769px) {
-    .projets-grid-home {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
+  /* ═══ RESPONSIVE ═══ */
   @media (max-width: 768px) {
     .container {
       padding: 0 20px;
@@ -737,14 +675,20 @@ import { heroVideo, services } from '../data/services';
       font-size: 22px;
     }
 
-    /* Services : scroll horizontal désactivé sur mobile */
-    .services-track {
-      flex-wrap: wrap;
+    .services-preview {
+      padding: 80px 0 60px;
+    }
+
+    .services-pin-container {
       padding: 0 20px;
     }
 
-    .service-card {
-      flex: 0 0 100%;
+    .service-name {
+      font-size: clamp(28px, 8vw, 40px);
+    }
+
+    .services-cta {
+      margin-bottom: 80px;
     }
 
     .about-grid {
@@ -762,13 +706,13 @@ import { heroVideo, services } from '../data/services';
     }
 
     .projets-grid-home {
-      grid-template-columns: 1fr;
-      padding: 0 20px;
+      flex-direction: column;
+      padding: 0 20px 60px;
     }
 
-    /* Runner désactivé sur mobile */
-    .projets-runner-outer {
-      display: none;
+    .projets-grid-home .projet-card-home {
+      flex: 0 0 auto;
+      width: 100%;
     }
   }
 </style>
