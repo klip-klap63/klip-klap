@@ -107,6 +107,13 @@ export const projets = [
     youtube_id: "e0ANc6ManxA",
     thumbnail: "https://img.youtube.com/vi/e0ANc6ManxA/maxresdefault.jpg",
   },
+  {
+    slug: "maison-francois-lassere-10-ans-au-coeur-de-charroux",
+    titre: "MAISON FRANÇOIS LASSERE - 10 ANS AU COEUR DE CHARROUX",
+    categorie: "corporate",
+    youtube_id: "6IR-aZB5Eaw",
+    thumbnail: "https://img.youtube.com/vi/6IR-aZB5Eaw/maxresdefault.jpg",
+  },
 
   // CLIPS
   {
