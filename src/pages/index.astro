@@ -21,7 +21,17 @@ import { heroVideo, services } from '../data/services';
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <p class="eyebrow">PRODUCTION AUDIOVISUELLE</p>
-      <h1>KLIP KLAP</h1>
+      <h1 class="hero-title-split">
+        <span>KLIP</span>
+        <span class="hero-inline-media" aria-hidden="true">
+          <iframe
+            src="https://player.vimeo.com/video/1188799456?background=1&autoplay=1&loop=1&muted=1&playlist=1188799456"
+            frameborder="0"
+            allow="autoplay"
+          ></iframe>
+        </span>
+        <span>KLAP</span>
+      </h1>
       <p class="hero-sub">Live multicam — Drone — Clips — Corporate</p>
       <div class="hero-ctas">
         <a href="/services" class="btn-primary">Nos services</a>
@@ -47,34 +57,29 @@ import { heroVideo, services } from '../data/services';
   </section>
 
   <!-- SERVICES APERCU -->
-  <section class="services-preview">
+  <section class="services-preview" id="services-preview">
     <div class="container">
-      <p class="section-eyebrow">SAVOIR-FAIRE</p>
       <h2 class="section-title">Mes prestations</h2>
-
-      <div class="services-grid">
-        {services.map((s) => (
-          <a href={`/services#${s.id}`} class="service-card">
-            <span class="service-num">{s.numero}</span>
-            <h3 class="service-name">{s.titre}</h3>
-            <p class="service-desc">{s.description.slice(0, 80)}...</p>
-            <span class="service-arrow">—</span>
-          </a>
-        ))}
-      </div>
-
-      <div class="services-cta">
-        <a href="/services" class="btn-secondary">Voir tous les services</a>
-      </div>
+    </div>
+    <div class="services-track" id="services-track">
+      {services.map((s) => (
+        <a href={`/services#${s.id}`} class="service-card">
+          <h3 class="service-name">{s.titre}</h3>
+          <p class="service-desc">{s.description.slice(0, 80)}...</p>
+          <span class="service-arrow">—</span>
+        </a>
+      ))}
     </div>
   </section>
+  <div class="services-cta container">
+    <a href="/services" class="btn-secondary">Voir tous les services</a>
+  </div>
 
   <!-- A PROPOS -->
   <section class="about">
     <div class="container">
       <div class="about-grid">
         <div class="about-text">
-          <p class="section-eyebrow">KLIP KLAP</p>
           <p class="about-body">
             KLIP KLAP conçoit vos images cinématographiques où le regard, le temps et le contraste
             occupent une place centrale. Mon travail consiste à transformer une intention en récit
@@ -100,8 +105,15 @@ import { heroVideo, services } from '../data/services';
   <!-- PROJETS SELECTION -->
   <section class="projets-selection">
     <div class="container">
-      <p class="section-eyebrow">PROJETS</p>
       <h2 class="section-title-projets">SÉLECTION</h2>
+    </div>
+
+    <!-- Runner latéral -->
+    <div class="projets-runner-outer" aria-hidden="true">
+      <div class="projets-runner" id="projets-runner">
+        <span>PROJETS — SÉLECTION — PROJETS — SÉLECTION — PROJETS — SÉLECTION — PROJETS — SÉLECTION — </span>
+        <span>PROJETS — SÉLECTION — PROJETS — SÉLECTION — PROJETS — SÉLECTION — PROJETS — SÉLECTION — </span>
+      </div>
     </div>
 
     <div class="projets-grid-home">
@@ -174,6 +186,53 @@ import { heroVideo, services } from '../data/services';
       <a href="/projets" class="btn-secondary">VOIR TOUS LES PROJETS</a>
     </div>
   </section>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    if (window.innerWidth < 768) return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // --- Scroll horizontal des prestations ---
+    var track = document.getElementById('services-track');
+    var preview = document.getElementById('services-preview');
+    if (track && preview) {
+      // Recalcul après rendu
+      var travelX = track.scrollWidth - window.innerWidth;
+      if (travelX > 0) {
+        gsap.to(track, {
+          x: -travelX,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: preview,
+            start: 'top top+=72',
+            end: function () { return '+=' + travelX; },
+            pin: true,
+            scrub: 0.6,
+            invalidateOnRefresh: true,
+          }
+        });
+      }
+    }
+
+    // --- Runner latéral sur la section projets ---
+    var runner = document.getElementById('projets-runner');
+    var selection = document.querySelector('.projets-selection');
+    if (runner && selection) {
+      gsap.to(runner, {
+        x: '-50%',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: selection,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1.5,
+        }
+      });
+    }
+  });
+</script>
 </BaseLayout>
 
 <style>
@@ -230,13 +289,38 @@ import { heroVideo, services } from '../data/services';
     margin-bottom: 16px;
   }
 
-  .hero-content h1 {
+  .hero-title-split {
     font-family: var(--font-display);
     font-size: clamp(64px, 12vw, 120px);
     color: #fff;
     line-height: 0.9;
     letter-spacing: 4px;
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(16px, 2vw, 28px);
+  }
+
+  .hero-inline-media {
+    display: block;
+    width: clamp(120px, 13vw, 185px);
+    height: clamp(68px, 7.3vw, 104px);
+    overflow: hidden;
+    border-radius: 4px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .hero-inline-media iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    border: none;
   }
 
   .hero-sub {
@@ -369,20 +453,24 @@ import { heroVideo, services } from '../data/services';
 
   /* SERVICES PREVIEW */
   .services-preview {
-    padding: 120px 0 80px;
+    padding: 120px 0 48px;
+    overflow: hidden;
   }
 
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+  .services-track {
+    display: flex;
+    flex-wrap: nowrap;
     gap: 12px;
+    padding: 0 32px;
+    will-change: transform;
   }
 
   .service-card {
+    flex: 0 0 clamp(240px, 22vw, 320px);
     background: rgba(255, 255, 255, 0.035);
     backdrop-filter: blur(20px) saturate(200%) brightness(1.1);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 16px;
+    border-radius: 4px;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
     padding: 40px 32px;
     display: flex;
@@ -460,7 +548,8 @@ import { heroVideo, services } from '../data/services';
   }
 
   .services-cta {
-    margin-top: 48px;
+    margin-top: 32px;
+    margin-bottom: 80px;
     text-align: center;
   }
 
@@ -494,6 +583,31 @@ import { heroVideo, services } from '../data/services';
     filter: grayscale(20%);
   }
 
+  /* RUNNER latéral */
+  .projets-runner-outer {
+    overflow: hidden;
+    padding: 20px 0;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 48px;
+  }
+
+  .projets-runner {
+    display: flex;
+    white-space: nowrap;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .projets-runner span {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
   /* PROJETS SELECTION */
   .projets-selection {
     padding: 80px 0 120px;
@@ -501,7 +615,7 @@ import { heroVideo, services } from '../data/services';
   }
 
   .projets-selection .container {
-    margin-bottom: 48px;
+    margin-bottom: 0;
   }
 
   .section-title-projets {
@@ -593,12 +707,6 @@ import { heroVideo, services } from '../data/services';
     text-align: center;
   }
 
-  @media (max-width: 900px) {
-    .services-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
   @media (max-width: 1024px) and (min-width: 769px) {
     .projets-grid-home {
       grid-template-columns: repeat(2, 1fr);
@@ -610,6 +718,16 @@ import { heroVideo, services } from '../data/services';
       padding: 0 20px;
     }
 
+    .hero-title-split {
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .hero-inline-media {
+      width: 160px;
+      height: 90px;
+    }
+
     .hero-stats {
       gap: 20px;
       bottom: 24px;
@@ -619,8 +737,14 @@ import { heroVideo, services } from '../data/services';
       font-size: 22px;
     }
 
-    .services-grid {
-      grid-template-columns: 1fr;
+    /* Services : scroll horizontal désactivé sur mobile */
+    .services-track {
+      flex-wrap: wrap;
+      padding: 0 20px;
+    }
+
+    .service-card {
+      flex: 0 0 100%;
     }
 
     .about-grid {
@@ -640,6 +764,11 @@ import { heroVideo, services } from '../data/services';
     .projets-grid-home {
       grid-template-columns: 1fr;
       padding: 0 20px;
+    }
+
+    /* Runner désactivé sur mobile */
+    .projets-runner-outer {
+      display: none;
     }
   }
 </style>
