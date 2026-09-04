@@ -21,17 +21,7 @@ import { heroVideo, services } from '../data/services';
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <p class="eyebrow">PRODUCTION AUDIOVISUELLE</p>
-      <h1 class="hero-title-split">
-        <span>KLIP</span>
-        <span class="hero-inline-media" aria-hidden="true">
-          <iframe
-            src="https://player.vimeo.com/video/1188799456?background=1&autoplay=1&loop=1&muted=1&playlist=1188799456"
-            frameborder="0"
-            allow="autoplay"
-          ></iframe>
-        </span>
-        <span>KLAP</span>
-      </h1>
+      <h1 class="hero-title">KLIP KLAP</h1>
       <p class="hero-sub">Live multicam — Drone — Clips — Corporate</p>
       <div class="hero-ctas">
         <a href="/services" class="btn-primary">Prestations</a>
@@ -40,8 +30,8 @@ import { heroVideo, services } from '../data/services';
     </div>
     <div class="hero-stats">
       <div class="stat">
-        <span class="stat-value">8</span>
-        <span class="stat-label">caméras max</span>
+        <span class="stat-value">LIVE</span>
+        <span class="stat-label">multicam</span>
       </div>
       <div class="stat-divider"></div>
       <div class="stat">
@@ -211,7 +201,12 @@ import { heroVideo, services } from '../data/services';
         }
       });
 
-      // Révèle items 1-4 à 0%, 25%, 50%, 75% du scroll
+      // Révèle items 1-4 séquentiellement + flou progressif du fond
+      tl.fromTo(preview,
+        { backdropFilter: 'blur(0px)' },
+        { backdropFilter: 'blur(16px)', ease: 'none', duration: (items.length - 1) * 0.24 + 0.12 },
+        0
+      );
       for (var i = 1; i < items.length; i++) {
         tl.to(items[i], {
           opacity: 1,
@@ -297,38 +292,14 @@ import { heroVideo, services } from '../data/services';
     margin-bottom: 16px;
   }
 
-  .hero-title-split {
+  .hero-title {
     font-family: var(--font-display);
     font-size: clamp(64px, 12vw, 120px);
     color: #fff;
     line-height: 0.9;
     letter-spacing: 4px;
     margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(16px, 2vw, 28px);
-  }
-
-  .hero-inline-media {
-    display: block;
-    width: clamp(120px, 13vw, 185px);
-    height: clamp(68px, 7.3vw, 104px);
-    overflow: hidden;
-    border-radius: 4px;
-    position: relative;
-    flex-shrink: 0;
-  }
-
-  .hero-inline-media iframe {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 200%;
-    height: 200%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    border: none;
+    text-align: center;
   }
 
   .hero-sub {
@@ -435,34 +406,44 @@ import { heroVideo, services } from '../data/services';
 
   /* ═══ PRESTATIONS ═══ */
   .services-preview {
-    padding: 120px 0 100px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.88);
   }
 
   .services-pin-container {
+    width: 100%;
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 32px;
+    text-align: center;
   }
 
   .services-label {
     font-family: var(--font-body);
     font-size: 11px;
     font-weight: 400;
-    letter-spacing: 3px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
     color: var(--color-primary);
-    margin-bottom: 48px;
-    text-transform: none;
+    margin-bottom: 56px;
+    text-align: center;
   }
 
   .services-list {
     display: flex;
     flex-direction: column;
+    align-items: center;
   }
 
   .service-item {
     display: block;
     text-decoration: none;
     color: inherit;
+    text-align: center;
+    width: 100%;
   }
 
   /* Desktop : items 1-4 cachés jusqu'à révélation par GSAP */
@@ -478,19 +459,21 @@ import { heroVideo, services } from '../data/services';
 
   .service-divider {
     display: block;
+    width: 48px;
     height: 1px;
     background: var(--color-border);
-    margin: 20px 0;
+    margin: 24px auto;
   }
 
   .service-name {
     font-family: var(--font-body);
-    font-size: clamp(32px, 4vw, 52px);
+    font-size: clamp(48px, 7vw, 100px);
     font-weight: 200;
     color: #fff;
-    line-height: 0.95;
-    letter-spacing: -1px;
+    line-height: 0.92;
+    letter-spacing: -2px;
     transition: color var(--transition-fast);
+    text-align: center;
   }
 
   .service-item:hover .service-name {
@@ -654,16 +637,6 @@ import { heroVideo, services } from '../data/services';
   @media (max-width: 768px) {
     .container {
       padding: 0 20px;
-    }
-
-    .hero-title-split {
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .hero-inline-media {
-      width: 160px;
-      height: 90px;
     }
 
     .hero-stats {
