@@ -135,22 +135,27 @@ const projetsJSON = JSON.stringify(projets);
     font-weight: 400;
     letter-spacing: 0;
     padding: 8px 16px;
-    background: transparent;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
     color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
     cursor: pointer;
-    transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
+    transition: border-color 150ms ease, background 150ms ease, color 150ms ease, box-shadow 150ms ease;
   }
 
   .filter-btn:hover:not(.active) {
-    border-color: rgba(255, 255, 255, 1);
+    border-color: rgba(255, 255, 255, 0.35);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 
   .filter-btn.active {
     background: var(--color-primary);
     color: #000;
     border-color: var(--color-primary);
+    box-shadow: none;
     font-weight: 500;
   }
 
@@ -208,10 +213,13 @@ const projetsJSON = JSON.stringify(projets);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 16px;
-    background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
+    padding: 20px;
+    /* fond sombre + blur fort sur l'image derrière = glass maximal */
+    background: rgba(0, 0, 0, 0.52);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
     opacity: 0;
     transition: opacity 0.3s ease;
   }
@@ -221,21 +229,22 @@ const projetsJSON = JSON.stringify(projets);
   }
 
   .overlay-titre {
-    font-family: 'Helvetica Now Display', 'Helvetica Neue', Helvetica, sans-serif;
+    font-family: var(--font-body);
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 400;
     color: #ffffff;
     letter-spacing: 0;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     line-height: 1.3;
   }
 
   .overlay-badge {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
     border-radius: 4px;
     padding: 4px 10px;
     font-family: var(--font-body);
