@@ -167,10 +167,11 @@ import { heroVideo, services } from '../data/services';
 
     </div><!-- /projets-scroll-outer -->
 
-    <div class="projets-cta-wrap">
-      <a href="/projets" class="btn-secondary">Voir tous les projets</a>
-    </div>
   </section>
+
+  <div class="projets-cta-wrap">
+    <a href="/projets" class="btn-secondary">Voir tous les projets</a>
+  </div>
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', function () {
@@ -396,8 +397,8 @@ import { heroVideo, services } from '../data/services';
   /* ═══ BOUTONS ═══ */
   .btn-primary {
     font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 400;
+    font-size: 16px;
+    font-weight: 300;
     letter-spacing: 0;
     color: #000;
     background: var(--color-primary);
@@ -413,8 +414,8 @@ import { heroVideo, services } from '../data/services';
 
   .btn-secondary {
     font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 400;
+    font-size: 16px;
+    font-weight: 300;
     letter-spacing: 0;
     color: #fff;
     background: rgba(255, 255, 255, 0.04);
@@ -459,8 +460,8 @@ import { heroVideo, services } from '../data/services';
     left: 50%;
     transform: translateX(-50%);
     font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 400;
+    font-size: 16px;
+    font-weight: 300;
     letter-spacing: 0;
     color: var(--color-primary);
     white-space: nowrap;
@@ -498,13 +499,18 @@ import { heroVideo, services } from '../data/services';
     color: var(--color-primary);
   }
 
-  /* Bouton positionné dans la section pinnée, hors du flux du stage */
+  /* Bouton centré au même endroit que les intitulés */
   .services-cta-pin {
     position: absolute;
-    bottom: 15vh;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     text-align: center;
+  }
+
+  .services-cta-pin .btn-secondary {
+    font-size: 20px;
+    padding: 20px 56px;
   }
 
   /* Mobile : désactivé, affichage linéaire */
@@ -558,8 +564,8 @@ import { heroVideo, services } from '../data/services';
 
   .about-eyebrow {
     font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 400;
+    font-size: 16px;
+    font-weight: 300;
     letter-spacing: 0;
     color: var(--color-primary);
     margin-bottom: 20px;
@@ -567,7 +573,7 @@ import { heroVideo, services } from '../data/services';
 
   .about-body {
     font-family: var(--font-body);
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 300;
     color: #999;
     line-height: 1.8;
@@ -576,7 +582,7 @@ import { heroVideo, services } from '../data/services';
   .about-photo img {
     width: 100%;
     max-width: 480px;
-    height: 580px;
+    height: auto;
     object-fit: cover;
     object-position: center top;
     filter: grayscale(20%);
@@ -586,7 +592,6 @@ import { heroVideo, services } from '../data/services';
   .projets-selection {
     padding: 80px 0 0;
     border-top: 1px solid var(--color-border);
-    overflow: hidden;
   }
 
   .projets-selection .container {
@@ -661,8 +666,8 @@ import { heroVideo, services } from '../data/services';
 
   .card-titre {
     font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 400;
+    font-size: 18px;
+    font-weight: 300;
     letter-spacing: 0;
     color: #fff;
     line-height: 1.4;
@@ -671,8 +676,8 @@ import { heroVideo, services } from '../data/services';
   .card-badge {
     display: inline-block;
     font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 400;
+    font-size: 16px;
+    font-weight: 300;
     letter-spacing: 0;
     color: #fff;
     background: rgba(255, 255, 255, 0.08);
@@ -684,7 +689,7 @@ import { heroVideo, services } from '../data/services';
   }
 
   .projets-cta-wrap {
-    margin-top: 48px;
+    padding: 60px 0 80px;
     text-align: center;
   }
 
@@ -705,10 +710,17 @@ import { heroVideo, services } from '../data/services';
 
     .services-cta-pin {
       position: static;
+      top: auto;
+      left: auto;
       transform: none;
       margin-top: 32px;
       padding: 0 20px 60px;
       opacity: 1 !important;
+    }
+
+    .services-cta-pin .btn-secondary {
+      font-size: 16px;
+      padding: 14px 32px;
     }
 
     .about-grid {
