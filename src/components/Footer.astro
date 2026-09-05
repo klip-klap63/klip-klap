@@ -1,123 +1,82 @@
 ---
 const year = new Date().getFullYear();
+
+const links = [
+  { href: '/live-multicam', label: 'Live Multicam' },
+  { href: '/services', label: 'Services' },
+  { href: '/portfolio', label: 'Portfolio' },
+  { href: '/drone', label: 'Drone' },
+  { href: '/clips-musicaux', label: 'Clips musicaux' },
+  { href: '/contact', label: 'Contact' },
+];
 ---
 
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <a href="/" class="footer-logo" aria-label="KLIP KLAP">KLIP KLAP</a>
+<footer class="border-t border-[#1A1A1A] bg-[#0D0D0D]">
+  <div class="max-w-7xl mx-auto px-6 lg:px-12 py-16">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
 
-      <nav aria-label="Navigation secondaire">
-        <ul>
-          <li><a href="/services">Prestations</a></li>
-          <li><a href="/projets">Projets</a></li>
-          <li><a href="/contact">Contact</a></li>
-          <li><a href="/mentions-legales">Mentions légales</a></li>
-        </ul>
-      </nav>
+      <!-- Brand -->
+      <div class="lg:col-span-1">
+        <img
+          src="/logo/logo_klip_klap.png"
+          alt="Klip-Klap"
+          class="h-12 w-auto object-contain mb-6"
+          loading="lazy"
+        />
+        <p class="text-[#999] font-body font-[300] text-[14px] leading-relaxed max-w-xs">
+          Société de production audiovisuelle indépendante — films, événements, live multicam, drone.
+        </p>
+        <div class="mt-6 flex items-center gap-2">
+          <span class="w-8 h-px bg-primary"></span>
+          <span class="label">Production audiovisuelle</span>
+        </div>
+      </div>
+
+      <!-- Nav -->
+      <div>
+        <p class="eyebrow mb-6">Navigation</p>
+        <nav class="flex flex-col gap-3">
+          {links.map((link) => (
+            <a
+              href={link.href}
+              class="font-body text-[13px] text-[#888] hover:text-white transition-colors duration-150 tracking-wide w-fit"
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <p class="eyebrow mb-6">Contact</p>
+        <div class="flex flex-col gap-4">
+          <div>
+            <p class="label mb-1">Email</p>
+            <p class="text-[#999] font-body text-[14px]">[TEXTE À REMPLIR]</p>
+          </div>
+          <div>
+            <p class="label mb-1">Téléphone</p>
+            <p class="text-[#999] font-body text-[14px]">[TEXTE À REMPLIR]</p>
+          </div>
+          <div>
+            <p class="label mb-1">Zone d'intervention</p>
+            <p class="text-[#999] font-body text-[14px]">[TEXTE À REMPLIR]</p>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="footer-bottom">
-      <p class="address">39 rue Jean Groslier — Châtel-Guyon</p>
-      <p class="copy">&copy; {year} KLIP KLAP. Tous droits réservés.</p>
+    <!-- Bottom bar -->
+    <div class="border-t border-[#1A1A1A] mt-12 pt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <p class="text-[#666] font-body text-[12px] tracking-wide">
+        &copy; {year} Klip-Klap. Tous droits réservés.
+      </p>
+      <div class="flex gap-6">
+        <a href="/mentions-legales" class="text-[#666] font-body text-[12px] tracking-wide hover:text-[#999] transition-colors duration-150">
+          Mentions légales
+        </a>
+      </div>
     </div>
   </div>
 </footer>
-
-<style>
-  footer {
-    border-top: 1px solid var(--color-border);
-    background: var(--color-surface);
-    margin-top: 120px;
-  }
-
-  .footer-inner {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 56px 32px 40px;
-  }
-
-  .footer-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 40px;
-    margin-bottom: 48px;
-  }
-
-  .footer-logo {
-    font-family: var(--font-display);
-    font-size: 28px;
-    color: var(--color-primary);
-    letter-spacing: 2px;
-    line-height: 1;
-    flex-shrink: 0;
-    transition: color var(--transition-fast);
-  }
-
-  .footer-logo:hover {
-    color: var(--color-primary-glow);
-  }
-
-  nav ul {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 32px;
-    justify-content: flex-end;
-  }
-
-  nav a {
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--color-text-subtle);
-    transition: color var(--transition-fast);
-  }
-
-  nav a:hover {
-    color: var(--color-text);
-  }
-
-  .footer-bottom {
-    border-top: 1px solid var(--color-border);
-    padding-top: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .address,
-  .copy {
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 300;
-    letter-spacing: 1px;
-    color: var(--color-text-subtle);
-  }
-
-  @media (max-width: 768px) {
-    .footer-inner {
-      padding: 40px 20px 32px;
-    }
-
-    .footer-top {
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    nav ul {
-      justify-content: flex-start;
-    }
-
-    .footer-bottom {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-    }
-  }
-</style>
