@@ -1,3 +1,8 @@
+---
+name: klip-klap
+description: Contraintes techniques, identité visuelle et méthode de travail du site klip-klap.fr. À utiliser dès qu'on touche au code, au style, aux fonts, aux animations ou au contenu de ce projet.
+---
+
 # KLIP KLAP — Instructions projet
 
 ## Dépôt
