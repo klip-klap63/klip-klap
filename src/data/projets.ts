@@ -147,11 +147,11 @@ export const projets = [
 ]
 
 export const categories = [
-  { id: "tous",            label: "TOUT" },
-  { id: "live-multicam",  label: "LIVE MULTICAM" },
-  { id: "reseaux-sociaux", label: "RÉSEAUX SOCIAUX" },
-  { id: "corporate",      label: "CORPORATE" },
-  { id: "clips",          label: "CLIPS" },
+  { id: "tous",            label: "Tout" },
+  { id: "live-multicam",  label: "Live multicam" },
+  { id: "reseaux-sociaux", label: "Réseaux sociaux" },
+  { id: "corporate",      label: "Corporate" },
+  { id: "clips",          label: "Clips" },
 ]
 
 export type Projet = typeof projets[0]
