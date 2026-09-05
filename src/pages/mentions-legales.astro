@@ -1,78 +1,122 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="Mentions légales — Klip-Klap"
-  description="Mentions légales de Klip-Klap — informations légales, politique de confidentialité, droits d'auteur."
+  title="Mentions légales — KLIP KLAP"
+  description="Mentions légales du site KLIP KLAP — production audiovisuelle."
 >
+  <div class="mentions-page">
+    <div class="container">
+      <p class="page-eyebrow">Légal</p>
+      <h1 class="page-title">Mentions légales</h1>
 
-  <section class="max-w-4xl mx-auto px-6 lg:px-12 py-20 lg:py-28">
-    <p class="eyebrow mb-4">Informations légales</p>
-    <h1 class="font-display text-[clamp(36px,6vw,64px)] leading-none text-white mb-12">
-      Mentions <span class="text-primary">légales</span>
-    </h1>
+      <div class="mentions-content">
+        <section>
+          <h2>Éditeur du site</h2>
+          <p>KLIP KLAP</p>
+          <p>39 rue Jean Groslier, Châtel-Guyon</p>
+          <p>SIRET : [À COMPLÉTER]</p>
+        </section>
 
-    <div class="flex flex-col gap-12 font-body font-[300] text-[14px] text-[#999] leading-relaxed">
+        <section>
+          <h2>Hébergement</h2>
+          <p>Ce site est hébergé par Netlify, Inc. — 512 2nd Street, Suite 200, San Francisco, CA 94107, USA.</p>
+        </section>
 
-      <div class="border-t border-[#1A1A1A] pt-8">
-        <h2 class="font-body font-[500] text-[16px] text-white mb-4 tracking-wide">Éditeur du site</h2>
-        <div class="flex flex-col gap-1">
-          <p><span class="text-[#666]">Raison sociale :</span> [TEXTE À REMPLIR]</p>
-          <p><span class="text-[#666]">Statut :</span> [TEXTE À REMPLIR]</p>
-          <p><span class="text-[#666]">SIRET :</span> [TEXTE À REMPLIR]</p>
-          <p><span class="text-[#666]">Adresse :</span> [TEXTE À REMPLIR]</p>
-          <p><span class="text-[#666]">Email :</span> [TEXTE À REMPLIR]</p>
-          <p><span class="text-[#666]">Téléphone :</span> [TEXTE À REMPLIR]</p>
-        </div>
-      </div>
+        <section>
+          <h2>Propriété intellectuelle</h2>
+          <p>
+            L'ensemble des contenus présents sur ce site (textes, images, vidéos, graphismes) sont la
+            propriété exclusive de KLIP KLAP et sont protégés par le droit d'auteur. Toute reproduction
+            ou représentation, totale ou partielle, sans autorisation écrite préalable est interdite.
+          </p>
+        </section>
 
-      <div class="border-t border-[#1A1A1A] pt-8">
-        <h2 class="font-body font-[500] text-[16px] text-white mb-4 tracking-wide">Hébergeur</h2>
-        <div class="flex flex-col gap-1">
-          <p><span class="text-[#666]">Hébergeur :</span> Netlify, Inc.</p>
-          <p><span class="text-[#666]">Adresse :</span> 512 2nd Street, Suite 200, San Francisco, CA 94107, États-Unis</p>
-          <p><span class="text-[#666]">Site :</span> netlify.com</p>
-        </div>
-      </div>
+        <section>
+          <h2>Données personnelles</h2>
+          <p>
+            Les informations collectées via le formulaire de contact sont utilisées exclusivement dans
+            le cadre de la relation commerciale et ne sont pas transmises à des tiers. Conformément à
+            la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification et de
+            suppression de vos données.
+          </p>
+        </section>
 
-      <div class="border-t border-[#1A1A1A] pt-8">
-        <h2 class="font-body font-[500] text-[16px] text-white mb-4 tracking-wide">Propriété intellectuelle</h2>
-        <p>
-          L'ensemble du contenu de ce site (textes, images, vidéos, graphismes, logo) est la propriété exclusive de Klip-Klap
-          ou de ses ayants droit. Toute reproduction, représentation, modification ou adaptation, totale ou partielle,
-          est interdite sans autorisation préalable écrite.
-        </p>
-      </div>
-
-      <div class="border-t border-[#1A1A1A] pt-8">
-        <h2 class="font-body font-[500] text-[16px] text-white mb-4 tracking-wide">Données personnelles</h2>
-        <p class="mb-4">
-          Les informations collectées via le formulaire de contact (nom, email, téléphone, message) sont utilisées
-          uniquement pour répondre à votre demande. Elles ne sont pas transmises à des tiers et ne sont pas utilisées
-          à des fins commerciales.
-        </p>
-        <p>
-          Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données
-          en envoyant un email à [TEXTE À REMPLIR].
-        </p>
-      </div>
-
-      <div class="border-t border-[#1A1A1A] pt-8">
-        <h2 class="font-body font-[500] text-[16px] text-white mb-4 tracking-wide">Cookies</h2>
-        <p>
-          Ce site n'utilise pas de cookies de tracking ou d'analytics tiers. Aucune donnée de navigation n'est collectée
-          à des fins publicitaires.
-        </p>
-      </div>
-
-      <div class="border-t border-[#1A1A1A] pt-8">
-        <h2 class="font-body font-[500] text-[16px] text-white mb-4 tracking-wide">Crédits</h2>
-        <p>
-          Site développé par Klip-Klap avec Astro et Tailwind CSS.
-        </p>
+        <section>
+          <h2>Cookies</h2>
+          <p>Ce site n'utilise pas de cookies de tracking ou de publicité.</p>
+        </section>
       </div>
     </div>
-  </section>
-
+  </div>
 </BaseLayout>
+
+<style>
+  .mentions-page {
+    padding: 140px 0 120px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  .page-eyebrow {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--color-primary);
+    margin-bottom: 12px;
+  }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 6vw, 56px);
+    color: #fff;
+    line-height: 1;
+    letter-spacing: 2px;
+    margin-bottom: 64px;
+  }
+
+  .mentions-content {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  section h2 {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: var(--color-primary);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  section p {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 300;
+    color: #999;
+    line-height: 1.8;
+  }
+
+  section p + p {
+    margin-top: 8px;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 20px;
+    }
+
+    .mentions-page {
+      padding: 110px 0 80px;
+    }
+  }
+</style>

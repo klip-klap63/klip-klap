@@ -326,7 +326,7 @@ Logo (Road Rage, jaune) | ACCUEIL | SERVICES | PROJETS | CONTACT
 - [x] Logo (PNG fourni — `logo_klip_klap_autocollant.png`)
 - [x] Charte graphique (couleurs extraites du logo : noir `#000000` / jaune `#F5C800`)
 - [x] Logo en SVG (`logo_klip_klap.svg` — placer dans `public/logo/`)
-- [x] Photo profil pour section À propos (`photo_profil.webp` — placer dans `public/images/`)
+- [x] Photo profil pour section À propos (`photo_profil.jpg` — placer à la racine de `public/`, chemin : `/photo_profil.jpg`)
 - [x] Textes de présentation (PDF prestations reçu)
 - [x] Liens Vimeo services + hero (voir services.ts)
 - [x] Liens YouTube projets (voir projets.ts)
@@ -346,7 +346,7 @@ Texte à afficher tel quel, avec la photo profil à côté :
 
 **Mise en page de la section :**
 - Layout deux colonnes : texte à gauche, photo à droite (ou inverse selon le rendu)
-- Photo : `public/images/photo_profil.webp` — format portrait, légèrement rognée en cercle ou rectangle avec `object-fit: cover`
+- Photo : `/photo_profil.jpg` (racine de `public/`) — format portrait, légèrement rognée en cercle ou rectangle avec `object-fit: cover`
 - Pas de titre "À propos" — le texte parle de lui-même
 - Eyebrow au-dessus : `KLIP KLAP` en petites caps Helvetica Now + letter-spacing
 - Ambiance sobre, pas de card, pas de bordure — juste texte + photo sur fond noir
