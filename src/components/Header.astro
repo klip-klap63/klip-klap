@@ -1,9 +1,9 @@
 ---
 const navLinks = [
-  { href: '/', label: 'ACCUEIL' },
-  { href: '/services', label: 'PRESTATIONS' },
-  { href: '/projets', label: 'PROJETS' },
-  { href: '/contact', label: 'CONTACT' },
+  { href: '/', label: 'accueil' },
+  { href: '/services', label: 'prestations' },
+  { href: '/projets', label: 'projets' },
+  { href: '/contact', label: 'contact' },
 ];
 
 const pathname = Astro.url.pathname;
@@ -111,10 +111,9 @@ function isActive(href: string): boolean {
 
   .nav-link {
     font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 400;
-    letter-spacing: 3px;
-    text-transform: uppercase;
+    font-size: 15px;
+    font-weight: 300;
+    letter-spacing: 0;
     color: var(--color-text-subtle);
     transition: color var(--transition-fast);
     position: relative;
@@ -182,10 +181,9 @@ function isActive(href: string): boolean {
 
   .mobile-nav-link {
     font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 400;
-    letter-spacing: 3px;
-    text-transform: uppercase;
+    font-size: 17px;
+    font-weight: 300;
+    letter-spacing: 0;
     color: var(--color-text-subtle);
     transition: color var(--transition-fast);
   }
