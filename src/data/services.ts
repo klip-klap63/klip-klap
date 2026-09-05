@@ -8,7 +8,7 @@ export const services = [
     numero: "01",
     titre: "Diffusion en direct & Multi-caméra",
     description:
-      "Dispositifs multicam complets jusqu'à 8 caméras, adaptés aux concerts, festivals, événements sportifs, corporate et institutionnels en Auvergne et sur Clermont-Ferrand. Diffusion en direct sur YouTube, Twitch, Facebook, Instagram, TikTok, Zoom, Teams. Livraison rapide des replays.",
+      "Dispositifs multicam complets, adaptés aux concerts, festivals, événements sportifs, corporate et institutionnels en Auvergne et sur Clermont-Ferrand. Diffusion en direct sur YouTube, Twitch, Facebook, Instagram, TikTok, Zoom, Teams. Livraison rapide des replays.",
     tags: ["Concerts", "Festivals", "Corporate", "Institutionnel", "Replay"],
     vimeo_id: "1188799456",
     vimeo_embed: "https://player.vimeo.com/video/1188799456?background=1&autoplay=1&loop=1&muted=1&playlist=1188799456",
