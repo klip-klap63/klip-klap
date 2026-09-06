@@ -448,7 +448,7 @@ const projetsJSON = JSON.stringify(projets);
     /* width: 100% nécessaire — flex-column align-items:center = shrink-to-fit par défaut */
     width: 100%;
     box-sizing: border-box;
-    padding: 0 40px;
+    padding: 0 80px;
   }
 
   .eyebrow {
@@ -464,15 +464,14 @@ const projetsJSON = JSON.stringify(projets);
   .hero-title .char {
     display: inline-block;
     will-change: transform, opacity;
-    /* paint-order hérité du parent — stroke peint avant le fill → contour extérieur */
+    /* padding par char : donne à chaque lettre sa propre zone de peinture pour le stroke */
+    padding: 0 0.06em;
   }
 
   .hero-title {
     font-family: var(--font-display);
     font-size: clamp(64px, 12vw, 120px);
     color: #F5C800;
-    /* 4px total = ~2px visibles à l'extérieur — assez pour le contraste, trop fin pour  */
-    /* remplir les contre-formes ouvertes de Road Rage                                   */
     -webkit-text-stroke: 4px #000;
     paint-order: stroke fill;
     text-shadow: none;
@@ -480,8 +479,11 @@ const projetsJSON = JSON.stringify(projets);
     letter-spacing: 4px;
     margin-bottom: 20px;
     text-align: center;
-    /* padding absorbe le débordement du trait en bord gauche/droit */
-    padding: 0 0.2em;
+    /* margin recule la boîte vers l'intérieur — le stroke du K et du P ne sort plus du conteneur */
+    /* padding donne en plus une zone de peinture propre à chaque bord */
+    margin-left: 0.15em;
+    margin-right: 0.15em;
+    padding: 0 0.15em;
     box-sizing: border-box;
   }
 
@@ -869,7 +871,7 @@ const projetsJSON = JSON.stringify(projets);
 
     /* Titre hero sur une ligne — padding réduit pour maximiser l'espace */
     .hero-content {
-      padding: 0 12px;
+      padding: 0 32px;
     }
 
     .hero-title {
