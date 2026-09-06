@@ -202,7 +202,7 @@ import { heroVideo, services } from '../data/services';
         gsap.set(names[0], { y: '0%' });
         gsap.set(items, { pointerEvents: 'none' });
         gsap.set(items[0], { pointerEvents: 'auto' });
-        if (ctaPin) gsap.set(ctaPin, { opacity: 0 });
+        if (ctaPin) gsap.set(ctaPin, { autoAlpha: 0 });
 
         var totalScroll = N * scrollPerStep;
 
@@ -212,6 +212,7 @@ import { heroVideo, services } from '../data/services';
             start: 'top top+=72',
             end: '+=' + totalScroll,
             pin: true,
+            pinType: desktop ? 'fixed' : 'transform',
             anticipatePin: 1,
             scrub: scrubServices,
             invalidateOnRefresh: true,
@@ -240,8 +241,8 @@ import { heroVideo, services } from '../data/services';
           tl.to(names[N - 1], { y: '-150%', duration: 0.28, ease: 'power3.in' }, (N - 1) + 0.55);
           tl.to(items[N - 1], { pointerEvents: 'none', duration: 0.001 },         (N - 1) + 0.55);
           tl.fromTo(ctaPin,
-            { opacity: 0 },
-            { opacity: 1, duration: 0.25, ease: 'power2.out' },
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.25, ease: 'power2.out' },
             (N - 1) + 0.67
           );
         }
@@ -256,6 +257,7 @@ import { heroVideo, services } from '../data/services';
             start: 'top top+=72',
             end: function () { return '+=' + (track.scrollWidth - window.innerWidth); },
             pin: true,
+            pinType: desktop ? 'fixed' : 'transform',
             anticipatePin: 1,
             scrub: scrubProjets,
             invalidateOnRefresh: true,
