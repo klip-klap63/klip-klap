@@ -866,9 +866,33 @@ const projetsJSON = JSON.stringify(projets);
       padding: 0 20px;
     }
 
+    /* Titre hero sur une ligne — padding réduit pour maximiser l'espace */
+    .hero-content {
+      padding: 0 12px;
+    }
+
+    .hero-title {
+      font-size: clamp(40px, 13vw, 120px);
+      white-space: nowrap;
+    }
+
+    /* Barre stats : contrainte à la largeur d'écran, plus petite police */
     .hero-stats {
-      gap: 20px;
+      left: 0;
+      right: 0;
+      transform: none;
+      justify-content: center;
+      padding: 0 16px;
+      gap: 12px;
       bottom: 24px;
+    }
+
+    .stat-value {
+      font-size: 18px;
+    }
+
+    .stat-label {
+      font-size: 11px;
     }
 
     .stat-value {
