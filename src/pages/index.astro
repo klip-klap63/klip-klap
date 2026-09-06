@@ -316,7 +316,7 @@ const projetsJSON = JSON.stringify(projets);
     // Offsets aléatoires stables pour la durée de l'animation — faible amplitude
     var offsets = chars.map(function () {
       return {
-        x: (Math.random() - 0.5) * 60,
+        x: (Math.random() - 0.5) * 36,
         y: (Math.random() - 0.5) * 40,
         r: (Math.random() - 0.5) * 24,
       };
@@ -413,7 +413,8 @@ const projetsJSON = JSON.stringify(projets);
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    /* overflow: hidden retiré — le clip de la vidéo est assuré par .hero-video-wrapper
+       qui a son propre overflow:hidden. Laisser ici rogne les chars GSAP en bord d'écran. */
   }
 
   .hero-video-wrapper {
