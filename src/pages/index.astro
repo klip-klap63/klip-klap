@@ -313,12 +313,17 @@ const projetsJSON = JSON.stringify(projets);
       return s.textContent.trim() !== '';
     });
 
-    // Offsets aléatoires stables pour la durée de l'animation — faible amplitude
-    var offsets = chars.map(function () {
+    // Offsets aléatoires — x très réduit, premier et dernier char contraints vers l'intérieur
+    var lastIdx = chars.length - 1;
+    var offsets = chars.map(function (_, i) {
+      var rawX = (Math.random() - 0.5) * 12; // ±6px
+      var x = i === 0        ? Math.abs(rawX)  // K : part vers la droite (intérieur)
+            : i === lastIdx  ? -Math.abs(rawX) // P : part vers la gauche (intérieur)
+            : rawX;
       return {
-        x: (Math.random() - 0.5) * 36,
+        x: x,
         y: (Math.random() - 0.5) * 40,
-        r: (Math.random() - 0.5) * 24,
+        r: (Math.random() - 0.5) * 12,
       };
     });
 
