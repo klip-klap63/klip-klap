@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { heroVideo, services } from '../data/services';
+import { projets } from '../data/projets';
+const projetsJSON = JSON.stringify(projets);
 ---
 
 <BaseLayout
@@ -102,7 +104,8 @@ import { heroVideo, services } from '../data/services';
 
     <div class="projets-scroll-outer">
     <div class="projets-grid-home" id="projets-scroll-track">
-      <a href="/projets/fc-chatel-rc-riorges-feminin" class="projet-card-home">
+      <!-- Ordre fixe par catégorie ; contenu tiré au sort côté client -->
+      <a href="/projets/fc-chatel-rc-riorges-feminin" class="projet-card-home" data-categorie="live-multicam">
         <div class="card-thumb">
           <img
             src="https://img.youtube.com/vi/zPpQNie58MY/maxresdefault.jpg"
@@ -118,23 +121,7 @@ import { heroVideo, services } from '../data/services';
         </div>
       </a>
 
-      <a href="/projets/making-of-yavanti-episode-7" class="projet-card-home">
-        <div class="card-thumb">
-          <img
-            src="https://img.youtube.com/vi/sHLetqUg2T8/maxresdefault.jpg"
-            alt="MAKING-OF Y'AVANTI EPISODE 7"
-            loading="lazy"
-            width="640"
-            height="360"
-          />
-        </div>
-        <div class="card-info">
-          <p class="card-titre">MAKING-OF Y'AVANTI EPISODE 7</p>
-          <span class="card-badge">Corporate</span>
-        </div>
-      </a>
-
-      <a href="/projets/halleatoires-2-aftermovie" class="projet-card-home">
+      <a href="/projets/halleatoires-2-aftermovie" class="projet-card-home" data-categorie="reseaux-sociaux">
         <div class="card-thumb">
           <img
             src="https://img.youtube.com/vi/dWNUEOTkceA/maxresdefault.jpg"
@@ -150,7 +137,23 @@ import { heroVideo, services } from '../data/services';
         </div>
       </a>
 
-      <a href="/projets/stjepan-scarabe" class="projet-card-home">
+      <a href="/projets/making-of-yavanti-episode-7" class="projet-card-home" data-categorie="corporate">
+        <div class="card-thumb">
+          <img
+            src="https://img.youtube.com/vi/sHLetqUg2T8/maxresdefault.jpg"
+            alt="MAKING-OF Y'AVANTI EPISODE 7"
+            loading="lazy"
+            width="640"
+            height="360"
+          />
+        </div>
+        <div class="card-info">
+          <p class="card-titre">MAKING-OF Y'AVANTI EPISODE 7</p>
+          <span class="card-badge">Corporate</span>
+        </div>
+      </a>
+
+      <a href="/projets/stjepan-scarabe" class="projet-card-home" data-categorie="clips">
         <div class="card-thumb">
           <img
             src="https://img.youtube.com/vi/EjVWHof0bkA/maxresdefault.jpg"
@@ -270,6 +273,124 @@ import { heroVideo, services } from '../data/services';
     });
   });
 </script>
+
+<!-- ═══ HERO DISSOLVE ═══ -->
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    if (window.matchMedia('(max-width: 768px)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var titleEl   = document.querySelector('.hero-title');
+    var heroEl    = document.querySelector('.hero');
+    var overlayEl = document.querySelector('.hero-overlay');
+    var videoEl   = document.querySelector('.hero-video-wrapper');
+    if (!titleEl || !heroEl) return;
+
+    // Split le titre en spans — pas de dépendance externe
+    var text = titleEl.textContent || '';
+    var html = '';
+    for (var i = 0; i < text.length; i++) {
+      var c = text[i];
+      html += c === ' '
+        ? '<span class="char"> </span>'
+        : '<span class="char">' + c + '</span>';
+    }
+    titleEl.innerHTML = html;
+
+    // Seules les lettres (pas les espaces) sont animées
+    var chars = Array.from(titleEl.querySelectorAll('.char')).filter(function (s) {
+      return s.textContent.trim() !== '';
+    });
+
+    // Offsets aléatoires stables pour la durée de l'animation — faible amplitude
+    var offsets = chars.map(function () {
+      return {
+        x: (Math.random() - 0.5) * 60,
+        y: (Math.random() - 0.5) * 40,
+        r: (Math.random() - 0.5) * 24,
+      };
+    });
+
+    var tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: heroEl,
+        start: 'top top',
+        end: '+=480',
+        scrub: 1,
+      }
+    });
+
+    // Déplacement individuel par lettre
+    chars.forEach(function (char, i) {
+      tl.to(char, {
+        x: offsets[i].x,
+        y: offsets[i].y,
+        rotation: offsets[i].r,
+        ease: 'power1.out',
+        duration: 1,
+      }, 0);
+    });
+
+    // Fondu commun — différé à 30% : titre lisible pendant la première moitié du scroll
+    tl.to(chars, {
+      opacity: 0,
+      ease: 'power2.in',
+      duration: 0.7,
+    }, 0.3);
+
+    // Flou vidéo
+    if (videoEl) {
+      tl.fromTo(videoEl,
+        { filter: 'blur(0px)' },
+        { filter: 'blur(14px)', ease: 'none', duration: 1 },
+        0
+      );
+    }
+
+    // Assombrissement overlay
+    if (overlayEl) {
+      tl.to(overlayEl, {
+        background: 'rgba(0,0,0,0.82)',
+        ease: 'none',
+        duration: 1,
+      }, 0);
+    }
+  });
+</script>
+
+<!-- ═══ SÉLECTION PROJETS ALÉATOIRE ═══
+     Tirage côté client : change à chaque rechargement, indépendant du build. -->
+<script define:vars={{ projetsJSON }}>
+  (function () {
+    var projets = JSON.parse(projetsJSON);
+    var labels = {
+      'live-multicam':   'Live multicam',
+      'reseaux-sociaux': 'Réseaux sociaux',
+      'corporate':       'Corporate',
+      'clips':           'Clips',
+    };
+
+    document.querySelectorAll('.projet-card-home[data-categorie]').forEach(function (card) {
+      var cat  = card.dataset.categorie;
+      var pool = projets.filter(function (p) { return p.categorie === cat; });
+      if (!pool.length) return;
+
+      var projet = pool[Math.floor(Math.random() * pool.length)];
+
+      card.href = '/projets/' + projet.slug;
+
+      var img = card.querySelector('img');
+      if (img) { img.src = projet.thumbnail; img.alt = projet.titre; }
+
+      var titre = card.querySelector('.card-titre');
+      if (titre) titre.textContent = projet.titre;
+
+      var badge = card.querySelector('.card-badge');
+      if (badge) badge.textContent = labels[cat] || cat;
+    });
+  })();
+</script>
 </BaseLayout>
 
 <style>
@@ -323,6 +444,12 @@ import { heroVideo, services } from '../data/services';
     letter-spacing: 0;
     color: var(--color-primary);
     margin-bottom: 16px;
+  }
+
+  /* Chaque lettre splitée manuellement en JS — display:inline-block obligatoire pour transform */
+  .hero-title .char {
+    display: inline-block;
+    will-change: transform, opacity;
   }
 
   .hero-title {
