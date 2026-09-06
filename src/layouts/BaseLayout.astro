@@ -158,6 +158,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         var transitioning = true;
         var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+        function hideCurtain() {
+          gsap.killTweensOf(curtain);
+          gsap.set(curtain, { scaleY: 0, transformOrigin: 'bottom' });
+          transitioning = false;
+        }
+
         // Rideau d'entrée — remonte juste après le chargement de la nouvelle page
         gsap.fromTo(curtain,
           { scaleY: 1, transformOrigin: 'bottom' },
@@ -169,6 +175,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
             onComplete: function () { transitioning = false; }
           }
         );
+
+        // Retour bfcache (bouton précédent/suivant) — DOMContentLoaded ne se déclenche pas
+        window.addEventListener('pageshow', function (e) {
+          if (e.persisted) hideCurtain();
+        });
+
+        // Délai de sécurité — rideau retiré quoi qu'il arrive après 2s
+        setTimeout(hideCurtain, 2000);
 
         document.addEventListener('click', function (e) {
           if (transitioning) return;

@@ -287,8 +287,18 @@ const projetsJSON = JSON.stringify(projets);
     var videoEl   = document.querySelector('.hero-video-wrapper');
     if (!titleEl || !heroEl) return;
 
-    // Split le titre en spans — pas de dépendance externe
-    var text = titleEl.textContent || '';
+    // Retour bfcache — réinitialiser les transforms GSAP qui persistent sur les chars
+    window.addEventListener('pageshow', function (e) {
+      if (!e.persisted) return;
+      titleEl.querySelectorAll('.char').forEach(function (c) {
+        gsap.set(c, { clearProps: 'all' });
+      });
+      if (videoEl) gsap.set(videoEl, { clearProps: 'filter' });
+      if (overlayEl) gsap.set(overlayEl, { clearProps: 'background' });
+    });
+
+    // Split le titre en spans — trim pour supprimer tout espace Astro parasite
+    var text = (titleEl.textContent || '').trim().replace(/\s+/g, ' ');
     var html = '';
     for (var i = 0; i < text.length; i++) {
       var c = text[i];
