@@ -115,8 +115,8 @@ a {
   inset: 0;
   z-index: 9998;
   pointer-events: none;
-  opacity: 0.055;
-  mix-blend-mode: overlay;
+  opacity: 0.12;
+  mix-blend-mode: screen;
   will-change: transform;
 }
 
