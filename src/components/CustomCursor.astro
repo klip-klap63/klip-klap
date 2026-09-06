@@ -18,17 +18,20 @@
     width: 6px;
     height: 6px;
     background: #F5C800;
+    border: 0px solid transparent;
     border-radius: 50%;
     pointer-events: none;
     transform: translate(-50%, -50%);
-    transition: width 150ms ease, height 150ms ease, background 150ms ease;
+    transition: width 200ms ease, height 200ms ease, background 200ms ease, border-width 200ms ease, border-color 200ms ease;
     will-change: transform;
   }
 
   #cursor-dot.hover {
-    width: 10px;
-    height: 10px;
-    background: #ffffff;
+    width: 22px;
+    height: 22px;
+    background: transparent;
+    border-width: 2px;
+    border-color: #F5C800;
   }
 
   @media (pointer: coarse) {
@@ -53,6 +56,7 @@
 
     let mouseX = -100;
     let mouseY = -100;
+    let isHovering = false;
     const trail: { x: number; y: number; age: number }[] = [];
 
     function resize() {
@@ -76,12 +80,14 @@
     document.addEventListener('mouseover', (e) => {
       if ((e.target as Element).closest(clickables)) {
         dot.classList.add('hover');
+        isHovering = true;
       }
     });
 
     document.addEventListener('mouseout', (e) => {
       if ((e.target as Element).closest(clickables)) {
         dot.classList.remove('hover');
+        isHovering = false;
       }
     });
 
@@ -97,7 +103,7 @@
         ctx.beginPath();
         ctx.moveTo(prev.x, prev.y);
         ctx.lineTo(curr.x, curr.y);
-        ctx.strokeStyle = `rgba(245, 200, 0, ${alpha * 0.7})`;
+        ctx.strokeStyle = `rgba(245, 200, 0, ${alpha * (isHovering ? 0.15 : 0.7)})`;
         ctx.lineWidth = TRAIL_WIDTH * progress;
         ctx.lineCap = 'round';
         ctx.stroke();

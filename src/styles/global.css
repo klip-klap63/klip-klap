@@ -89,8 +89,17 @@ body {
 }
 
 @media (pointer: fine) {
-  body {
-    cursor: none;
+  body,
+  *,
+  *::before,
+  *::after,
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  [role="button"] {
+    cursor: none !important;
   }
 }
 
