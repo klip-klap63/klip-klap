@@ -181,110 +181,102 @@ import { heroVideo, services } from '../data/services';
 
     gsap.registerPlugin(ScrollTrigger);
 
-    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var isDesktop = window.innerWidth >= 768;
-
-    // ─── Prestations : pinning + La Coupe (clip / translateY) ──────────────
-    var preview = document.getElementById('services-preview');
-    var items = Array.from(document.querySelectorAll('.service-item'));
-    var N = items.length;
-    var names = Array.from(document.querySelectorAll('.service-name'));
-    var ctaPin = document.getElementById('services-cta-pin');
-
-    if (preview && N >= 2 && isDesktop && !prefersReduced) {
-      // Masquage clip : tous les textes sous leur conteneur, le premier visible
-      gsap.set(names, { y: '110%' });
-      gsap.set(names[0], { y: '0%' });
-
-      // Pointer-events : seul le premier item est cliquable
-      gsap.set(items, { pointerEvents: 'none' });
-      gsap.set(items[0], { pointerEvents: 'auto' });
-
-      // Bouton CTA caché
-      if (ctaPin) gsap.set(ctaPin, { opacity: 0 });
-
-      var scrollPerStep = 360;
-      var totalScroll = N * scrollPerStep;
-
-      var tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: preview,
-          start: 'top top+=72',
-          end: '+=' + totalScroll,
-          pin: true,
-          anticipatePin: 1,
-          scrub: 0.7,
-          invalidateOnRefresh: true,
-        }
-      });
-
-      // Flou progressif du fond
-      tl.fromTo(preview,
-        { backdropFilter: 'blur(0px)', webkitBackdropFilter: 'blur(0px)' },
-        { backdropFilter: 'blur(22px)', webkitBackdropFilter: 'blur(22px)', ease: 'none', duration: N },
-        0
-      );
-
-      // La Coupe : le texte sortant monte et disparaît sous la ligne de coupe,
-      // le texte entrant monte depuis le bas — pas d'opacité, overflow hidden fait le masque.
-      for (var i = 0; i < N - 1; i++) {
-        var t = i;
-        // Sortie : h3 monte hors du clip
-        tl.to(names[i],
-          { y: '-110%', duration: 0.28, ease: 'power3.in' },
-          t + 0.58
-        );
-        tl.to(items[i], { pointerEvents: 'none', duration: 0.001 }, t + 0.58);
-        // Entrée : h3 suivant monte depuis le bas
-        tl.fromTo(names[i + 1],
-          { y: '110%' },
-          { y: '0%', duration: 0.28, ease: 'power3.out' },
-          t + 0.70
-        );
-        tl.to(items[i + 1], { pointerEvents: 'auto', duration: 0.001 }, t + 0.70);
-      }
-
-      // Dernier step : sortie du dernier titre, apparition du bouton
-      if (ctaPin) {
-        tl.to(names[N - 1],
-          { y: '-110%', duration: 0.28, ease: 'power3.in' },
-          (N - 1) + 0.55
-        );
-        tl.to(items[N - 1], { pointerEvents: 'none', duration: 0.001 }, (N - 1) + 0.55);
-        tl.fromTo(ctaPin,
-          { opacity: 0 },
-          { opacity: 1, duration: 0.25, ease: 'power2.out' },
-          (N - 1) + 0.67
-        );
-      }
-
-      ScrollTrigger.addEventListener('refresh', function () {
-        // Ré-applique l'état initial de clip après recalcul GSAP
-        gsap.set(names, { y: '110%' });
-        gsap.set(names[0], { y: '0%' });
-        if (ctaPin) gsap.set(ctaPin, { opacity: 0 });
-      });
-    }
-
-    // ─── Sélection : scroll horizontal piloté par scroll vertical ───────────
+    var preview  = document.getElementById('services-preview');
+    var items    = Array.from(document.querySelectorAll('.service-item'));
+    var N        = items.length;
+    var names    = Array.from(document.querySelectorAll('.service-name'));
+    var ctaPin   = document.getElementById('services-cta-pin');
     var selection = document.getElementById('projets-selection');
-    var track = document.getElementById('projets-scroll-track');
+    var track    = document.getElementById('projets-scroll-track');
 
-    if (selection && track && isDesktop && !prefersReduced) {
-      gsap.to(track, {
-        x: function() { return -(track.scrollWidth - window.innerWidth); },
-        ease: 'none',
-        scrollTrigger: {
-          trigger: selection,
-          start: 'top top+=72',
-          end: function() { return '+=' + (track.scrollWidth - window.innerWidth); },
-          pin: true,
-          anticipatePin: 1,
-          scrub: 0.6,
-          invalidateOnRefresh: true,
+    // ─── gsap.matchMedia() : tous les effets sont scopés à ≥768px + pas de motion réduit
+    // GSAP tue automatiquement les ScrollTrigger et rappelle la fonction de nettoyage
+    // quand la media query ne s'applique plus (resize, orientation, etc.)
+    var mm = gsap.matchMedia();
+
+    mm.add(
+      '(min-width: 768px) and (prefers-reduced-motion: no-preference)',
+      function () {
+
+        // ─── Prestations : pinning + La Coupe ──────────────────────────────
+        if (preview && N >= 2) {
+          // y: '150%' → marge suffisante pour sortir du clip même avec le padding 0.1em
+          gsap.set(names, { y: '150%' });
+          gsap.set(names[0], { y: '0%' });
+          gsap.set(items, { pointerEvents: 'none' });
+          gsap.set(items[0], { pointerEvents: 'auto' });
+          if (ctaPin) gsap.set(ctaPin, { opacity: 0 });
+
+          var scrollPerStep = 360;
+          var totalScroll = N * scrollPerStep;
+
+          var tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: preview,
+              start: 'top top+=72',
+              end: '+=' + totalScroll,
+              pin: true,
+              anticipatePin: 1,
+              scrub: 0.7,
+              invalidateOnRefresh: true,
+            }
+          });
+
+          tl.fromTo(preview,
+            { backdropFilter: 'blur(0px)', webkitBackdropFilter: 'blur(0px)' },
+            { backdropFilter: 'blur(22px)', webkitBackdropFilter: 'blur(22px)', ease: 'none', duration: N },
+            0
+          );
+
+          for (var i = 0; i < N - 1; i++) {
+            var t = i;
+            tl.to(names[i],   { y: '-150%', duration: 0.28, ease: 'power3.in' },  t + 0.58);
+            tl.to(items[i],   { pointerEvents: 'none', duration: 0.001 },          t + 0.58);
+            tl.fromTo(names[i + 1],
+              { y: '150%' },
+              { y: '0%', duration: 0.28, ease: 'power3.out' },
+              t + 0.70
+            );
+            tl.to(items[i + 1], { pointerEvents: 'auto', duration: 0.001 },        t + 0.70);
+          }
+
+          if (ctaPin) {
+            tl.to(names[N - 1], { y: '-150%', duration: 0.28, ease: 'power3.in' }, (N - 1) + 0.55);
+            tl.to(items[N - 1], { pointerEvents: 'none', duration: 0.001 },        (N - 1) + 0.55);
+            tl.fromTo(ctaPin,
+              { opacity: 0 },
+              { opacity: 1, duration: 0.25, ease: 'power2.out' },
+              (N - 1) + 0.67
+            );
+          }
         }
-      });
-    }
+
+        // ─── Sélection : scroll horizontal ─────────────────────────────────
+        if (selection && track) {
+          gsap.to(track, {
+            x: function () { return -(track.scrollWidth - window.innerWidth); },
+            ease: 'none',
+            scrollTrigger: {
+              trigger: selection,
+              start: 'top top+=72',
+              end: function () { return '+=' + (track.scrollWidth - window.innerWidth); },
+              pin: true,
+              anticipatePin: 1,
+              scrub: 0.6,
+              invalidateOnRefresh: true,
+            }
+          });
+        }
+
+        // Nettoyage quand la media query ne correspond plus (resize < 768px, etc.)
+        return function () {
+          gsap.set(names, { clearProps: 'all' });
+          gsap.set(items, { clearProps: 'all' });
+          if (ctaPin) gsap.set(ctaPin, { clearProps: 'all' });
+          if (track) gsap.set(track, { clearProps: 'all' });
+        };
+      }
+    );
   });
 </script>
 </BaseLayout>
@@ -345,7 +337,9 @@ import { heroVideo, services } from '../data/services';
   .hero-title {
     font-family: var(--font-display);
     font-size: clamp(64px, 12vw, 120px);
-    color: #fff;
+    color: var(--color-primary);
+    -webkit-text-stroke: 3px #000000;
+    text-stroke: 3px #000000;
     line-height: 0.9;
     letter-spacing: 4px;
     margin-bottom: 20px;
@@ -560,13 +554,20 @@ import { heroVideo, services } from '../data/services';
 
     .service-item {
       opacity: 1 !important;
-      transform: none !important;
+      pointer-events: auto !important;
       justify-content: flex-start;
+    }
+
+    /* Annule le clip et tout transform GSAP résiduel sur mobile */
+    .service-clip {
+      overflow: visible;
+      padding: 0;
     }
 
     .service-name {
       font-size: clamp(28px, 8vw, 44px);
       text-align: left;
+      transform: none !important;
     }
   }
 
