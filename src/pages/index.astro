@@ -61,11 +61,7 @@ import { heroVideo, services } from '../data/services';
         </a>
       ))}
       <div class="service-cta-slot services-cta-pin" id="services-cta-pin">
-        <div class="service-clip">
-          <div id="services-cta-inner">
-            <a href="/services" class="btn-secondary">Voir toutes les prestations</a>
-          </div>
-        </div>
+        <a href="/services" class="btn-secondary">Voir toutes les prestations</a>
       </div>
     </div>
   </section>
@@ -206,9 +202,7 @@ import { heroVideo, services } from '../data/services';
         gsap.set(names[0], { y: '0%' });
         gsap.set(items, { pointerEvents: 'none' });
         gsap.set(items[0], { pointerEvents: 'auto' });
-        var ctaInner = ctaPin ? document.getElementById('services-cta-inner') : null;
-        if (ctaInner) gsap.set(ctaInner, { y: '150%' });
-        if (ctaPin)   gsap.set(ctaPin,   { pointerEvents: 'none' });
+        if (ctaPin) gsap.set(ctaPin, { autoAlpha: 0, pointerEvents: 'none' });
 
         var totalScroll = N * scrollPerStep;
 
@@ -236,15 +230,13 @@ import { heroVideo, services } from '../data/services';
           tl.to(items[i + 1], { pointerEvents: 'auto', duration: 0.001 },         t + 0.70);
         }
 
-        if (ctaInner) {
-          tl.to(names[N - 1], { y: '-150%', duration: 0.28, ease: 'power3.in' },    (N - 1) + 0.55);
-          tl.to(items[N - 1], { pointerEvents: 'none', duration: 0.001 },             (N - 1) + 0.55);
-          tl.fromTo(ctaInner,
-            { y: '150%' },
-            { y: '0%', duration: 0.28, ease: 'power3.out' },
+        if (ctaPin) {
+          tl.to(names[N - 1], { y: '-150%', duration: 0.28, ease: 'power3.in' }, (N - 1) + 0.55);
+          tl.to(items[N - 1], { pointerEvents: 'none', duration: 0.001 },         (N - 1) + 0.55);
+          tl.to(ctaPin,
+            { autoAlpha: 1, pointerEvents: 'auto', duration: 0.25, ease: 'power2.out' },
             (N - 1) + 0.67
           );
-          tl.to(ctaPin, { pointerEvents: 'auto', duration: 0.001 }, (N - 1) + 0.67);
         }
       }
 
@@ -267,8 +259,7 @@ import { heroVideo, services } from '../data/services';
       return function () {
         gsap.set(names, { clearProps: 'all' });
         gsap.set(items, { clearProps: 'all' });
-        if (ctaInner) gsap.set(ctaInner, { clearProps: 'all' });
-        if (ctaPin)   gsap.set(ctaPin,   { clearProps: 'all' });
+        if (ctaPin) gsap.set(ctaPin, { clearProps: 'all' });
         if (track)    gsap.set(track,    { clearProps: 'all' });
       };
     }
@@ -524,12 +515,14 @@ import { heroVideo, services } from '../data/services';
     color: var(--color-primary);
   }
 
-  /* Slot CTA — empilé dans le même grid que les service-item */
+  /* Slot CTA — empilé dans le même grid que les service-item, invisible par défaut */
   .service-cta-slot {
     grid-area: 1 / 1;
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 0;
+    visibility: hidden;
   }
 
   .services-cta-pin .btn-secondary {
