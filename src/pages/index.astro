@@ -470,10 +470,9 @@ const projetsJSON = JSON.stringify(projets);
     font-family: var(--font-display);
     font-size: clamp(64px, 12vw, 120px);
     color: #F5C800;
-    /* -webkit-text-stroke remplace le multi-shadow : stroke hérité par chaque .char     */
-    /* paint-order: stroke fill → fill recouvre la moitié intérieure du trait →          */
-    /* 12px de trait total = ~6px visibles à l'extérieur, aucune contamination inter-char */
-    -webkit-text-stroke: 12px #000;
+    /* 4px total = ~2px visibles à l'extérieur — assez pour le contraste, trop fin pour  */
+    /* remplir les contre-formes ouvertes de Road Rage                                   */
+    -webkit-text-stroke: 4px #000;
     paint-order: stroke fill;
     text-shadow: none;
     line-height: 0.9;
