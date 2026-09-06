@@ -50,8 +50,9 @@
   --color-text:         #FFFFFF;
   --color-text-muted:   #AAAAAA;
   --color-text-subtle:  #666666;
-  --color-surface:      #0D0D0D;
+  --color-surface:      #0A0A0A;
   --color-surface-2:    #1A1A1A;
+  --radius-card:        16px;
   --color-border:       #2A2A2A;
   --color-border-accent:#F5C800;
   --font-display:       'Road Rage', Impact, sans-serif;
