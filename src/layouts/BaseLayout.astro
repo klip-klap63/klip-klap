@@ -155,13 +155,24 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         if (typeof ScrollTrigger !== 'undefined') gsap.registerPlugin(ScrollTrigger);
 
         var curtain = document.getElementById('page-curtain');
+        var transitioning = true;
+        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+        // Rideau d'entrée — remonte juste après le chargement de la nouvelle page
         gsap.fromTo(curtain,
           { scaleY: 1, transformOrigin: 'bottom' },
-          { scaleY: 0, duration: 0.6, ease: 'power3.inOut', delay: 0.05 }
+          {
+            scaleY: 0,
+            duration: reduced ? 0 : 0.7,
+            ease: 'power3.inOut',
+            delay: reduced ? 0 : 0.1,
+            onComplete: function () { transitioning = false; }
+          }
         );
 
         document.addEventListener('click', function (e) {
+          if (transitioning) return;
+
           var link = e.target.closest('a');
           if (!link) return;
           var href = link.getAttribute('href');
@@ -174,12 +185,15 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
           ) return;
 
           e.preventDefault();
+          transitioning = true;
+          gsap.killTweensOf(curtain);
 
+          // Rideau de sortie — descend, puis navigation
           gsap.fromTo(curtain,
             { scaleY: 0, transformOrigin: 'top' },
             {
               scaleY: 1,
-              duration: 0.55,
+              duration: reduced ? 0 : 0.6,
               ease: 'power3.inOut',
               onComplete: function () {
                 window.location.href = href;
