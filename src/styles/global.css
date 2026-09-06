@@ -140,3 +140,40 @@ img {
     height: auto !important;
   }
 }
+
+/* ─── Mobile layout fix — corrige le désordre flex après le reset ────────── */
+@media (max-width: 768px) {
+  #services-preview {
+    display: block !important;
+    text-align: center;
+    padding: 80px 20px 60px !important;
+  }
+
+  #services-preview .services-label {
+    margin: 0 0 28px;
+  }
+
+  #services-preview .services-stage {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px;
+    padding: 0;
+  }
+
+  #services-preview .service-item {
+    justify-content: center;
+  }
+
+  #services-preview .service-name {
+    font-size: clamp(28px, 8vw, 44px);
+    text-align: center;
+  }
+
+  #services-preview .services-cta-pin {
+    margin-top: 40px;
+  }
+
+  #projets-selection {
+    display: block !important;
+  }
+}
