@@ -92,6 +92,12 @@ import { services } from '../data/services';
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
     border-radius: 20px;
+    transition: transform 250ms cubic-bezier(0.25, 0, 0, 1), border-color 250ms ease;
+  }
+
+  .service-block:hover {
+    transform: translateY(-4px);
+    border-color: rgba(245, 200, 0, 0.2);
   }
 
   .service-block:nth-child(even) .service-video-col {

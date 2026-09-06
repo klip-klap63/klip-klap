@@ -681,11 +681,11 @@ import { heroVideo, services } from '../data/services';
     overflow: hidden;
     background: #0d0d0d;
     border: 1px solid var(--color-border);
-    transition: transform 0.3s ease, border-color 0.3s ease;
+    transition: transform 200ms cubic-bezier(0.25, 0, 0, 1), border-color 200ms ease;
   }
 
   .projet-card-home:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
     border-color: rgba(245, 200, 0, 0.35);
   }
 
@@ -735,6 +735,12 @@ import { heroVideo, services } from '../data/services';
     border-radius: 4px;
     padding: 3px 8px;
     align-self: flex-start;
+    transition: transform 200ms cubic-bezier(0.25, 0, 0, 1), border-color 200ms ease;
+  }
+
+  .projet-card-home:hover .card-badge {
+    transform: translateY(-2px);
+    border-color: rgba(245, 200, 0, 0.3);
   }
 
   .projets-cta-wrap {
