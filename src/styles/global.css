@@ -109,6 +109,56 @@ a {
   text-decoration: none;
 }
 
+/* ─── Film grain overlay ──────────────────────────────────────────────────── */
+#grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.055;
+  mix-blend-mode: overlay;
+  will-change: transform;
+}
+
+#grain-overlay::before {
+  content: '';
+  position: absolute;
+  inset: -60%;
+  width: 220%;
+  height: 220%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  animation: grain 1.25s steps(10, end) infinite;
+}
+
+@keyframes grain {
+  0%   { transform: translate(0%,    0%);   }
+  10%  { transform: translate(-5%,  -10%);  }
+  20%  { transform: translate(8%,    4%);   }
+  30%  { transform: translate(-12%,  8%);   }
+  40%  { transform: translate(4%,   -8%);   }
+  50%  { transform: translate(-8%,   2%);   }
+  60%  { transform: translate(2%,   -12%);  }
+  70%  { transform: translate(12%,   6%);   }
+  80%  { transform: translate(-4%,   10%);  }
+  90%  { transform: translate(6%,   -4%);   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #grain-overlay::before {
+    animation: none;
+    transform: none;
+  }
+}
+
+@media (pointer: coarse) {
+  #grain-overlay::before {
+    animation: none;
+    transform: none;
+  }
+}
+
 /* ─── Liquid glass — classe réutilisable ─────────────────────────────────── */
 /* Pas de border-radius : chaque contexte fixe le sien (4px petits éléments, */
 /* 16-24px cartes et grands cadres).                                          */
