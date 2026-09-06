@@ -81,6 +81,50 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         z-index: 9999;
         pointer-events: none;
       }
+
+      /* ── Écran de chargement ──────────────────────────────────────────── */
+      #kk-loader {
+        position: fixed;
+        inset: 0;
+        background: #000000;
+        z-index: 10001;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 28px;
+        pointer-events: none;
+        transform: translateY(0);
+        transition: transform 0.65s cubic-bezier(0.76, 0, 0.24, 1);
+      }
+      #kk-loader.exit {
+        transform: translateY(-100%);
+      }
+      #kk-num {
+        font-family: 'Helvetica Now Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: clamp(80px, 16vw, 180px);
+        font-weight: 200;
+        color: #ffffff;
+        letter-spacing: -0.03em;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+        font-feature-settings: "tnum";
+      }
+      #kk-bar-track {
+        width: 200px;
+        height: 1px;
+        background: rgba(245, 200, 0, 0.18);
+        position: relative;
+        overflow: hidden;
+      }
+      #kk-bar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 0;
+        background: #F5C800;
+      }
     </style>
 
     <!-- Schema.org LocalBusiness -->
@@ -140,6 +184,115 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     </script>
   </head>
   <body>
+    <!-- ── Écran de chargement (première visite uniquement) ────────────── -->
+    <div id="kk-loader" aria-hidden="true" aria-live="off">
+      <span id="kk-num">000</span>
+      <div id="kk-bar-track"><div id="kk-bar"></div></div>
+    </div>
+
+    <!-- Vérification synchrone : masque le loader si déjà chargé ou motion réduite -->
+    <script is:inline>
+      (function () {
+        var skip =
+          sessionStorage.getItem('kk_loaded') ||
+          window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (skip) {
+          var el = document.getElementById('kk-loader');
+          if (el) el.style.display = 'none';
+        }
+      })();
+    </script>
+
+    <!-- Animation du loader -->
+    <script is:inline>
+      (function () {
+        var loader = document.getElementById('kk-loader');
+        if (!loader || loader.style.display === 'none') return;
+
+        var numEl = document.getElementById('kk-num')!;
+        var barEl = document.getElementById('kk-bar')!;
+
+        var displayed = 0;
+        var target    = 0;
+        var exiting   = false;
+
+        function pad(n: number) {
+          return String(Math.min(100, Math.max(0, Math.round(n)))).padStart(3, '0');
+        }
+
+        function updateDisplay() {
+          numEl.textContent         = pad(displayed);
+          barEl.style.width         = (displayed / 100 * 200) + 'px';
+          barEl.style.transition    = 'width 80ms ease-out';
+        }
+
+        function doExit() {
+          if (exiting) return;
+          exiting = true;
+          displayed = 100;
+          updateDisplay();
+          sessionStorage.setItem('kk_loaded', '1');
+          setTimeout(function () {
+            loader!.classList.add('exit');
+            setTimeout(function () { loader!.remove(); }, 700);
+          }, 180);
+        }
+
+        // Compteur irrégulier
+        function scheduleNext() {
+          if (displayed >= 100) { doExit(); return; }
+
+          // Délai de base + pause aléatoire pour simuler des paliers de chargement
+          var base  = 35 + Math.random() * 75;
+          var extra = Math.random() < 0.10 ? 220 + Math.random() * 320 : 0;
+          setTimeout(function () {
+            if (exiting) return;
+            if (displayed < target) {
+              // Petites avancées, parfois saut de 2-3
+              var step = Math.random() < 0.18 ? 2 + Math.floor(Math.random() * 2) : 1;
+              displayed = Math.min(displayed + step, target);
+              updateDisplay();
+            }
+            scheduleNext();
+          }, base + extra);
+        }
+
+        // Suivi du chargement réel
+        var MAX_PRE = 88; // ne dépasse pas 88 % avant window.load
+        var total   = Math.max(
+          document.querySelectorAll('link[rel="preload"]').length +
+          document.querySelectorAll('script[src]').length + 4,
+          14
+        );
+        var loaded = 0;
+
+        function onRes() {
+          loaded++;
+          var pct = Math.min(MAX_PRE, Math.round((loaded / total) * MAX_PRE));
+          if (pct > target) target = pct;
+        }
+
+        try {
+          var po = new PerformanceObserver(function (list) {
+            list.getEntries().forEach(onRes);
+          });
+          po.observe({ type: 'resource', buffered: true });
+        } catch (_) {}
+
+        window.addEventListener('load', function () { target = 100; });
+
+        // Sortie de secours : 3 s maximum
+        setTimeout(function () { target = 100; }, 3000);
+
+        // Bfcache : retirer le loader s'il existe encore
+        window.addEventListener('pageshow', function (e) {
+          if (e.persisted && loader && loader.isConnected) { loader.remove(); }
+        });
+
+        scheduleNext();
+      })();
+    </script>
+
     <div id="page-curtain"></div>
     <BackgroundFX />
     <CustomCursor />
