@@ -3,6 +3,7 @@ const year = new Date().getFullYear();
 ---
 
 <footer>
+  <canvas id="footer-wave" aria-hidden="true"></canvas>
   <div class="footer-inner">
     <div class="footer-top">
       <a href="/" class="footer-logo" aria-label="KLIP KLAP">KLIP KLAP</a>
@@ -25,8 +26,14 @@ const year = new Date().getFullYear();
 </footer>
 
 <style>
+  /* La bordure haute est remplacée par le canvas d'onde */
+  #footer-wave {
+    display: block;
+    width: 100%;
+    height: 48px;
+  }
+
   footer {
-    border-top: 1px solid var(--color-border);
     background: var(--color-surface);
     margin-top: 120px;
   }
@@ -127,3 +134,71 @@ const year = new Date().getFullYear();
     }
   }
 </style>
+
+<script>
+  (function () {
+    var canvas = document.getElementById('footer-wave') as HTMLCanvasElement;
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d')!;
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var active = false;
+    var rafId: number | null = null;
+
+    function resize() {
+      canvas.width  = canvas.offsetWidth;
+      canvas.height = 48;
+    }
+
+    // Trace une sinusoïde — ts en millisecondes, speedMul = vitesse de phase, freqMul = nb de cycles
+    function drawWave(ts: number, speedMul: number, freqMul: number, amp: number, alpha: number) {
+      var W = canvas.width;
+      var mid = canvas.height / 2;
+      var phase = (ts / 1000) * speedMul;
+
+      ctx.beginPath();
+      for (var x = 0; x <= W; x++) {
+        var y = mid + Math.sin((x / W) * Math.PI * 2 * freqMul + phase) * amp;
+        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = 'rgba(245, 200, 0, ' + alpha + ')';
+      ctx.lineWidth  = 1.5;
+      ctx.lineJoin   = 'round';
+      ctx.stroke();
+    }
+
+    function render(ts: number) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 3 ondes de fréquences et vitesses différentes — opacités 100/40/20%
+      var t = reduced ? 0 : ts;
+      drawWave(t, 0.45, 4.0, 15, 1.0);   // onde principale — lente
+      drawWave(t, 0.30, 5.5, 10, 0.4);   // harmonique médiane
+      drawWave(t, 0.18, 7.2,  6, 0.2);   // harmonique haute — très douce
+
+      if (active && !reduced) rafId = requestAnimationFrame(render);
+    }
+
+    // Pause quand le footer sort du viewport
+    var observer = new IntersectionObserver(function (entries) {
+      var visible = entries[0].isIntersecting;
+      if (visible && !active) {
+        active = true;
+        rafId = requestAnimationFrame(render);
+      } else if (!visible && active) {
+        active = false;
+        if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+      }
+    }, { threshold: 0.01 });
+
+    observer.observe(canvas);
+    resize();
+
+    // Onde statique pour prefers-reduced-motion
+    if (reduced) requestAnimationFrame(render);
+
+    window.addEventListener('resize', function () {
+      resize();
+      if (reduced) requestAnimationFrame(render);
+    }, { passive: true });
+  })();
+</script>
