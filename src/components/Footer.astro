@@ -26,15 +26,24 @@ const year = new Date().getFullYear();
 </footer>
 
 <style>
-  #footer-pixels {
-    display: block;
-    width: 100%;
-    /* hauteur gérée par JS via canvas.style.height */
-  }
-
+  /* Le canvas est positionné à cheval sur la limite footer / contenu :
+     30px au-dessus (fond page #000), 30px en dessous (fond footer #0D0D0D).
+     Fond transparent — aucune couleur propre. */
   footer {
     background: var(--color-surface);
     margin-top: 120px;
+    position: relative;
+  }
+
+  #footer-pixels {
+    position: absolute;
+    top: -30px;
+    left: 0;
+    width: 100%;   /* width explicite requis sur les éléments canvas remplacés */
+    height: 60px;
+    background: transparent;
+    pointer-events: none;
+    z-index: 1;
   }
 
   .footer-inner {
@@ -142,124 +151,94 @@ const year = new Date().getFullYear();
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // ── Constantes ────────────────────────────────────────────────────────
-    var ROWS      = 4;      // 2 au-dessus de la frontière + 2 en dessous
-    var BORDER    = 2;      // frontière entre row 1 et row 2
-    var FADE_MS   = 250;    // ms de fondu entrant / sortant
-    var LIFE_MIN  = 1000;   // ms
-    var LIFE_MAX  = 4000;
+    var CANVAS_H  = 60;   // 30px au-dessus + 30px en dessous de la frontière
+    var BORDER_Y  = 30;   // y de la frontière dans le canvas
+    var SCATTER   = 22;   // dispersion max depuis BORDER_Y (centre du carré)
+    var SIZE_MIN  = 8;
+    var SIZE_MAX  = 14;
+    var FADE_MS   = 200;
+    var LIFE_MIN  = 1000;
+    var LIFE_MAX  = 2500;
+    var CNT_MIN   = 3;    // carrés simultanés minimum
+    var CNT_MAX   = 6;    // carrés simultanés maximum
 
-    // Fond légèrement plus clair dans la zone basse — rend les carrés noirs visibles
-    var BG_BELOW  = 'rgba(36,36,36,0.90)';
-    var CLR_GOLD  = 'rgba(245,200,0,';
-    var CLR_BLACK = 'rgba(0,0,0,';
-
-    // ── État ─────────────────────────────────────────────────────────────
     interface Sq {
-      col: number; row: number; span: number;
+      x: number; y: number; size: number;
       type: 'gold' | 'black';
       life: number; maxLife: number; alpha: number;
     }
 
     var squares: Sq[] = [];
-    var occ: Record<string, boolean> = {};
     var spawnCd  = 0;
+    var spawnTgt = CNT_MIN + Math.floor(Math.random() * (CNT_MAX - CNT_MIN + 1));
     var active   = false;
     var rafId: number | null = null;
     var lastTs   = 0;
 
-    // ── Helpers ───────────────────────────────────────────────────────────
-    function mobile()      { return window.innerWidth <= 768; }
-    function cell()        { return mobile() ? 10 : 16; }
-    function target()      { return mobile() ? 6 : 10; }
-    function k(c: number, r: number) { return c + ',' + r; }
-
-    function setOcc(col: number, row: number, span: number, val: boolean) {
-      occ[k(col, row)] = val;
-      if (span === 2) occ[k(col, row + 1)] = val;
-    }
-
-    function isOcc(col: number, row: number) { return !!occ[k(col, row)]; }
-
-    // ── Spawn d'un carré (et parfois un voisin adjacent) ──────────────────
+    // ── Spawn ─────────────────────────────────────────────────────────────
     function spawn() {
-      var C    = cell();
-      var cols = Math.floor(canvas.width / C);
-      if (cols === 0) return;
+      if (canvas.width < 10) return;
+      var size = SIZE_MIN + Math.floor(Math.random() * (SIZE_MAX - SIZE_MIN + 1));
+      // Centre du carré proche de la frontière, avec dispersion aléatoire
+      var cy   = BORDER_Y + (Math.random() * 2 - 1) * SCATTER;
+      var y    = Math.max(0, Math.min(CANVAS_H - size, Math.round(cy - size / 2)));
+      var x    = Math.round(size + Math.random() * (canvas.width - size * 2));
 
-      for (var t = 0; t < 40; t++) {
-        var isGold   = Math.random() < 0.5;
-        var baseRow  = isGold ? 0 : BORDER;
-        // Préférence pour la rangée qui touche la frontière
-        var row      = baseRow + (Math.random() < 0.6 ? (isGold ? 1 : 0) : (isGold ? 0 : 1));
-        var col      = Math.floor(Math.random() * cols);
-
-        // Span 2 uniquement si la rangée de base est libre sur 2 hauteurs
-        var canSpan2 = (row === baseRow) && !isOcc(col, row + 1) && (row + 1 < ROWS);
-        var span     = (canSpan2 && Math.random() < 0.25) ? 2 : 1;
-
-        if (isOcc(col, row) || (span === 2 && isOcc(col, row + 1))) continue;
-
-        var life = LIFE_MIN + Math.random() * (LIFE_MAX - LIFE_MIN);
-        var sq: Sq = { col, row, span, type: isGold ? 'gold' : 'black', life, maxLife: life, alpha: 0 };
-        setOcc(col, row, span, true);
-        squares.push(sq);
-
-        // Voisin horizontal (clustering)
-        if (Math.random() < 0.30) {
-          var nc = col + (Math.random() < 0.5 ? 1 : -1);
-          if (nc >= 0 && nc < cols && !isOcc(nc, row)) {
-            var nLife = LIFE_MIN + Math.random() * (LIFE_MAX - LIFE_MIN);
-            var ns: Sq = { col: nc, row, span: 1, type: sq.type, life: nLife, maxLife: nLife, alpha: 0 };
-            setOcc(nc, row, 1, true);
-            squares.push(ns);
-          }
-        }
-        return;
+      // Distance minimale avec les carrés existants
+      for (var i = 0; i < squares.length; i++) {
+        var s  = squares[i];
+        var dx = s.x + s.size / 2 - (x + size / 2);
+        var dy = s.y + s.size / 2 - (y + size / 2);
+        if (Math.sqrt(dx * dx + dy * dy) < size + s.size + 6) return;
       }
+
+      var life = LIFE_MIN + Math.random() * (LIFE_MAX - LIFE_MIN);
+      squares.push({
+        x, y, size,
+        type: Math.random() < 0.28 ? 'black' : 'gold',
+        life, maxLife: life, alpha: 0,
+      });
     }
 
     // ── Update ────────────────────────────────────────────────────────────
     function update(dt: number) {
       for (var i = squares.length - 1; i >= 0; i--) {
-        var s    = squares[i];
-        s.life  -= dt;
-        var el   = s.maxLife - s.life;
-        s.alpha  = Math.min(1, Math.min(el, Math.max(0, s.life)) / FADE_MS);
-        if (s.life <= 0) {
-          setOcc(s.col, s.row, s.span, false);
-          squares.splice(i, 1);
-        }
+        var s   = squares[i];
+        s.life -= dt;
+        var el  = s.maxLife - s.life;
+        s.alpha = Math.min(1, Math.min(el, Math.max(0, s.life)) / FADE_MS);
+        if (s.life <= 0) squares.splice(i, 1);
+      }
+
+      // Révise la cible de temps en temps
+      if (Math.random() < 0.002) {
+        spawnTgt = CNT_MIN + Math.floor(Math.random() * (CNT_MAX - CNT_MIN + 1));
       }
 
       spawnCd -= dt;
-      if (spawnCd <= 0 && squares.length < target()) {
+      if (spawnCd <= 0 && squares.length < spawnTgt) {
         spawn();
-        var deficit = target() - squares.length;
-        spawnCd = deficit > 4
-          ? 60  + Math.random() * 120   // remontée rapide si très en dessous
-          : 200 + Math.random() * 450;  // rythme lent proche de la cible
+        spawnCd = squares.length < spawnTgt - 2
+          ? 80 + Math.random() * 120
+          : 250 + Math.random() * 500;
       }
     }
 
-    // ── Rendu ─────────────────────────────────────────────────────────────
+    // ── Rendu — fond transparent, aucune bande ────────────────────────────
     function draw() {
-      var C = cell();
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Zone inférieure : fond légèrement plus clair pour que les carrés noirs ressortent
-      ctx.fillStyle = BG_BELOW;
-      ctx.fillRect(0, BORDER * C, canvas.width, (ROWS - BORDER) * C);
+      ctx.clearRect(0, 0, canvas.width, CANVAS_H);
 
       for (var i = 0; i < squares.length; i++) {
         var s = squares[i];
-        var a = s.alpha;
-        if (a < 0.005) continue;
-        ctx.fillStyle = (s.type === 'gold' ? CLR_GOLD : CLR_BLACK) + a + ')';
-        ctx.fillRect(s.col * C, s.row * C, C, s.span * C);
+        if (s.alpha < 0.005) continue;
+        ctx.fillStyle = s.type === 'gold'
+          ? 'rgba(245,200,0,' + s.alpha + ')'
+          : 'rgba(0,0,0,' + s.alpha + ')';
+        ctx.fillRect(s.x, s.y, s.size, s.size);
       }
     }
 
-    // ── Boucle principale ─────────────────────────────────────────────────
+    // ── Boucle ────────────────────────────────────────────────────────────
     function loop(ts: number) {
       var dt = Math.min(ts - lastTs, 100);
       lastTs = ts;
@@ -270,37 +249,26 @@ const year = new Date().getFullYear();
 
     // ── Rendu statique (reduced-motion) ───────────────────────────────────
     function drawStatic() {
-      var C    = cell();
-      var cols = Math.floor(canvas.width / C);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = BG_BELOW;
-      ctx.fillRect(0, BORDER * C, canvas.width, (ROWS - BORDER) * C);
-
-      // Quelques carrés or figés en rangée 1 (collée à la frontière)
-      ctx.fillStyle = 'rgba(245,200,0,0.72)';
-      [0.12, 0.28, 0.44, 0.60, 0.76].forEach(function (f) {
-        var c = Math.floor(f * cols);
-        ctx.fillRect(c * C, 1 * C, C, C);
-      });
-
-      // Quelques carrés noirs figés en rangée 2
-      ctx.fillStyle = 'rgba(0,0,0,0.85)';
-      [0.20, 0.37, 0.52, 0.69].forEach(function (f) {
-        var c = Math.floor(f * cols);
-        ctx.fillRect(c * C, BORDER * C, C, C);
+      ctx.clearRect(0, 0, canvas.width, CANVAS_H);
+      var pts = [0.15, 0.32, 0.51, 0.67, 0.82];
+      ctx.fillStyle = 'rgba(245,200,0,0.70)';
+      pts.forEach(function (f, i) {
+        var sz = 9 + (i % 3);
+        var cy = BORDER_Y + (i % 2 === 0 ? -8 : 10);
+        ctx.fillRect(Math.round(f * canvas.width), Math.round(cy - sz / 2), sz, sz);
       });
     }
 
     // ── Resize ────────────────────────────────────────────────────────────
     function resize() {
-      var C            = cell();
-      canvas.width     = canvas.offsetWidth;
-      canvas.height    = ROWS * C;
-      canvas.style.height = (ROWS * C) + 'px';
-      squares          = [];
-      occ              = {};
-      spawnCd          = 0;
+      // getBoundingClientRect().width donne la largeur CSS réelle, même si le
+      // buffer width du canvas écrase offsetWidth/clientWidth sur les replaced elements
+      var w = Math.round(canvas.getBoundingClientRect().width);
+      if (!w) w = window.innerWidth || 300;
+      canvas.width  = w;
+      canvas.height = CANVAS_H;
+      squares       = [];
+      spawnCd       = 0;
     }
 
     // ── IntersectionObserver ──────────────────────────────────────────────
