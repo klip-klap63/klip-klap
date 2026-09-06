@@ -115,3 +115,28 @@ img {
   display: block;
   max-width: 100%;
 }
+
+/* ─── Mobile nuclear reset — neutralise tout résidu GSAP sous 768px ─────── */
+@media (max-width: 768px) {
+  #services-preview,
+  #services-preview *,
+  #projets-selection,
+  #projets-selection * {
+    position: static !important;
+    transform: none !important;
+    opacity: 1 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    clip-path: none !important;
+    filter: none !important;
+    pointer-events: auto !important;
+  }
+
+  body, html {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    height: auto !important;
+  }
+}

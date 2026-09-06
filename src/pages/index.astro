@@ -177,6 +177,7 @@ import { heroVideo, services } from '../data/services';
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', function () {
+    if (window.innerWidth <= 768) return;
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
     gsap.registerPlugin(ScrollTrigger);
