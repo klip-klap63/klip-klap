@@ -181,26 +181,26 @@ import { heroVideo, services } from '../data/services';
 
     gsap.registerPlugin(ScrollTrigger);
 
-    var preview  = document.getElementById('services-preview');
-    var items    = Array.from(document.querySelectorAll('.service-item'));
-    var N        = items.length;
-    var names    = Array.from(document.querySelectorAll('.service-name'));
-    var ctaPin   = document.getElementById('services-cta-pin');
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    var preview   = document.getElementById('services-preview');
+    var items     = Array.from(document.querySelectorAll('.service-item'));
+    var N         = items.length;
+    var names     = Array.from(document.querySelectorAll('.service-name'));
+    var ctaPin    = document.getElementById('services-cta-pin');
     var selection = document.getElementById('projets-selection');
-    var track    = document.getElementById('projets-scroll-track');
+    var track     = document.getElementById('projets-scroll-track');
 
-    // ─── gsap.matchMedia() : tous les effets sont scopés à ≥768px + pas de motion réduit
-    // GSAP tue automatiquement les ScrollTrigger et rappelle la fonction de nettoyage
-    // quand la media query ne s'applique plus (resize, orientation, etc.)
-    var mm = gsap.matchMedia();
+    // ─── ScrollTrigger.matchMedia : tous les pins sont scopés à ≥769px ──────
+    // Détruit automatiquement les instances et appelle la fonction de nettoyage
+    // dès que la fenêtre passe sous 769px (resize, orientation, etc.)
+    ScrollTrigger.matchMedia({
 
-    mm.add(
-      '(min-width: 768px) and (prefers-reduced-motion: no-preference)',
-      function () {
+      '(min-width: 769px)': function () {
 
-        // ─── Prestations : pinning + La Coupe ──────────────────────────────
+        // ─── Prestations : pinning + La Coupe ────────────────────────────
         if (preview && N >= 2) {
-          // y: '150%' → marge suffisante pour sortir du clip même avec le padding 0.1em
           gsap.set(names, { y: '150%' });
           gsap.set(names[0], { y: '0%' });
           gsap.set(items, { pointerEvents: 'none' });
@@ -230,19 +230,19 @@ import { heroVideo, services } from '../data/services';
 
           for (var i = 0; i < N - 1; i++) {
             var t = i;
-            tl.to(names[i],   { y: '-150%', duration: 0.28, ease: 'power3.in' },  t + 0.58);
-            tl.to(items[i],   { pointerEvents: 'none', duration: 0.001 },          t + 0.58);
+            tl.to(names[i],     { y: '-150%', duration: 0.28, ease: 'power3.in' }, t + 0.58);
+            tl.to(items[i],     { pointerEvents: 'none', duration: 0.001 },         t + 0.58);
             tl.fromTo(names[i + 1],
               { y: '150%' },
               { y: '0%', duration: 0.28, ease: 'power3.out' },
               t + 0.70
             );
-            tl.to(items[i + 1], { pointerEvents: 'auto', duration: 0.001 },        t + 0.70);
+            tl.to(items[i + 1], { pointerEvents: 'auto', duration: 0.001 },         t + 0.70);
           }
 
           if (ctaPin) {
             tl.to(names[N - 1], { y: '-150%', duration: 0.28, ease: 'power3.in' }, (N - 1) + 0.55);
-            tl.to(items[N - 1], { pointerEvents: 'none', duration: 0.001 },        (N - 1) + 0.55);
+            tl.to(items[N - 1], { pointerEvents: 'none', duration: 0.001 },         (N - 1) + 0.55);
             tl.fromTo(ctaPin,
               { opacity: 0 },
               { opacity: 1, duration: 0.25, ease: 'power2.out' },
@@ -251,7 +251,7 @@ import { heroVideo, services } from '../data/services';
           }
         }
 
-        // ─── Sélection : scroll horizontal ─────────────────────────────────
+        // ─── Sélection : scroll horizontal ───────────────────────────────
         if (selection && track) {
           gsap.to(track, {
             x: function () { return -(track.scrollWidth - window.innerWidth); },
@@ -268,15 +268,16 @@ import { heroVideo, services } from '../data/services';
           });
         }
 
-        // Nettoyage quand la media query ne correspond plus (resize < 768px, etc.)
+        // Nettoyage quand la query ne correspond plus
         return function () {
           gsap.set(names, { clearProps: 'all' });
           gsap.set(items, { clearProps: 'all' });
           if (ctaPin) gsap.set(ctaPin, { clearProps: 'all' });
-          if (track) gsap.set(track, { clearProps: 'all' });
+          if (track)  gsap.set(track,  { clearProps: 'all' });
         };
       }
-    );
+
+    });
   });
 </script>
 </BaseLayout>
