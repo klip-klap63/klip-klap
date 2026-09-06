@@ -274,57 +274,24 @@ const projetsJSON = JSON.stringify(projets);
   });
 </script>
 
-<!-- ═══ HERO DISSOLVE ═══ -->
+<!-- ═══ HERO SCROLL ═══ -->
 <script is:inline>
   document.addEventListener('DOMContentLoaded', function () {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-    if (window.matchMedia('(max-width: 768px)').matches) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    var titleEl   = document.querySelector('.hero-title');
-    var heroEl    = document.querySelector('.hero');
-    var overlayEl = document.querySelector('.hero-overlay');
-    var videoEl   = document.querySelector('.hero-video-wrapper');
-    if (!titleEl || !heroEl) return;
+    var heroEl      = document.querySelector('.hero');
+    var contentEl   = document.querySelector('.hero-content');
+    var overlayEl   = document.querySelector('.hero-overlay');
+    var videoEl     = document.querySelector('.hero-video-wrapper');
+    if (!heroEl) return;
 
-    // Retour bfcache — réinitialiser les transforms GSAP qui persistent sur les chars
+    // Retour bfcache — réinitialiser les props GSAP
     window.addEventListener('pageshow', function (e) {
       if (!e.persisted) return;
-      titleEl.querySelectorAll('.char').forEach(function (c) {
-        gsap.set(c, { clearProps: 'all' });
-      });
-      if (videoEl) gsap.set(videoEl, { clearProps: 'filter' });
+      if (contentEl) gsap.set(contentEl, { clearProps: 'opacity' });
+      if (videoEl)   gsap.set(videoEl,   { clearProps: 'filter' });
       if (overlayEl) gsap.set(overlayEl, { clearProps: 'background' });
-    });
-
-    // Split le titre en spans — trim pour supprimer tout espace Astro parasite
-    var text = (titleEl.textContent || '').trim().replace(/\s+/g, ' ');
-    var html = '';
-    for (var i = 0; i < text.length; i++) {
-      var c = text[i];
-      html += c === ' '
-        ? '<span class="char"> </span>'
-        : '<span class="char">' + c + '</span>';
-    }
-    titleEl.innerHTML = html;
-
-    // Seules les lettres (pas les espaces) sont animées
-    var chars = Array.from(titleEl.querySelectorAll('.char')).filter(function (s) {
-      return s.textContent.trim() !== '';
-    });
-
-    // Offsets aléatoires — x très réduit, premier et dernier char contraints vers l'intérieur
-    var lastIdx = chars.length - 1;
-    var offsets = chars.map(function (_, i) {
-      var rawX = (Math.random() - 0.5) * 12; // ±6px
-      var x = i === 0        ? Math.abs(rawX)  // K : part vers la droite (intérieur)
-            : i === lastIdx  ? -Math.abs(rawX) // P : part vers la gauche (intérieur)
-            : rawX;
-      return {
-        x: x,
-        y: (Math.random() - 0.5) * 40,
-        r: (Math.random() - 0.5) * 12,
-      };
     });
 
     var tl = gsap.timeline({
@@ -336,23 +303,14 @@ const projetsJSON = JSON.stringify(projets);
       }
     });
 
-    // Déplacement individuel par lettre
-    chars.forEach(function (char, i) {
-      tl.to(char, {
-        x: offsets[i].x,
-        y: offsets[i].y,
-        rotation: offsets[i].r,
-        ease: 'power1.out',
-        duration: 1,
-      }, 0);
-    });
-
-    // Fondu commun — différé à 30% : titre lisible pendant la première moitié du scroll
-    tl.to(chars, {
-      opacity: 0,
-      ease: 'power2.in',
-      duration: 0.7,
-    }, 0.3);
+    // Fondu global du contenu hero en un seul bloc — différé à 30%
+    if (contentEl) {
+      tl.to(contentEl, {
+        opacity: 0,
+        ease: 'power2.in',
+        duration: 0.7,
+      }, 0.3);
+    }
 
     // Flou vidéo
     if (videoEl) {
@@ -463,14 +421,6 @@ const projetsJSON = JSON.stringify(projets);
     letter-spacing: 0;
     color: var(--color-primary);
     margin-bottom: 16px;
-  }
-
-  /* display:inline-block obligatoire pour les transforms GSAP sur chaque char */
-  .hero-title .char {
-    display: inline-block;
-    will-change: transform, opacity;
-    /* padding par char : donne à chaque lettre sa propre zone de peinture pour le stroke */
-    padding: 0 0.06em;
   }
 
   .hero-title {
