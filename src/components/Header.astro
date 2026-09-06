@@ -64,7 +64,7 @@ function isActive(href: string): boolean {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 100;
+    z-index: 10000;
     background: transparent;
     border-bottom: 1px solid transparent;
     transition: background var(--transition-base), border-color var(--transition-base), backdrop-filter var(--transition-base);
@@ -249,6 +249,7 @@ function isActive(href: string): boolean {
   function openNav() {
     mobileNav?.classList.add('open');
     burger.setAttribute('aria-expanded', 'true');
+    burger.setAttribute('aria-label', 'Fermer le menu');
     mobileNav?.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
     const spans = burger.querySelectorAll('span');
@@ -260,6 +261,7 @@ function isActive(href: string): boolean {
   function closeNav() {
     mobileNav?.classList.remove('open');
     burger?.setAttribute('aria-expanded', 'false');
+    burger?.setAttribute('aria-label', 'Ouvrir le menu');
     mobileNav?.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
     const spans = burger?.querySelectorAll('span');
@@ -273,6 +275,16 @@ function isActive(href: string): boolean {
   burger?.addEventListener('click', () => {
     const isOpen = mobileNav?.classList.contains('open');
     if (isOpen) closeNav(); else openNav();
+  });
+
+  // Fermeture par clic sur le fond du panneau (pas sur un lien)
+  mobileNav?.addEventListener('click', (e) => {
+    if (e.target === mobileNav) closeNav();
+  });
+
+  // Fermeture par Échap
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileNav?.classList.contains('open')) closeNav();
   });
 
   mobileNav?.querySelectorAll('a').forEach(link => {
