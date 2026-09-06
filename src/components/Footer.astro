@@ -26,11 +26,10 @@ const year = new Date().getFullYear();
 </footer>
 
 <style>
-  /* Spectre audio — barre du bord haut du footer */
   #footer-spectrum {
     display: block;
     width: 100%;
-    height: 28px;
+    height: 48px;
   }
 
   footer {
@@ -137,98 +136,196 @@ const year = new Date().getFullYear();
 
 <script>
   (function () {
-    var canvas = document.getElementById('footer-spectrum') as HTMLCanvasElement;
+    var canvas  = document.getElementById('footer-spectrum') as HTMLCanvasElement;
     if (!canvas) return;
-    var ctx = canvas.getContext('2d')!;
+    var ctx     = canvas.getContext('2d')!;
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var active  = false;
     var rafId: number | null = null;
+    var lastTs  = 0;
 
-    // ── Paramètres ──────────────────────────────────────────────────────────
-    var PITCH  = 12;   // px entre deux barres (barre + espace)
-    var BAR_W  = 2;    // largeur de chaque barre en px
-    var MAX_H  = 22;   // hauteur max en px
-    var MIN_H  = 4;    // hauteur min quand active
-    var LERP   = 0.10; // vitesse de lissage (0–1, plus petit = plus doux)
-    var IDLE_P = 0.58; // probabilité qu'une barre repasse à 0 lors d'un changement
+    // ── Constantes ────────────────────────────────────────────────────────
+    var CANVAS_H    = 48;
+    var BASELINE_Y  = 24;   // centre du canvas
+    var MAX_BAR_H   = 20;   // px depuis la baseline
+    var MIN_BAR_H   = 4;
+    var STROKE_W    = 2;
+    var STROKE_PITCH = 4;   // px entre chaque trait dans un paquet
+    var FADE_MS     = 280;  // durée du fondu entrant/sortant en ms
+    var LIFE_MIN    = 1500; // ms
+    var LIFE_MAX    = 3000;
+    var SPAWN_WAIT_MIN = 300;  // ms entre l'extinction d'une zone et la suivante
+    var SPAWN_WAIT_MAX = 1400;
 
-    interface Bar {
-      x:        number;
-      currentH: number;
-      targetH:  number;
-      countdown: number;
-    }
+    // ── Types (runtime JS, pas de vrai typage) ────────────────────────────
+    interface Stroke { lx: number; h: number; dir: number; targetH: number; cd: number; }
+    interface Zone   { x: number; strokes: Stroke[]; life: number; maxLife: number; alpha: number; }
 
-    var bars: Bar[] = [];
+    var zones: Zone[]   = [];
+    var spawnCd: number = 0; // ms avant prochain spawn autorisé
 
-    // ── Initialisation des barres ────────────────────────────────────────────
-    function initBars(width: number) {
-      var count = Math.floor(width / PITCH);
-      // Conserver les barres existantes si possible (redimensionnement)
-      var prev  = bars.slice();
-      bars = [];
-      for (var i = 0; i < count; i++) {
-        var p = prev[i];
-        bars.push({
-          x:         i * PITCH + Math.floor((PITCH - BAR_W) / 2),
-          currentH:  p ? p.currentH : 0,
-          targetH:   p ? p.targetH  : (reduced ? randomH() : 0),
-          countdown: p ? p.countdown : Math.floor(Math.random() * 90),
+    function mobile() { return window.innerWidth <= 768; }
+    function maxZ()   { return mobile() ? 2 : 3; }
+    function randH()  { return MIN_BAR_H + Math.random() * (MAX_BAR_H - MIN_BAR_H); }
+
+    // ── Création d'une zone ───────────────────────────────────────────────
+    function spawnZone() {
+      var n   = 5 + Math.floor(Math.random() * 11); // 5–15 traits
+      var zW  = n * STROKE_PITCH;
+      if (zW >= canvas.width) return;
+
+      // Position aléatoire, sans chevauchement fort avec les zones actives
+      var tries = 0;
+      var x: number;
+      do {
+        x = Math.floor(Math.random() * (canvas.width - zW));
+        var ok = zones.every(function (z) {
+          return Math.abs(z.x - x) > zW + 20;
+        });
+        if (ok) break;
+      } while (++tries < 8);
+
+      var strokes: Stroke[] = [];
+      for (var i = 0; i < n; i++) {
+        // Hauteurs en cloche : plus hautes au milieu du paquet
+        var pos   = i / (n - 1);           // 0 → 1
+        var bell  = 1 - Math.pow(2 * pos - 1, 2) * 0.55; // 0.45–1.0
+        var h     = (MIN_BAR_H + Math.random() * (MAX_BAR_H - MIN_BAR_H)) * bell;
+        strokes.push({
+          lx:      i * STROKE_PITCH,
+          h:       h,
+          dir:     Math.random() < 0.5 ? 1 : -1,
+          targetH: h,
+          cd:      Math.floor(Math.random() * 30),
         });
       }
+
+      var life = LIFE_MIN + Math.random() * (LIFE_MAX - LIFE_MIN);
+      zones.push({ x, strokes, life, maxLife: life, alpha: 0 });
     }
 
-    function randomH(): number {
-      return MIN_H + Math.random() * (MAX_H - MIN_H);
-    }
+    // ── Mise à jour par frame ─────────────────────────────────────────────
+    function updateZones(dt: number) {
+      for (var i = zones.length - 1; i >= 0; i--) {
+        var z = zones[i];
+        z.life -= dt;
 
-    // ── Mise à jour d'une barre par frame ────────────────────────────────────
-    function updateBar(b: Bar) {
-      b.countdown--;
-      if (b.countdown <= 0) {
-        if (Math.random() < IDLE_P) {
-          b.targetH   = 0;
-          b.countdown = 18 + Math.floor(Math.random() * 70); // 0.3–1.5 s @ 60fps
-        } else {
-          b.targetH   = randomH();
-          b.countdown = 12 + Math.floor(Math.random() * 55); // 0.2–1.1 s
+        // Fondu : min(temps écoulé, temps restant) / durée fondu
+        var elapsed = z.maxLife - z.life;
+        z.alpha = Math.min(1, Math.min(elapsed, Math.max(z.life, 0)) / FADE_MS);
+
+        // Animation des traits
+        for (var j = 0; j < z.strokes.length; j++) {
+          var s = z.strokes[j];
+          s.cd--;
+          if (s.cd <= 0) {
+            var pos  = j / (z.strokes.length - 1 || 1);
+            var bell = 1 - Math.pow(2 * pos - 1, 2) * 0.55;
+            s.targetH = (MIN_BAR_H + Math.random() * (MAX_BAR_H - MIN_BAR_H)) * bell;
+            if (Math.random() < 0.12) s.dir = -s.dir; // inversion rare
+            s.cd = 10 + Math.floor(Math.random() * 28);
+          }
+          s.h += (s.targetH - s.h) * 0.13;
+        }
+
+        if (z.life <= 0) {
+          zones.splice(i, 1);
+          // Cooldown avant prochain spawn
+          spawnCd = SPAWN_WAIT_MIN + Math.random() * (SPAWN_WAIT_MAX - SPAWN_WAIT_MIN);
         }
       }
-      // Lissage exponentiel — transitions douces sans saut
-      b.currentH += (b.targetH - b.currentH) * LERP;
+
+      // Spawn si slot disponible et cooldown écoulé
+      if (zones.length < maxZ() && spawnCd <= 0) {
+        spawnZone();
+        // Cooldown si plusieurs slots encore libres : légère pause avant le suivant
+        if (zones.length < maxZ()) {
+          spawnCd = 200 + Math.random() * 600;
+        }
+      } else {
+        spawnCd -= dt;
+      }
     }
 
-    // ── Rendu ────────────────────────────────────────────────────────────────
-    function render() {
-      var H = canvas.height;
-      ctx.clearRect(0, 0, canvas.width, H);
-      ctx.fillStyle = '#F5C800';
+    // ── Rendu ─────────────────────────────────────────────────────────────
+    function render(ts: number) {
+      var dt = Math.min(ts - lastTs, 64); // plafond 64ms pour les pauses d'onglet
+      lastTs = ts;
 
-      for (var i = 0; i < bars.length; i++) {
-        var b = bars[i];
-        if (!reduced) updateBar(b);
-        if (b.currentH > 0.3) {
-          // Barres ancrées au bas du canvas (= bord haut du footer)
-          ctx.fillRect(b.x, H - b.currentH, BAR_W, b.currentH);
+      ctx.clearRect(0, 0, canvas.width, CANVAS_H);
+
+      // Ligne de base grise, toujours visible
+      ctx.beginPath();
+      ctx.moveTo(0, BASELINE_Y);
+      ctx.lineTo(canvas.width, BASELINE_Y);
+      ctx.strokeStyle = 'rgba(245, 200, 0, 0.15)';
+      ctx.lineWidth   = 1;
+      ctx.stroke();
+
+      if (!reduced) updateZones(dt);
+
+      // Dessin des zones
+      for (var i = 0; i < zones.length; i++) {
+        var z   = zones[i];
+        var a   = z.alpha;
+        if (a < 0.01) continue;
+
+        ctx.fillStyle = 'rgba(245, 200, 0, ' + a + ')';
+        for (var j = 0; j < z.strokes.length; j++) {
+          var s  = z.strokes[j];
+          var sx = Math.round(z.x + s.lx);
+          var h  = Math.max(0, s.h);
+          if (s.dir === 1) {
+            ctx.fillRect(sx, BASELINE_Y - h, STROKE_W, h);
+          } else {
+            ctx.fillRect(sx, BASELINE_Y, STROKE_W, h);
+          }
         }
       }
 
-      if (active && !reduced) rafId = requestAnimationFrame(render);
+      if (active) rafId = requestAnimationFrame(render);
     }
 
-    // ── Redimensionnement ─────────────────────────────────────────────────────
+    // ── Rendu statique (reduced-motion) ───────────────────────────────────
+    function renderStatic() {
+      ctx.clearRect(0, 0, canvas.width, CANVAS_H);
+
+      ctx.beginPath();
+      ctx.moveTo(0, BASELINE_Y);
+      ctx.lineTo(canvas.width, BASELINE_Y);
+      ctx.strokeStyle = 'rgba(245, 200, 0, 0.15)';
+      ctx.lineWidth   = 1;
+      ctx.stroke();
+
+      // Deux paquets statiques, positions fixes relatives
+      var positions = [Math.round(canvas.width * 0.28), Math.round(canvas.width * 0.62)];
+      ctx.fillStyle = 'rgba(245, 200, 0, 0.65)';
+      positions.forEach(function (px) {
+        var n = 9;
+        for (var i = 0; i < n; i++) {
+          var bell = 1 - Math.pow(2 * (i / (n - 1)) - 1, 2) * 0.5;
+          var h    = (MIN_BAR_H + Math.random() * (MAX_BAR_H - MIN_BAR_H)) * bell;
+          var dir  = Math.random() < 0.5 ? 1 : -1;
+          var sx   = px + i * STROKE_PITCH;
+          if (dir === 1) ctx.fillRect(sx, BASELINE_Y - h, STROKE_W, h);
+          else           ctx.fillRect(sx, BASELINE_Y, STROKE_W, h);
+        }
+      });
+    }
+
+    // ── Resize ────────────────────────────────────────────────────────────
     function resize() {
       canvas.width  = canvas.offsetWidth;
-      canvas.height = 28;
-      initBars(canvas.width);
-      if (reduced) render(); // un seul dessin statique
+      canvas.height = CANVAS_H;
+      zones = zones.filter(function (z) { return z.x + z.strokes.length * STROKE_PITCH < canvas.width; });
     }
 
-    // ── IntersectionObserver — pause hors écran ───────────────────────────────
+    // ── IntersectionObserver ──────────────────────────────────────────────
     var observer = new IntersectionObserver(function (entries) {
       var visible = entries[0].isIntersecting;
       if (visible && !active && !reduced) {
         active = true;
+        lastTs = performance.now();
         rafId  = requestAnimationFrame(render);
       } else if (!visible && active) {
         active = false;
@@ -239,17 +336,16 @@ const year = new Date().getFullYear();
     observer.observe(canvas);
     resize();
 
+    if (reduced) {
+      renderStatic();
+    }
+
     window.addEventListener('resize', function () {
       var wasActive = active;
-      if (wasActive) {
-        active = false;
-        if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
-      }
+      if (wasActive) { active = false; if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; } }
       resize();
-      if (wasActive && !reduced) {
-        active = true;
-        rafId  = requestAnimationFrame(render);
-      }
+      if (reduced) { renderStatic(); }
+      else if (wasActive) { active = true; lastTs = performance.now(); rafId = requestAnimationFrame(render); }
     }, { passive: true });
   })();
 </script>
