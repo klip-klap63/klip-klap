@@ -3,7 +3,7 @@ const year = new Date().getFullYear();
 ---
 
 <footer>
-  <canvas id="footer-spectrum" aria-hidden="true"></canvas>
+  <canvas id="footer-pixels" aria-hidden="true"></canvas>
   <div class="footer-inner">
     <div class="footer-top">
       <a href="/" class="footer-logo" aria-label="KLIP KLAP">KLIP KLAP</a>
@@ -26,10 +26,10 @@ const year = new Date().getFullYear();
 </footer>
 
 <style>
-  #footer-spectrum {
+  #footer-pixels {
     display: block;
     width: 100%;
-    height: 48px;
+    /* hauteur gérée par JS via canvas.style.height */
   }
 
   footer {
@@ -136,188 +136,171 @@ const year = new Date().getFullYear();
 
 <script>
   (function () {
-    var canvas  = document.getElementById('footer-spectrum') as HTMLCanvasElement;
+    var canvas = document.getElementById('footer-pixels') as HTMLCanvasElement;
     if (!canvas) return;
-    var ctx     = canvas.getContext('2d')!;
+    var ctx = canvas.getContext('2d')!;
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var active  = false;
-    var rafId: number | null = null;
-    var lastTs  = 0;
 
     // ── Constantes ────────────────────────────────────────────────────────
-    var CANVAS_H    = 48;
-    var BASELINE_Y  = 24;   // centre du canvas
-    var MAX_BAR_H   = 20;   // px depuis la baseline
-    var MIN_BAR_H   = 4;
-    var STROKE_W    = 2;
-    var STROKE_PITCH = 4;   // px entre chaque trait dans un paquet
-    var FADE_MS     = 280;  // durée du fondu entrant/sortant en ms
-    var LIFE_MIN    = 1500; // ms
-    var LIFE_MAX    = 3000;
-    var SPAWN_WAIT_MIN = 300;  // ms entre l'extinction d'une zone et la suivante
-    var SPAWN_WAIT_MAX = 1400;
+    var ROWS      = 4;      // 2 au-dessus de la frontière + 2 en dessous
+    var BORDER    = 2;      // frontière entre row 1 et row 2
+    var FADE_MS   = 250;    // ms de fondu entrant / sortant
+    var LIFE_MIN  = 1000;   // ms
+    var LIFE_MAX  = 4000;
 
-    // ── Types (runtime JS, pas de vrai typage) ────────────────────────────
-    interface Stroke { lx: number; h: number; dir: number; targetH: number; cd: number; }
-    interface Zone   { x: number; strokes: Stroke[]; life: number; maxLife: number; alpha: number; }
+    // Fond légèrement plus clair dans la zone basse — rend les carrés noirs visibles
+    var BG_BELOW  = 'rgba(36,36,36,0.90)';
+    var CLR_GOLD  = 'rgba(245,200,0,';
+    var CLR_BLACK = 'rgba(0,0,0,';
 
-    var zones: Zone[]   = [];
-    var spawnCd: number = 0; // ms avant prochain spawn autorisé
-
-    function mobile() { return window.innerWidth <= 768; }
-    function maxZ()   { return mobile() ? 2 : 3; }
-    function randH()  { return MIN_BAR_H + Math.random() * (MAX_BAR_H - MIN_BAR_H); }
-
-    // ── Création d'une zone ───────────────────────────────────────────────
-    function spawnZone() {
-      var n   = 5 + Math.floor(Math.random() * 11); // 5–15 traits
-      var zW  = n * STROKE_PITCH;
-      if (zW >= canvas.width) return;
-
-      // Position aléatoire, sans chevauchement fort avec les zones actives
-      var tries = 0;
-      var x: number;
-      do {
-        x = Math.floor(Math.random() * (canvas.width - zW));
-        var ok = zones.every(function (z) {
-          return Math.abs(z.x - x) > zW + 20;
-        });
-        if (ok) break;
-      } while (++tries < 8);
-
-      var strokes: Stroke[] = [];
-      for (var i = 0; i < n; i++) {
-        // Hauteurs en cloche : plus hautes au milieu du paquet
-        var pos   = i / (n - 1);           // 0 → 1
-        var bell  = 1 - Math.pow(2 * pos - 1, 2) * 0.55; // 0.45–1.0
-        var h     = (MIN_BAR_H + Math.random() * (MAX_BAR_H - MIN_BAR_H)) * bell;
-        strokes.push({
-          lx:      i * STROKE_PITCH,
-          h:       h,
-          dir:     Math.random() < 0.5 ? 1 : -1,
-          targetH: h,
-          cd:      Math.floor(Math.random() * 30),
-        });
-      }
-
-      var life = LIFE_MIN + Math.random() * (LIFE_MAX - LIFE_MIN);
-      zones.push({ x, strokes, life, maxLife: life, alpha: 0 });
+    // ── État ─────────────────────────────────────────────────────────────
+    interface Sq {
+      col: number; row: number; span: number;
+      type: 'gold' | 'black';
+      life: number; maxLife: number; alpha: number;
     }
 
-    // ── Mise à jour par frame ─────────────────────────────────────────────
-    function updateZones(dt: number) {
-      for (var i = zones.length - 1; i >= 0; i--) {
-        var z = zones[i];
-        z.life -= dt;
+    var squares: Sq[] = [];
+    var occ: Record<string, boolean> = {};
+    var spawnCd  = 0;
+    var active   = false;
+    var rafId: number | null = null;
+    var lastTs   = 0;
 
-        // Fondu : min(temps écoulé, temps restant) / durée fondu
-        var elapsed = z.maxLife - z.life;
-        z.alpha = Math.min(1, Math.min(elapsed, Math.max(z.life, 0)) / FADE_MS);
+    // ── Helpers ───────────────────────────────────────────────────────────
+    function mobile()      { return window.innerWidth <= 768; }
+    function cell()        { return mobile() ? 10 : 16; }
+    function target()      { return mobile() ? 6 : 10; }
+    function k(c: number, r: number) { return c + ',' + r; }
 
-        // Animation des traits
-        for (var j = 0; j < z.strokes.length; j++) {
-          var s = z.strokes[j];
-          s.cd--;
-          if (s.cd <= 0) {
-            var pos  = j / (z.strokes.length - 1 || 1);
-            var bell = 1 - Math.pow(2 * pos - 1, 2) * 0.55;
-            s.targetH = (MIN_BAR_H + Math.random() * (MAX_BAR_H - MIN_BAR_H)) * bell;
-            if (Math.random() < 0.12) s.dir = -s.dir; // inversion rare
-            s.cd = 10 + Math.floor(Math.random() * 28);
+    function setOcc(col: number, row: number, span: number, val: boolean) {
+      occ[k(col, row)] = val;
+      if (span === 2) occ[k(col, row + 1)] = val;
+    }
+
+    function isOcc(col: number, row: number) { return !!occ[k(col, row)]; }
+
+    // ── Spawn d'un carré (et parfois un voisin adjacent) ──────────────────
+    function spawn() {
+      var C    = cell();
+      var cols = Math.floor(canvas.width / C);
+      if (cols === 0) return;
+
+      for (var t = 0; t < 40; t++) {
+        var isGold   = Math.random() < 0.5;
+        var baseRow  = isGold ? 0 : BORDER;
+        // Préférence pour la rangée qui touche la frontière
+        var row      = baseRow + (Math.random() < 0.6 ? (isGold ? 1 : 0) : (isGold ? 0 : 1));
+        var col      = Math.floor(Math.random() * cols);
+
+        // Span 2 uniquement si la rangée de base est libre sur 2 hauteurs
+        var canSpan2 = (row === baseRow) && !isOcc(col, row + 1) && (row + 1 < ROWS);
+        var span     = (canSpan2 && Math.random() < 0.25) ? 2 : 1;
+
+        if (isOcc(col, row) || (span === 2 && isOcc(col, row + 1))) continue;
+
+        var life = LIFE_MIN + Math.random() * (LIFE_MAX - LIFE_MIN);
+        var sq: Sq = { col, row, span, type: isGold ? 'gold' : 'black', life, maxLife: life, alpha: 0 };
+        setOcc(col, row, span, true);
+        squares.push(sq);
+
+        // Voisin horizontal (clustering)
+        if (Math.random() < 0.30) {
+          var nc = col + (Math.random() < 0.5 ? 1 : -1);
+          if (nc >= 0 && nc < cols && !isOcc(nc, row)) {
+            var nLife = LIFE_MIN + Math.random() * (LIFE_MAX - LIFE_MIN);
+            var ns: Sq = { col: nc, row, span: 1, type: sq.type, life: nLife, maxLife: nLife, alpha: 0 };
+            setOcc(nc, row, 1, true);
+            squares.push(ns);
           }
-          s.h += (s.targetH - s.h) * 0.13;
         }
+        return;
+      }
+    }
 
-        if (z.life <= 0) {
-          zones.splice(i, 1);
-          // Cooldown avant prochain spawn
-          spawnCd = SPAWN_WAIT_MIN + Math.random() * (SPAWN_WAIT_MAX - SPAWN_WAIT_MIN);
+    // ── Update ────────────────────────────────────────────────────────────
+    function update(dt: number) {
+      for (var i = squares.length - 1; i >= 0; i--) {
+        var s    = squares[i];
+        s.life  -= dt;
+        var el   = s.maxLife - s.life;
+        s.alpha  = Math.min(1, Math.min(el, Math.max(0, s.life)) / FADE_MS);
+        if (s.life <= 0) {
+          setOcc(s.col, s.row, s.span, false);
+          squares.splice(i, 1);
         }
       }
 
-      // Spawn si slot disponible et cooldown écoulé
-      if (zones.length < maxZ() && spawnCd <= 0) {
-        spawnZone();
-        // Cooldown si plusieurs slots encore libres : légère pause avant le suivant
-        if (zones.length < maxZ()) {
-          spawnCd = 200 + Math.random() * 600;
-        }
-      } else {
-        spawnCd -= dt;
+      spawnCd -= dt;
+      if (spawnCd <= 0 && squares.length < target()) {
+        spawn();
+        var deficit = target() - squares.length;
+        spawnCd = deficit > 4
+          ? 60  + Math.random() * 120   // remontée rapide si très en dessous
+          : 200 + Math.random() * 450;  // rythme lent proche de la cible
       }
     }
 
     // ── Rendu ─────────────────────────────────────────────────────────────
-    function render(ts: number) {
-      var dt = Math.min(ts - lastTs, 64); // plafond 64ms pour les pauses d'onglet
-      lastTs = ts;
+    function draw() {
+      var C = cell();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      ctx.clearRect(0, 0, canvas.width, CANVAS_H);
+      // Zone inférieure : fond légèrement plus clair pour que les carrés noirs ressortent
+      ctx.fillStyle = BG_BELOW;
+      ctx.fillRect(0, BORDER * C, canvas.width, (ROWS - BORDER) * C);
 
-      // Ligne de base grise, toujours visible
-      ctx.beginPath();
-      ctx.moveTo(0, BASELINE_Y);
-      ctx.lineTo(canvas.width, BASELINE_Y);
-      ctx.strokeStyle = 'rgba(245, 200, 0, 0.15)';
-      ctx.lineWidth   = 1;
-      ctx.stroke();
-
-      if (!reduced) updateZones(dt);
-
-      // Dessin des zones
-      for (var i = 0; i < zones.length; i++) {
-        var z   = zones[i];
-        var a   = z.alpha;
-        if (a < 0.01) continue;
-
-        ctx.fillStyle = 'rgba(245, 200, 0, ' + a + ')';
-        for (var j = 0; j < z.strokes.length; j++) {
-          var s  = z.strokes[j];
-          var sx = Math.round(z.x + s.lx);
-          var h  = Math.max(0, s.h);
-          if (s.dir === 1) {
-            ctx.fillRect(sx, BASELINE_Y - h, STROKE_W, h);
-          } else {
-            ctx.fillRect(sx, BASELINE_Y, STROKE_W, h);
-          }
-        }
+      for (var i = 0; i < squares.length; i++) {
+        var s = squares[i];
+        var a = s.alpha;
+        if (a < 0.005) continue;
+        ctx.fillStyle = (s.type === 'gold' ? CLR_GOLD : CLR_BLACK) + a + ')';
+        ctx.fillRect(s.col * C, s.row * C, C, s.span * C);
       }
+    }
 
-      if (active) rafId = requestAnimationFrame(render);
+    // ── Boucle principale ─────────────────────────────────────────────────
+    function loop(ts: number) {
+      var dt = Math.min(ts - lastTs, 100);
+      lastTs = ts;
+      update(dt);
+      draw();
+      if (active) rafId = requestAnimationFrame(loop);
     }
 
     // ── Rendu statique (reduced-motion) ───────────────────────────────────
-    function renderStatic() {
-      ctx.clearRect(0, 0, canvas.width, CANVAS_H);
+    function drawStatic() {
+      var C    = cell();
+      var cols = Math.floor(canvas.width / C);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      ctx.beginPath();
-      ctx.moveTo(0, BASELINE_Y);
-      ctx.lineTo(canvas.width, BASELINE_Y);
-      ctx.strokeStyle = 'rgba(245, 200, 0, 0.15)';
-      ctx.lineWidth   = 1;
-      ctx.stroke();
+      ctx.fillStyle = BG_BELOW;
+      ctx.fillRect(0, BORDER * C, canvas.width, (ROWS - BORDER) * C);
 
-      // Deux paquets statiques, positions fixes relatives
-      var positions = [Math.round(canvas.width * 0.28), Math.round(canvas.width * 0.62)];
-      ctx.fillStyle = 'rgba(245, 200, 0, 0.65)';
-      positions.forEach(function (px) {
-        var n = 9;
-        for (var i = 0; i < n; i++) {
-          var bell = 1 - Math.pow(2 * (i / (n - 1)) - 1, 2) * 0.5;
-          var h    = (MIN_BAR_H + Math.random() * (MAX_BAR_H - MIN_BAR_H)) * bell;
-          var dir  = Math.random() < 0.5 ? 1 : -1;
-          var sx   = px + i * STROKE_PITCH;
-          if (dir === 1) ctx.fillRect(sx, BASELINE_Y - h, STROKE_W, h);
-          else           ctx.fillRect(sx, BASELINE_Y, STROKE_W, h);
-        }
+      // Quelques carrés or figés en rangée 1 (collée à la frontière)
+      ctx.fillStyle = 'rgba(245,200,0,0.72)';
+      [0.12, 0.28, 0.44, 0.60, 0.76].forEach(function (f) {
+        var c = Math.floor(f * cols);
+        ctx.fillRect(c * C, 1 * C, C, C);
+      });
+
+      // Quelques carrés noirs figés en rangée 2
+      ctx.fillStyle = 'rgba(0,0,0,0.85)';
+      [0.20, 0.37, 0.52, 0.69].forEach(function (f) {
+        var c = Math.floor(f * cols);
+        ctx.fillRect(c * C, BORDER * C, C, C);
       });
     }
 
     // ── Resize ────────────────────────────────────────────────────────────
     function resize() {
-      canvas.width  = canvas.offsetWidth;
-      canvas.height = CANVAS_H;
-      zones = zones.filter(function (z) { return z.x + z.strokes.length * STROKE_PITCH < canvas.width; });
+      var C            = cell();
+      canvas.width     = canvas.offsetWidth;
+      canvas.height    = ROWS * C;
+      canvas.style.height = (ROWS * C) + 'px';
+      squares          = [];
+      occ              = {};
+      spawnCd          = 0;
     }
 
     // ── IntersectionObserver ──────────────────────────────────────────────
@@ -326,26 +309,24 @@ const year = new Date().getFullYear();
       if (visible && !active && !reduced) {
         active = true;
         lastTs = performance.now();
-        rafId  = requestAnimationFrame(render);
+        rafId  = requestAnimationFrame(loop);
       } else if (!visible && active) {
         active = false;
         if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
       }
     }, { threshold: 0.01 });
 
-    observer.observe(canvas);
     resize();
+    observer.observe(canvas);
 
-    if (reduced) {
-      renderStatic();
-    }
+    if (reduced) drawStatic();
 
     window.addEventListener('resize', function () {
-      var wasActive = active;
-      if (wasActive) { active = false; if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; } }
+      var was = active;
+      if (was) { active = false; if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; } }
       resize();
-      if (reduced) { renderStatic(); }
-      else if (wasActive) { active = true; lastTs = performance.now(); rafId = requestAnimationFrame(render); }
+      if (reduced) drawStatic();
+      else if (was) { active = true; lastTs = performance.now(); rafId = requestAnimationFrame(loop); }
     }, { passive: true });
   })();
 </script>
