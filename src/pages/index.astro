@@ -177,7 +177,6 @@ import { heroVideo, services } from '../data/services';
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', function () {
-    if (window.innerWidth <= 768) return;
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
     gsap.registerPlugin(ScrollTrigger);
@@ -193,91 +192,88 @@ import { heroVideo, services } from '../data/services';
     var selection = document.getElementById('projets-selection');
     var track     = document.getElementById('projets-scroll-track');
 
-    // ─── ScrollTrigger.matchMedia : tous les pins sont scopés à ≥769px ──────
-    // Détruit automatiquement les instances et appelle la fonction de nettoyage
-    // dès que la fenêtre passe sous 769px (resize, orientation, etc.)
-    ScrollTrigger.matchMedia({
+    function initAnimations(desktop) {
+      var scrollPerStep  = desktop ? 360 : 200;
+      var scrubServices  = desktop ? 0.7 : 0.3;
+      var scrubProjets   = desktop ? 0.6 : 0.3;
 
-      '(min-width: 769px)': function () {
+      if (preview && N >= 2) {
+        gsap.set(names, { y: '150%' });
+        gsap.set(names[0], { y: '0%' });
+        gsap.set(items, { pointerEvents: 'none' });
+        gsap.set(items[0], { pointerEvents: 'auto' });
+        if (ctaPin) gsap.set(ctaPin, { opacity: 0 });
 
-        // ─── Prestations : pinning + La Coupe ────────────────────────────
-        if (preview && N >= 2) {
-          gsap.set(names, { y: '150%' });
-          gsap.set(names[0], { y: '0%' });
-          gsap.set(items, { pointerEvents: 'none' });
-          gsap.set(items[0], { pointerEvents: 'auto' });
-          if (ctaPin) gsap.set(ctaPin, { opacity: 0 });
+        var totalScroll = N * scrollPerStep;
 
-          var scrollPerStep = 360;
-          var totalScroll = N * scrollPerStep;
+        var tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: preview,
+            start: 'top top+=72',
+            end: '+=' + totalScroll,
+            pin: true,
+            anticipatePin: 1,
+            scrub: scrubServices,
+            invalidateOnRefresh: true,
+          }
+        });
 
-          var tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: preview,
-              start: 'top top+=72',
-              end: '+=' + totalScroll,
-              pin: true,
-              anticipatePin: 1,
-              scrub: 0.7,
-              invalidateOnRefresh: true,
-            }
-          });
+        tl.fromTo(preview,
+          { backdropFilter: 'blur(0px)', webkitBackdropFilter: 'blur(0px)' },
+          { backdropFilter: 'blur(22px)', webkitBackdropFilter: 'blur(22px)', ease: 'none', duration: N },
+          0
+        );
 
-          tl.fromTo(preview,
-            { backdropFilter: 'blur(0px)', webkitBackdropFilter: 'blur(0px)' },
-            { backdropFilter: 'blur(22px)', webkitBackdropFilter: 'blur(22px)', ease: 'none', duration: N },
-            0
+        for (var i = 0; i < N - 1; i++) {
+          var t = i;
+          tl.to(names[i],     { y: '-150%', duration: 0.28, ease: 'power3.in' }, t + 0.58);
+          tl.to(items[i],     { pointerEvents: 'none', duration: 0.001 },         t + 0.58);
+          tl.fromTo(names[i + 1],
+            { y: '150%' },
+            { y: '0%', duration: 0.28, ease: 'power3.out' },
+            t + 0.70
           );
-
-          for (var i = 0; i < N - 1; i++) {
-            var t = i;
-            tl.to(names[i],     { y: '-150%', duration: 0.28, ease: 'power3.in' }, t + 0.58);
-            tl.to(items[i],     { pointerEvents: 'none', duration: 0.001 },         t + 0.58);
-            tl.fromTo(names[i + 1],
-              { y: '150%' },
-              { y: '0%', duration: 0.28, ease: 'power3.out' },
-              t + 0.70
-            );
-            tl.to(items[i + 1], { pointerEvents: 'auto', duration: 0.001 },         t + 0.70);
-          }
-
-          if (ctaPin) {
-            tl.to(names[N - 1], { y: '-150%', duration: 0.28, ease: 'power3.in' }, (N - 1) + 0.55);
-            tl.to(items[N - 1], { pointerEvents: 'none', duration: 0.001 },         (N - 1) + 0.55);
-            tl.fromTo(ctaPin,
-              { opacity: 0 },
-              { opacity: 1, duration: 0.25, ease: 'power2.out' },
-              (N - 1) + 0.67
-            );
-          }
+          tl.to(items[i + 1], { pointerEvents: 'auto', duration: 0.001 },         t + 0.70);
         }
 
-        // ─── Sélection : scroll horizontal ───────────────────────────────
-        if (selection && track) {
-          gsap.to(track, {
-            x: function () { return -(track.scrollWidth - window.innerWidth); },
-            ease: 'none',
-            scrollTrigger: {
-              trigger: selection,
-              start: 'top top+=72',
-              end: function () { return '+=' + (track.scrollWidth - window.innerWidth); },
-              pin: true,
-              anticipatePin: 1,
-              scrub: 0.6,
-              invalidateOnRefresh: true,
-            }
-          });
+        if (ctaPin) {
+          tl.to(names[N - 1], { y: '-150%', duration: 0.28, ease: 'power3.in' }, (N - 1) + 0.55);
+          tl.to(items[N - 1], { pointerEvents: 'none', duration: 0.001 },         (N - 1) + 0.55);
+          tl.fromTo(ctaPin,
+            { opacity: 0 },
+            { opacity: 1, duration: 0.25, ease: 'power2.out' },
+            (N - 1) + 0.67
+          );
         }
-
-        // Nettoyage quand la query ne correspond plus
-        return function () {
-          gsap.set(names, { clearProps: 'all' });
-          gsap.set(items, { clearProps: 'all' });
-          if (ctaPin) gsap.set(ctaPin, { clearProps: 'all' });
-          if (track)  gsap.set(track,  { clearProps: 'all' });
-        };
       }
 
+      if (selection && track) {
+        gsap.to(track, {
+          x: function () { return -(track.scrollWidth - window.innerWidth); },
+          ease: 'none',
+          scrollTrigger: {
+            trigger: selection,
+            start: 'top top+=72',
+            end: function () { return '+=' + (track.scrollWidth - window.innerWidth); },
+            pin: true,
+            anticipatePin: 1,
+            scrub: scrubProjets,
+            invalidateOnRefresh: true,
+          }
+        });
+      }
+
+      return function () {
+        gsap.set(names, { clearProps: 'all' });
+        gsap.set(items, { clearProps: 'all' });
+        if (ctaPin) gsap.set(ctaPin, { clearProps: 'all' });
+        if (track)  gsap.set(track,  { clearProps: 'all' });
+      };
+    }
+
+    ScrollTrigger.matchMedia({
+      '(min-width: 769px)': function () { return initAnimations(true);  },
+      '(max-width: 768px)': function () { return initAnimations(false); },
     });
   });
 </script>
@@ -540,46 +536,15 @@ import { heroVideo, services } from '../data/services';
     padding: 20px 56px;
   }
 
-  /* Mobile : désactivé, affichage linéaire */
+  /* Mobile : mêmes effets que desktop, réglages adaptés */
   @media (max-width: 768px) {
     .services-preview {
-      height: auto;
-      padding: 80px 0 60px;
+      /* height: 100vh reste (identique au desktop) pour que le pin fonctionne */
       background: rgba(0, 0, 0, 0.92);
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
     }
 
     .services-label {
-      position: static;
-      transform: none;
-      white-space: normal;
-      margin-bottom: 28px;
-    }
-
-    .services-stage {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      padding: 0 20px;
-    }
-
-    .service-item {
-      opacity: 1 !important;
-      pointer-events: auto !important;
-      justify-content: flex-start;
-    }
-
-    /* Annule le clip et tout transform GSAP résiduel sur mobile */
-    .service-clip {
-      overflow: visible;
-      padding: 0;
-    }
-
-    .service-name {
-      font-size: clamp(28px, 8vw, 44px);
-      text-align: left;
-      transform: none !important;
+      top: 60px;
     }
   }
 
@@ -776,16 +741,6 @@ import { heroVideo, services } from '../data/services';
       font-size: 22px;
     }
 
-    .services-cta-pin {
-      position: static;
-      top: auto;
-      left: auto;
-      transform: none;
-      margin-top: 32px;
-      padding: 0 20px 60px;
-      opacity: 1 !important;
-    }
-
     .services-cta-pin .btn-secondary {
       font-size: 16px;
       padding: 14px 32px;
@@ -805,22 +760,35 @@ import { heroVideo, services } from '../data/services';
       max-width: 100%;
     }
 
+    /* Projets mobile — pin + scroll horizontal, cartes 80vw */
     .projets-selection {
-      padding: 60px 0 0;
+      height: calc(100vh - 72px);
+      padding: 40px 0 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
     }
 
     .projets-selection .container {
-      margin-bottom: 24px;
+      margin-bottom: 0;
+      flex-shrink: 0;
+    }
+
+    .projets-scroll-outer {
+      overflow: hidden;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      min-height: 0;
     }
 
     .projets-grid-home {
-      flex-direction: column;
-      padding: 0 20px 60px;
+      padding: 0 20px;
     }
 
     .projets-grid-home .projet-card-home {
-      flex: 0 0 auto;
-      width: 100%;
+      flex: 0 0 80vw;
     }
   }
 </style>

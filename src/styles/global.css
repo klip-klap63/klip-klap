@@ -116,64 +116,14 @@ img {
   max-width: 100%;
 }
 
-/* ─── Mobile nuclear reset — neutralise tout résidu GSAP sous 768px ─────── */
+/* ─── Mobile : ajustements visuels sans bloquer GSAP ────────────────────── */
 @media (max-width: 768px) {
-  #services-preview,
-  #services-preview *,
-  #projets-selection,
-  #projets-selection * {
-    position: static !important;
-    transform: none !important;
-    opacity: 1 !important;
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    overflow: visible !important;
-    clip-path: none !important;
-    filter: none !important;
-    pointer-events: auto !important;
-  }
-
-  body, html {
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-    height: auto !important;
-  }
-}
-
-/* ─── Mobile layout fix — corrige le désordre flex après le reset ────────── */
-@media (max-width: 768px) {
-  #services-preview {
-    display: block !important;
-    text-align: center;
-    padding: 80px 20px 60px !important;
-  }
-
-  #services-preview .services-label {
-    margin: 0 0 28px;
-  }
-
-  #services-preview .services-stage {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 20px;
-    padding: 0;
-  }
-
   #services-preview .service-item {
     justify-content: center;
   }
 
   #services-preview .service-name {
-    font-size: clamp(28px, 8vw, 44px);
+    font-size: clamp(28px, 10vw, 56px);
     text-align: center;
-  }
-
-  #services-preview .services-cta-pin {
-    margin-top: 40px;
-  }
-
-  #projets-selection {
-    display: block !important;
   }
 }
