@@ -157,6 +157,11 @@ function isActive(href: string): boolean {
     padding: 4px;
     z-index: 10001;
     position: relative;
+    transition: transform 100ms ease-out;
+  }
+
+  .burger:active {
+    transform: scale(0.90);
   }
 
   .burger span {

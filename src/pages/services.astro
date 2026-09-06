@@ -120,17 +120,26 @@ import { services } from '../data/services';
     inset: 0;
     z-index: 2;
     background: #1a1a1a;
-    background-image: linear-gradient(
-      105deg,
-      transparent 20%,
-      rgba(245, 200, 0, 0.07) 40%,
-      rgba(245, 200, 0, 0.12) 50%,
-      rgba(245, 200, 0, 0.07) 60%,
-      transparent 80%
-    );
-    background-size: 200% 100%;
-    animation: shimmer 1.6s ease-in-out infinite;
+    overflow: hidden;
     transition: opacity 300ms ease;
+  }
+
+  .video-skeleton::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      105deg,
+      transparent 0%,
+      rgba(245, 200, 0, 0.07) 30%,
+      rgba(245, 200, 0, 0.12) 50%,
+      rgba(245, 200, 0, 0.07) 70%,
+      transparent 100%
+    );
+    animation: shimmer 1.6s ease-in-out infinite;
   }
 
   .video-skeleton.loaded {
@@ -139,8 +148,8 @@ import { services } from '../data/services';
   }
 
   @keyframes shimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    from { transform: translateX(0); }
+    to   { transform: translateX(400%); }
   }
 
   .video-wrapper iframe {
@@ -201,11 +210,15 @@ import { services } from '../data/services';
     border: none;
     border-radius: 2px;
     display: inline-block;
-    transition: background var(--transition-fast);
+    transition: background var(--transition-fast), transform 100ms ease-out;
   }
 
   .btn-primary:hover {
     background: var(--color-primary-glow);
+  }
+
+  .btn-primary:active {
+    transform: scale(0.97);
   }
 
   @media (max-width: 900px) {
