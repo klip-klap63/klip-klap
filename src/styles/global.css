@@ -153,11 +153,10 @@ a {
 
 @media (pointer: coarse) {
   #grain-overlay {
-    opacity: 0.04;
+    opacity: 0.06;
   }
   #grain-overlay::before {
-    animation: none;
-    transform: none;
+    animation: grain 1.67s steps(8, end) infinite;
   }
 }
 
