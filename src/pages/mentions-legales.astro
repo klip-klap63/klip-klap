@@ -14,39 +14,83 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="mentions-content">
         <section>
           <h2>Éditeur du site</h2>
-          <p>KLIP KLAP</p>
-          <p>39 rue Jean Groslier, Châtel-Guyon</p>
+          <p>KLIP KLAP — nom commercial de Ronan Fayt, entrepreneur individuel (EI)</p>
+          <p>39 rue Jean Groslier, 63140 Châtel-Guyon, France</p>
+          <p>SIREN : 999 252 620 — SIRET : 999 252 620 00011</p>
+          <p>Immatriculé au Registre national des entreprises (RNE)</p>
+          <p>TVA non applicable, article 293 B du Code général des impôts</p>
+          <p>Email : <a href="mailto:klipklap63@hotmail.com">klipklap63@hotmail.com</a></p>
+          <p>Téléphone : <a href="tel:+33663292671">06 63 29 26 71</a></p>
+        </section>
+
+        <section>
+          <h2>Directeur de la publication</h2>
+          <p>Ronan Fayt</p>
         </section>
 
         <section>
           <h2>Hébergement</h2>
           <p>Vercel Inc.</p>
           <p>440 N Barranca Ave #4133, Covina, CA 91723, États-Unis</p>
-          <p><a href="https://vercel.com" target="_blank" rel="noopener noreferrer">https://vercel.com</a></p>
+          <p><a href="https://vercel.com/contact" target="_blank" rel="noopener noreferrer">vercel.com/contact</a></p>
         </section>
 
         <section>
           <h2>Propriété intellectuelle</h2>
           <p>
-            L'ensemble des contenus présents sur ce site (textes, images, vidéos, graphismes) sont la
-            propriété exclusive de KLIP KLAP et sont protégés par le droit d'auteur. Toute reproduction
+            L'ensemble des contenus présents sur ce site (textes, images, vidéos, graphismes, logo) est la
+            propriété exclusive de KLIP KLAP ou de ses clients, et est protégé par le droit d'auteur. Toute reproduction
             ou représentation, totale ou partielle, sans autorisation écrite préalable est interdite.
           </p>
         </section>
 
-        <section>
+        <section id="donnees-personnelles">
           <h2>Données personnelles</h2>
           <p>
-            Les informations collectées via le formulaire de contact sont utilisées exclusivement dans
-            le cadre de la relation commerciale et ne sont pas transmises à des tiers. Conformément à
-            la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification et de
-            suppression de vos données.
+            Responsable du traitement : Ronan Fayt (KLIP KLAP), joignable à
+            <a href="mailto:klipklap63@hotmail.com">klipklap63@hotmail.com</a>.
+          </p>
+          <p>
+            Données collectées : nom, email, téléphone (facultatif), type de prestation et message, saisis
+            dans le formulaire de contact.
+          </p>
+          <p>
+            Finalité : répondre à votre demande et établir un devis. Base légale : mesures précontractuelles
+            prises à votre demande (article 6.1.b du RGPD).
+          </p>
+          <p>
+            Destinataires : vos données ne sont ni vendues ni cédées. Elles transitent par le service d'envoi de
+            formulaires Formspree (Formspree Inc., États-Unis) et le site est hébergé par Vercel Inc. (États-Unis),
+            qui agissent comme sous-traitants. Ces transferts hors de l'Union européenne sont encadrés par les
+            garanties prévues par le RGPD.
+          </p>
+          <p>
+            Durée de conservation : 3 ans à compter du dernier contact, sauf relation contractuelle en cours.
+          </p>
+          <p>
+            Vos droits : vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation,
+            d'opposition et de portabilité de vos données. Pour les exercer, écrivez à
+            <a href="mailto:klipklap63@hotmail.com">klipklap63@hotmail.com</a>. Vous pouvez également introduire
+            une réclamation auprès de la CNIL (<a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer">cnil.fr</a>).
           </p>
         </section>
 
         <section>
           <h2>Cookies</h2>
-          <p>Ce site n'utilise pas de cookies de tracking ou de publicité.</p>
+          <p>
+            Ce site ne dépose aucun cookie de mesure d'audience ni de publicité. Les vidéos sont intégrées
+            depuis Vimeo en mode « ne pas suivre » et depuis YouTube en mode confidentialité renforcée
+            (youtube-nocookie.com), sans cookie publicitaire. Aucun bandeau de consentement n'est donc nécessaire.
+          </p>
+        </section>
+
+        <section>
+          <h2>Accessibilité</h2>
+          <p>
+            Ce site est conçu pour être utilisable au clavier et respecte la préférence « réduire les
+            animations » de votre système. Si un contenu vous est inaccessible, écrivez à
+            <a href="mailto:klipklap63@hotmail.com">klipklap63@hotmail.com</a> : une alternative vous sera proposée.
+          </p>
         </section>
       </div>
     </div>
@@ -105,6 +149,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-weight: 300;
     color: #999;
     line-height: 1.8;
+  }
+
+  section p a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   section p + p {

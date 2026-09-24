@@ -1,4 +1,6 @@
+# Tous les robots (moteurs de recherche et IA) peuvent explorer l'ensemble du site
 User-agent: *
 Allow: /
 
+# Plan du site généré automatiquement à chaque build
 Sitemap: https://klip-klap.fr/sitemap-index.xml

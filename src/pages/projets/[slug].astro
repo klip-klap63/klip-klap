@@ -12,11 +12,17 @@ export const getStaticPaths: GetStaticPaths = () => {
 
 const { projet } = Astro.props;
 const categoryLabel = categories.find(c => c.id === projet.categorie)?.label ?? projet.categorie;
+const categorieLabel: Record<string, string> = {
+  'live-multicam': 'Captation live multicaméra',
+  'reseaux-sociaux': 'Vidéo pour les réseaux sociaux',
+  'corporate': 'Film corporate et événementiel',
+  'clips': 'Clip musical',
+};
 ---
 
 <BaseLayout
   title={`${projet.titre} — KLIP KLAP`}
-  description={`${projet.titre} — Production vidéo KLIP KLAP`}
+  description={`${projet.titre} — ${categorieLabel[projet.categorie] ?? 'Production vidéo'}. Réalisation KLIP KLAP, vidéaste à Châtel-Guyon et Clermont-Ferrand, en Auvergne.`}
   ogImage={projet.thumbnail}
 >
   <div class="projet-page">
@@ -28,7 +34,7 @@ const categoryLabel = categories.find(c => c.id === projet.categorie)?.label ?? 
       <div class="projet-hero">
         <div class="yt-wrapper">
           <iframe
-            src={`https://www.youtube.com/embed/${projet.youtube_id}?rel=0&modestbranding=1`}
+            src={`https://www.youtube-nocookie.com/embed/${projet.youtube_id}?rel=0&modestbranding=1`}
             title={projet.titre}
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

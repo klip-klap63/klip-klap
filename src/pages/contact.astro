@@ -73,6 +73,12 @@ const prestations = [
 
             <button type="submit" class="btn-submit">Envoyer le message</button>
 
+            <p class="form-rgpd">
+              Vos informations servent uniquement à répondre à votre demande et à établir un devis.
+              Elles sont conservées 3 ans au plus. Vous pouvez y accéder ou les faire supprimer à tout moment :
+              <a href="/mentions-legales#donnees-personnelles">en savoir plus</a>.
+            </p>
+
             <div class="form-success" id="form-success" aria-live="polite" hidden>
               Message envoyé. Je vous répondrai dans les meilleurs délais.
             </div>
@@ -278,6 +284,20 @@ const prestations = [
     border: 1px solid #ff4444;
     padding: 12px 16px;
     border-radius: 2px;
+  }
+
+  .form-rgpd {
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.6;
+    color: var(--color-text-subtle);
+  }
+
+  .form-rgpd a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   @media (max-width: 900px) {

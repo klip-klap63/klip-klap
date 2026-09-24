@@ -18,6 +18,9 @@ const {
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
+// Les réseaux sociaux exigent une URL d'image absolue (https://…), pas un chemin relatif
+const ogImageUrl = new URL(ogImage, Astro.site).href;
+const isDefaultOg = ogImage === '/og-default.jpg';
 ---
 
 <!doctype html>
@@ -38,14 +41,18 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="KLIP KLAP" />
+    <meta property="og:image" content={ogImageUrl} />
+    {isDefaultOg && <meta property="og:image:width" content="1200" />}
+    {isDefaultOg && <meta property="og:image:height" content="630" />}
+    <meta property="og:image:alt" content={title} />
     <meta property="og:locale" content="fr_FR" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image" content={ogImageUrl} />
 
     <!-- GSAP + ScrollTrigger via CDN — defer garantit l'exécution avant DOMContentLoaded -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -124,63 +131,66 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       }
     </style>
 
-    <!-- Schema.org LocalBusiness -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "LocalBusiness",
-        "name": "Klip Klap",
-        "description": "Production audiovisuelle à Châtel-Guyon et en Auvergne. Live multicam jusqu'à 8 caméras, télépilote drone certifié DGAC, clips musicaux, films corporate, vidéo événementielle.",
-        "url": "https://klip-klap.fr",
-        "logo": "https://klip-klap.fr/og-default.jpg",
-        "image": "https://klip-klap.fr/og-default.jpg",
-        "telephone": "+33663292671",
-        "email": "klipklap63@hotmail.com",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "39 rue Jean Groslier",
-          "addressLocality": "Châtel-Guyon",
-          "postalCode": "63140",
-          "addressRegion": "Auvergne-Rhône-Alpes",
-          "addressCountry": "FR"
-        },
-        "geo": {
-          "@type": "GeoCoordinates",
-          "latitude": 45.9167,
-          "longitude": 3.0667
-        },
-        "areaServed": [
-          "Châtel-Guyon",
-          "Clermont-Ferrand",
-          "Riom",
-          "Vichy",
-          "Thiers",
-          "Issoire",
-          "Puy-de-Dôme",
-          "Auvergne-Rhône-Alpes"
-        ],
-        "priceRange": "€€",
-        "openingHours": "Mo-Fr 09:00-19:00",
-        "sameAs": [
-          "https://www.instagram.com/klip.klap__/",
-          "https://www.facebook.com/p/KLIP-KLAP-100075680977037/",
-          "https://www.linkedin.com/in/ronan-fayt-5a7227268/"
-        ],
-        "hasOfferCatalog": {
-          "@type": "OfferCatalog",
-          "name": "Services audiovisuels",
-          "itemListElement": [
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Live multicam", "description": "Diffusion en direct multicaméra jusqu'à 8 caméras — concerts, festivals, événements en Auvergne" }},
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Drone DGAC", "description": "Prises de vue aériennes par drone, télépilote certifié DGAC A1/A2/A3 CATS STS-01 STS-02" }},
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Clips musicaux", "description": "Réalisation de clips musicaux pour artistes à Clermont-Ferrand et en Auvergne" }},
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Film corporate", "description": "Films d'entreprise cinématographiques pour sociétés en Auvergne et Clermont-Ferrand" }},
-            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Vidéo événementielle", "description": "Captation vidéo événementielle tous supports — réseaux sociaux, web, TV, diffusion live" }}
-          ]
-        }
+    <!-- Schema.org — fiche entreprise lue par Google et les IA -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": ["LocalBusiness", "ProfessionalService"],
+      "@id": "https://klip-klap.fr/#entreprise",
+      "name": "KLIP KLAP",
+      "description": "Production audiovisuelle à Châtel-Guyon, Clermont-Ferrand et en Auvergne : captation live multicaméra, télépilote drone diplômé DGAC, clips musicaux, films corporate, vidéo événementielle et contenus pour les réseaux sociaux.",
+      "url": "https://klip-klap.fr/",
+      "logo": "https://klip-klap.fr/favicon.svg",
+      "image": "https://klip-klap.fr/og-default.jpg",
+      "telephone": "+33663292671",
+      "email": "klipklap63@hotmail.com",
+      "founder": { "@type": "Person", "name": "Ronan Fayt", "jobTitle": "Vidéaste et télépilote drone" },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "39 rue Jean Groslier",
+        "addressLocality": "Châtel-Guyon",
+        "postalCode": "63140",
+        "addressRegion": "Auvergne-Rhône-Alpes",
+        "addressCountry": "FR"
+      },
+      "geo": { "@type": "GeoCoordinates", "latitude": 45.9227, "longitude": 3.0636 },
+      "areaServed": [
+        { "@type": "City", "name": "Châtel-Guyon" },
+        { "@type": "City", "name": "Riom" },
+        { "@type": "City", "name": "Clermont-Ferrand" },
+        { "@type": "City", "name": "Vichy" },
+        { "@type": "City", "name": "Thiers" },
+        { "@type": "City", "name": "Issoire" },
+        { "@type": "AdministrativeArea", "name": "Puy-de-Dôme" },
+        { "@type": "AdministrativeArea", "name": "Auvergne-Rhône-Alpes" }
+      ],
+      "priceRange": "€€",
+      "openingHoursSpecification": [{
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "09:00",
+        "closes": "19:00"
+      }],
+      "sameAs": [
+        "https://www.instagram.com/klip.klap__/",
+        "https://www.facebook.com/p/KLIP-KLAP-100075680977037/",
+        "https://www.linkedin.com/in/ronan-fayt-5a7227268/"
+      ],
+      "knowsAbout": ["Captation vidéo multicaméra", "Diffusion en direct", "Prise de vue par drone", "Clip musical", "Film d'entreprise", "Aftermovie", "Étalonnage"],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Prestations audiovisuelles",
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Diffusion en direct et multicaméra", "url": "https://klip-klap.fr/services/#live-multicam", "description": "Captation live multicaméra de concerts, festivals, matchs et événements en Auvergne, diffusion en direct et replay." }},
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Drone", "url": "https://klip-klap.fr/services/#drone", "description": "Prises de vue aériennes par télépilote diplômé DGAC (A1, A2, A3, CATS, STS-01, STS-02)." }},
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Clips", "url": "https://klip-klap.fr/services/#clips", "description": "Clips musicaux pour artistes à Clermont-Ferrand et en Auvergne." }},
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Film corporate", "url": "https://klip-klap.fr/services/#corporate", "description": "Films d'entreprise et institutionnels au style cinématographique." }},
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Réseaux sociaux", "url": "https://klip-klap.fr/services/#reseaux-sociaux", "description": "Contenus verticaux pour Instagram, TikTok et Facebook." }}
+        ]
       }
-    </script>
+    })}></script>
   </head>
   <body>
+    <a href="#contenu" class="skip-link">Aller au contenu</a>
     <div id="grain-overlay" aria-hidden="true"></div>
     <div id="kk-loader" aria-hidden="true">
       <span id="kk-num">000</span>
@@ -330,7 +340,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <BackgroundFX />
     <CustomCursor />
     <Header />
-    <main>
+    <main id="contenu" tabindex="-1">
       <slot />
     </main>
     <Footer />

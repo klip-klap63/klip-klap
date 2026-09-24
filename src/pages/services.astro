@@ -5,7 +5,7 @@ import { services } from '../data/services';
 
 <BaseLayout
   title="Services — KLIP KLAP | Vidéaste Clermont-Ferrand, Drone DGAC Puy-de-Dôme, Live Multicam Auvergne"
-  description="Services audiovisuels à Clermont-Ferrand et en Auvergne : live multicam jusqu'à 8 caméras, télépilote drone diplômé DGAC Puy-de-Dôme, clips musicaux, film corporate, réseaux sociaux."
+  description="Services audiovisuels à Clermont-Ferrand et en Auvergne : captation live multicaméra, télépilote drone diplômé DGAC Puy-de-Dôme, clips musicaux, film corporate, réseaux sociaux."
 >
   <div class="page-header">
     <div class="container">
@@ -27,6 +27,8 @@ import { services } from '../data/services';
                 allow="autoplay; fullscreen"
                 title={s.titre}
                 loading="lazy"
+                tabindex="-1"
+                aria-hidden="true"
               ></iframe>
             </div>
           </div>

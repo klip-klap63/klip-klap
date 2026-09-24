@@ -188,3 +188,37 @@ img {
     text-align: center;
   }
 }
+
+/* ═══ Accessibilité clavier ═══ */
+/* Lien d'évitement : invisible, apparaît au premier Tab pour sauter directement au contenu */
+.skip-link {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 10002;
+  padding: 12px 20px;
+  background: #F5C800;
+  color: #000000;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 400;
+  border-radius: 4px;
+  transform: translateY(-200%);
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* Contour doré visible uniquement à la navigation clavier (jamais au clic souris) */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+summary:focus-visible {
+  outline: 2px solid #F5C800;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+main:focus {
+  outline: none;
+}
