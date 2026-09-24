@@ -21,8 +21,8 @@ const categorieLabel: Record<string, string> = {
 ---
 
 <BaseLayout
-  title={`${projet.titre} — KLIP KLAP`}
-  description={`${projet.titre} — ${categorieLabel[projet.categorie] ?? 'Production vidéo'}. Réalisation KLIP KLAP, vidéaste à Châtel-Guyon et Clermont-Ferrand, en Auvergne.`}
+  title={`${projet.titre} | KLIP KLAP`}
+  description={projet.description ?? `${projet.titre} — ${categorieLabel[projet.categorie] ?? 'Production vidéo'}. Réalisation KLIP KLAP, vidéaste à Châtel-Guyon et Clermont-Ferrand, en Auvergne.`}
   ogImage={projet.thumbnail}
 >
   <div class="projet-page">
@@ -47,6 +47,7 @@ const categorieLabel: Record<string, string> = {
       <div class="projet-content">
         <h1 class="projet-titre">{projet.titre}</h1>
         <span class="projet-category">{categoryLabel}</span>
+        {projet.description && <p class="projet-desc">{projet.description}</p>}
         <a
           href={`https://youtu.be/${projet.youtube_id}`}
           target="_blank"

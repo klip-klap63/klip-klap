@@ -28,8 +28,10 @@ const isDefaultOg = ogImage === '/og-default.jpg';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/icon-512.png" sizes="512x512" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="description" content={description} />
     <meta name="keywords" content="vidéaste Clermont-Ferrand, production audiovisuelle Auvergne, live multicam Clermont-Ferrand, télépilote drone DGAC Puy-de-Dôme, clips musicaux Clermont-Ferrand, régie multicaméra Auvergne, captation vidéo événementiel, film corporate Clermont-Ferrand, aftermovie Auvergne, KLIP KLAP" />
     <meta name="geo.region" content="FR-63" />
@@ -58,11 +60,9 @@ const isDefaultOg = ogImage === '/og-default.jpg';
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
-    <!-- Helvetica Now Display — auto-hébergé, préchargé pour affichage immédiat -->
+    <!-- Helvetica Now Display — seules les graisses visibles dès l'ouverture (200, 300) sont préchargées ; 400 et 500 se chargent à la demande -->
     <link rel="preload" href="/fonts/HelveticaNowDisplay-ExtLt.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/HelveticaNowDisplay-Light.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/HelveticaNowDisplay-Regular.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/HelveticaNowDisplay-Medium.woff2" as="font" type="font/woff2" crossorigin />
 
     <!-- Road Rage — auto-hébergé, préchargé pour affichage immédiat -->
     <link rel="preload" href="/fonts/Road_Rage.otf" as="font" type="font/otf" crossorigin />
@@ -139,7 +139,7 @@ const isDefaultOg = ogImage === '/og-default.jpg';
       "name": "KLIP KLAP",
       "description": "Production audiovisuelle à Châtel-Guyon, Clermont-Ferrand et en Auvergne : captation live multicaméra, télépilote drone diplômé DGAC, clips musicaux, films corporate, vidéo événementielle et contenus pour les réseaux sociaux.",
       "url": "https://klip-klap.fr/",
-      "logo": "https://klip-klap.fr/favicon.svg",
+      "logo": "https://klip-klap.fr/logo-512.png",
       "image": "https://klip-klap.fr/og-default.jpg",
       "telephone": "+33663292671",
       "email": "klipklap63@hotmail.com",
