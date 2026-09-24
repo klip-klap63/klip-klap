@@ -429,14 +429,12 @@ const projetsJSON = JSON.stringify(projets);
     font-family: var(--font-display);
     font-size: clamp(64px, 12vw, 120px);
     color: #F5C800;
-    -webkit-text-stroke: 4px #000;
-    paint-order: stroke fill;
     text-shadow: none;
     line-height: 0.9;
     letter-spacing: 4px;
     margin-bottom: 20px;
     text-align: center;
-    /* margin recule la boîte vers l'intérieur — le stroke du K et du P ne sort plus du conteneur */
+    /* marges de sécurité : les lettres Road Rage débordent de leur boîte, le K et le P ne touchent pas le bord */
     /* padding donne en plus une zone de peinture propre à chaque bord */
     margin-left: 0.15em;
     margin-right: 0.15em;
