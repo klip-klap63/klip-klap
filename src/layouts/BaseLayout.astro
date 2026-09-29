@@ -21,6 +21,39 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 // Les réseaux sociaux exigent une URL d'image absolue (https://…), pas un chemin relatif
 const ogImageUrl = new URL(ogImage, Astro.site).href;
 const isDefaultOg = ogImage === '/og-default.jpg';
+
+// Fil d'Ariane (BreadcrumbList) : construit à partir de l'URL, absent sur l'accueil
+const nomsRubriques: Record<string, string> = {
+  services: 'Prestations',
+  projets: 'Projets',
+  contact: 'Contact',
+  'mentions-legales': 'Mentions légales',
+};
+const segments = Astro.url.pathname.split('/').filter(Boolean);
+const breadcrumb = segments.length === 0 ? null : {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://klip-klap.fr/' },
+    ...segments.map((seg, i) => ({
+      '@type': 'ListItem',
+      position: i + 2,
+      name: nomsRubriques[seg] ?? title.split(' | ')[0],
+      item: new URL('/' + segments.slice(0, i + 1).join('/') + '/', Astro.site).href,
+    })),
+  ],
+};
+
+// Site web (WebSite, type dérivé de CreativeWork), présent sur toutes les pages
+const website = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': 'https://klip-klap.fr/#site',
+  name: 'KLIP KLAP',
+  url: 'https://klip-klap.fr/',
+  inLanguage: 'fr-FR',
+  publisher: { '@id': 'https://klip-klap.fr/#entreprise' },
+};
 ---
 
 <!doctype html>
@@ -188,6 +221,9 @@ const isDefaultOg = ogImage === '/og-default.jpg';
         ]
       }
     })}></script>
+    <script type="application/ld+json" set:html={JSON.stringify(website)}></script>
+    {breadcrumb && <script type="application/ld+json" set:html={JSON.stringify(breadcrumb)}></script>}
+    <slot name="head" />
   </head>
   <body>
     <a href="#contenu" class="skip-link">Aller au contenu</a>

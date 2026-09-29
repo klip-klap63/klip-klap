@@ -18,6 +18,18 @@ const categorieLabel: Record<string, string> = {
   'corporate': 'Film corporate et événementiel',
   'clips': 'Clip musical',
 };
+const creativeWork = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: projet.titre,
+  description: projet.description,
+  url: new URL(`/projets/${projet.slug}/`, Astro.site).href,
+  image: projet.thumbnail,
+  genre: categoryLabel,
+  inLanguage: 'fr-FR',
+  creator: { '@id': 'https://klip-klap.fr/#entreprise' },
+  sameAs: `https://www.youtube.com/watch?v=${projet.youtube_id}`,
+};
 ---
 
 <BaseLayout
@@ -25,6 +37,7 @@ const categorieLabel: Record<string, string> = {
   description={projet.description ?? `${projet.titre} — ${categorieLabel[projet.categorie] ?? 'Production vidéo'}. Réalisation KLIP KLAP, vidéaste à Châtel-Guyon et Clermont-Ferrand, en Auvergne.`}
   ogImage={projet.thumbnail}
 >
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(creativeWork)}></script>
   <div class="projet-page">
     <div class="container">
       <a href="/projets" class="back-link">
