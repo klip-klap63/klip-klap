@@ -30,7 +30,7 @@ export const faq = [
   {
     question: "Pouvez-vous filmer au drone n'importe où ?",
     reponse:
-      "Je suis télépilote diplômé DGAC (A1, A2, A3, CATS, STS-01 et STS-02) et je m'occupe des démarches : déclarations en préfecture, vérification des zones réglementées et des horaires autorisés. Certaines zones (aéroports, zones militaires, centres-villes) demandent une autorisation ou sont interdites : je vérifie la faisabilité avant de vous envoyer le devis.",
+      "Presque partout : tout dépend de la réglementation aérienne. Je suis télépilote diplômé DGAC (A1, A2, A3, CATS, STS-01 et STS-02). En dehors des zones interdites, des zones réglementées actives et des restrictions temporaires publiées pour l'aviation (les NOTAM), je peux voler dans la grande majorité des lieux et des situations. Comme tout télépilote, je reste soumis à la loi : avant chaque mission, je vérifie ce qui s'applique au lieu et à la date du tournage, et je m'occupe des démarches nécessaires, déclarations ou autorisations.",
   },
   {
     question: "Dans quels formats livrez-vous les vidéos ?",
