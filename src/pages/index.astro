@@ -2,13 +2,26 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { heroVideo, services } from '../data/services';
 import { projets } from '../data/projets';
+import { faq } from '../data/faq';
 const projetsJSON = JSON.stringify(projets);
+
+// Données structurées FAQPage, lues par Google et les assistants IA
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({
+    '@type': 'Question',
+    name: f.question,
+    acceptedAnswer: { '@type': 'Answer', text: f.reponse },
+  })),
+};
 ---
 
 <BaseLayout
   title="Vidéaste Clermont-Ferrand — Live, drone, clips | KLIP KLAP"
   description="Vidéaste à Clermont-Ferrand et en Auvergne : captation live multicam, prises de vue drone DGAC, clips musicaux et films corporate. Devis rapide."
 >
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
   <!-- HERO -->
   <section class="hero">
     <div class="hero-video-wrapper">
@@ -196,6 +209,26 @@ const projetsJSON = JSON.stringify(projets);
   <div class="projets-cta-wrap">
     <a href="/projets" class="btn-secondary">Voir tous les projets</a>
   </div>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="container faq-container">
+      <p class="section-eyebrow-projets">Questions fréquentes</p>
+      <h2 class="section-title-projets">Avant de se lancer</h2>
+      <div class="faq-list">
+        {faq.map((f) => (
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>{f.question}</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </summary>
+            <p class="faq-reponse">{f.reponse}</p>
+          </details>
+        ))}
+      </div>
+      <a href="/contact" class="btn-primary faq-cta">Demander un devis</a>
+    </div>
+  </section>
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', function () {
@@ -955,6 +988,106 @@ const projetsJSON = JSON.stringify(projets);
 
     .projets-grid-home .projet-card-home {
       flex: 0 0 80vw;
+    }
+  }
+
+  /* ═══ FAQ ═══ */
+  .faq {
+    padding: 160px 0;
+    background: #080808;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .faq-container {
+    max-width: 880px;
+  }
+
+  .faq-list {
+    margin-top: 56px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .faq-question {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 28px 0;
+    font-family: var(--font-body);
+    font-size: clamp(18px, 2vw, 22px);
+    font-weight: 300;
+    letter-spacing: 0;
+    color: #fff;
+    transition: color 200ms ease;
+  }
+
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-question:hover {
+    color: var(--color-primary);
+  }
+
+  /* Croix dorée qui pivote à l'ouverture */
+  .faq-icon {
+    position: relative;
+    flex: 0 0 14px;
+    width: 14px;
+    height: 14px;
+    transition: transform 300ms cubic-bezier(0.25, 0, 0, 1);
+  }
+
+  .faq-icon::before,
+  .faq-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--color-primary);
+  }
+
+  .faq-icon::after {
+    transform: rotate(90deg);
+  }
+
+  .faq-item[open] .faq-icon {
+    transform: rotate(45deg);
+  }
+
+  .faq-reponse {
+    padding: 0 48px 32px 0;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: #999;
+    max-width: 720px;
+  }
+
+  .faq-cta {
+    margin-top: 56px;
+    display: inline-block;
+  }
+
+  @media (max-width: 768px) {
+    .faq {
+      padding: 100px 0;
+    }
+
+    .faq-question {
+      padding: 22px 0;
+    }
+
+    .faq-reponse {
+      padding-right: 0;
     }
   }
 </style>
