@@ -44,6 +44,26 @@ const breadcrumb = segments.length === 0 ? null : {
   ],
 };
 
+// Organisation explicite (accueil et contact) : même @id que la fiche ProfessionalService,
+// Google fusionne les deux ; certains outils ne déduisent pas qu'un ProfessionalService est une Organization
+const showOrganization = segments.length === 0 || segments[0] === 'contact';
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': 'https://klip-klap.fr/#entreprise',
+  name: 'KLIP KLAP',
+  url: 'https://klip-klap.fr/',
+  logo: 'https://klip-klap.fr/logo-512.png',
+  email: 'klipklap63@hotmail.com',
+  telephone: '+33663292671',
+  founder: { '@type': 'Person', name: 'Ronan Fayt' },
+  sameAs: [
+    'https://www.instagram.com/klip.klap__/',
+    'https://www.facebook.com/p/KLIP-KLAP-100075680977037/',
+    'https://www.linkedin.com/in/ronan-fayt-5a7227268/',
+  ],
+};
+
 // Site web (WebSite, type dérivé de CreativeWork), présent sur toutes les pages
 const website = {
   '@context': 'https://schema.org',
@@ -222,6 +242,7 @@ const website = {
       }
     })}></script>
     <script type="application/ld+json" set:html={JSON.stringify(website)}></script>
+    {showOrganization && <script type="application/ld+json" set:html={JSON.stringify(organization)}></script>}
     {breadcrumb && <script type="application/ld+json" set:html={JSON.stringify(breadcrumb)}></script>}
     <slot name="head" />
   </head>
