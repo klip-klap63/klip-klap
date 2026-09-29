@@ -23,8 +23,11 @@ const projetsJSON = JSON.stringify(projets);
     </div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
-      <p class="eyebrow">Production audiovisuelle</p>
-      <h1 class="hero-title">KLIP KLAP</h1>
+      <!-- H1 = « Production audiovisuelle KLIP KLAP » pour Google, rendu visuel identique -->
+      <h1 class="hero-h1">
+        <span class="eyebrow">Production audiovisuelle</span>
+        <span class="hero-title">KLIP KLAP</span>
+      </h1>
       <p class="hero-sub">Live multicam — Drone — Clips — Corporate</p>
       <div class="hero-ctas">
         <a href="/services" class="btn-primary">Prestations</a>
@@ -428,6 +431,18 @@ const projetsJSON = JSON.stringify(projets);
     width: 100%;
     box-sizing: border-box;
     padding: 0 80px;
+  }
+
+  .hero-h1 {
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+  }
+
+  .hero-h1 .eyebrow,
+  .hero-h1 .hero-title {
+    display: block;
   }
 
   .eyebrow {
