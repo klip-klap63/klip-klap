@@ -43,6 +43,16 @@ export const faq = [
       "Je livre des fichiers adaptés à l'endroit où la vidéo sera vue : format horizontal pour le web, YouTube ou un écran d'événement, format vertical pour Instagram, TikTok et les stories, en haute définition. Une même prestation peut être déclinée en plusieurs formats.",
   },
   {
+    question: "Puis-je utiliser les vidéos comme je veux ?",
+    reponse:
+      "Oui, les vidéos livrées sont à vous pour votre communication : site internet, réseaux sociaux, diffusion lors d'un événement, sans limite de durée. En revanche, elles ne doivent pas être modifiées (recoupées, remontées, réétalonnées) ni revendues ou commercialisées sans mon accord. Les conditions précises figurent sur le devis.",
+  },
+  {
+    question: "Qui s'occupe de la musique ?",
+    reponse:
+      "Toutes les musiques que j'utilise sont libres de droits et incluses dans la prestation : vous pouvez diffuser la vidéo sereinement. Si vous avez déjà un morceau en tête, vous pouvez aussi me le fournir, à condition d'en détenir les droits de diffusion.",
+  },
+  {
     question: "Travaillez-vous avec les collectivités et les associations ?",
     reponse:
       "Oui. Je travaille avec des mairies, des collectivités, des associations, des clubs sportifs et des organisateurs d'événements. Pour les structures publiques, la facturation passe par Chorus Pro.",
