@@ -34,7 +34,7 @@ const creativeWork = {
 
 <BaseLayout
   title={`${projet.titre} | KLIP KLAP`}
-  description={projet.description ?? `${projet.titre} — ${categorieLabel[projet.categorie] ?? 'Production vidéo'}. Réalisation KLIP KLAP, vidéaste à Châtel-Guyon et Clermont-Ferrand, en Auvergne.`}
+  description={projet.description ?? `${projet.titre} — ${categorieLabel[projet.categorie] ?? 'Production vidéo'}. Vidéaste à Châtel-Guyon et Clermont-Ferrand, en Auvergne.`}
   ogImage={projet.thumbnail}
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(creativeWork)}></script>
