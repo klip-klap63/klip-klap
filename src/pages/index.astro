@@ -25,7 +25,7 @@ const projetsJSON = JSON.stringify(projets);
     <div class="hero-content">
       <!-- H1 = « Production audiovisuelle KLIP KLAP » pour Google, rendu visuel identique -->
       <h1 class="hero-h1">
-        <span class="eyebrow">Production audiovisuelle</span>
+        <span class="eyebrow">Production audiovisuelle</span><span class="sr-only"> — </span>
         <span class="hero-title">KLIP KLAP</span>
       </h1>
       <p class="hero-sub">Live multicam — Drone — Clips — Corporate</p>
@@ -54,7 +54,7 @@ const projetsJSON = JSON.stringify(projets);
 
   <!-- PRESTATIONS -->
   <section class="services-preview" id="services-preview">
-    <p class="services-label">Mes prestations</p>
+    <h2 class="services-label">Mes prestations</h2>
     <div class="services-stage" id="services-stage">
       {services.map((s) => (
         <a
