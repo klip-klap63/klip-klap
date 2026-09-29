@@ -3,6 +3,11 @@
 
 export const faq = [
   {
+    question: "Quels types de projets filmez-vous ?",
+    reponse:
+      "Tous les projets vidéo, du tournage à la livraison : festivals et concerts (aftermovies, captations live), événements sportifs (matchs diffusés en direct et replays), événements d'entreprise et institutionnels (conférences, inaugurations, cérémonies), films corporate et interviews, clips musicaux, contenus verticaux pour les réseaux sociaux et prises de vue aériennes par drone. Votre projet ne rentre dans aucune case ? Parlez-m'en : chaque demande est étudiée.",
+  },
+  {
     question: "Combien coûte une prestation vidéo ?",
     reponse:
       "Chaque projet est différent, je travaille donc uniquement sur devis, gratuit et détaillé. Le prix dépend de la durée de tournage, du dispositif (live multicaméra, drone, lumière), du temps de montage et des déplacements. Après un premier échange sur votre projet, je vous envoie une proposition claire, sans surprise. TVA non applicable : le prix indiqué est le prix final.",
