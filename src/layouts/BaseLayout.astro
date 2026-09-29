@@ -22,7 +22,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImageUrl = new URL(ogImage, Astro.site).href;
 const isDefaultOg = ogImage === '/og-default.jpg';
 
-// Fil d'Ariane (BreadcrumbList) : construit à partir de l'URL, absent sur l'accueil
+// Fil d'Ariane (BreadcrumbList) : construit à partir de l'URL (sur l'accueil : « Accueil » seul)
 const nomsRubriques: Record<string, string> = {
   services: 'Prestations',
   projets: 'Projets',
@@ -30,7 +30,7 @@ const nomsRubriques: Record<string, string> = {
   'mentions-legales': 'Mentions légales',
 };
 const segments = Astro.url.pathname.split('/').filter(Boolean);
-const breadcrumb = segments.length === 0 ? null : {
+const breadcrumb = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
