@@ -20,6 +20,11 @@ const year = new Date().getFullYear();
 
     <div class="footer-bottom">
       <p class="address">39 rue Jean Groslier — Châtel-Guyon</p>
+      <ul class="social" aria-label="Réseaux sociaux">
+        <li><a href="https://www.instagram.com/klip.klap__/" target="_blank" rel="me noopener">instagram</a></li>
+        <li><a href="https://www.facebook.com/p/KLIP-KLAP-100075680977037/" target="_blank" rel="me noopener">facebook</a></li>
+        <li><a href="https://www.linkedin.com/in/ronan-fayt-5a7227268/" target="_blank" rel="me noopener">linkedin</a></li>
+      </ul>
       <p class="copy">&copy; {year} KLIP KLAP. Tous droits réservés.</p>
     </div>
   </div>
@@ -111,6 +116,26 @@ const year = new Date().getFullYear();
     font-weight: 300;
     letter-spacing: 0;
     color: var(--color-text-subtle);
+  }
+
+  .social {
+    list-style: none;
+    display: flex;
+    gap: 8px 32px;
+    flex-wrap: wrap;
+  }
+
+  .social a {
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 300;
+    letter-spacing: 0;
+    color: var(--color-text-subtle);
+    transition: color var(--transition-fast);
+  }
+
+  .social a:hover {
+    color: var(--color-primary);
   }
 
   .copy {
