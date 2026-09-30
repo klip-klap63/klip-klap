@@ -5,34 +5,85 @@ const year = new Date().getFullYear();
 <footer>
   <canvas id="footer-pixels" aria-hidden="true"></canvas>
   <div class="footer-inner">
-    <div class="footer-top">
-      <a href="/" class="footer-logo" aria-label="KLIP KLAP">KLIP KLAP</a>
+    <div class="footer-grid">
 
-      <nav aria-label="Navigation secondaire">
+      <!-- Colonne 1 : identité -->
+      <div class="footer-brand">
+        <a href="/" class="footer-logo" aria-label="KLIP KLAP, accueil">KLIP KLAP</a>
+        <p class="footer-tagline">Vidéaste en Auvergne. Live multicam, drone, clips et films.</p>
+      </div>
+
+      <!-- Colonne 2 : navigation -->
+      <nav class="footer-col" aria-labelledby="footer-nav-titre">
+        <p class="footer-label" id="footer-nav-titre">Navigation</p>
         <ul>
           <li><a href="/services">prestations</a></li>
           <li><a href="/projets">projets</a></li>
           <li><a href="/contact">contact</a></li>
-          <li><a href="/mentions-legales">mentions légales</a></li>
         </ul>
       </nav>
+
+      <!-- Colonne 3 : réseaux sociaux -->
+      <div class="footer-col">
+        <p class="footer-label" id="footer-social-titre">Réseaux</p>
+        <ul aria-labelledby="footer-social-titre">
+          <li>
+            <a href="https://www.instagram.com/klip.klap__/" target="_blank" rel="me noopener">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+              instagram
+            </a>
+          </li>
+          <li>
+            <a href="https://www.facebook.com/p/KLIP-KLAP-100075680977037/" target="_blank" rel="me noopener">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              facebook
+            </a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/in/ronan-fayt-5a7227268/" target="_blank" rel="me noopener">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+              linkedin
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Colonne 4 : contact -->
+      <div class="footer-col">
+        <p class="footer-label" id="footer-contact-titre">Contact</p>
+        <ul aria-labelledby="footer-contact-titre">
+          <li>
+            <a href="mailto:klipklap63@hotmail.com">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              klipklap63@hotmail.com
+            </a>
+          </li>
+          <li>
+            <a href="tel:+33663292671">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              06 63 29 26 71
+            </a>
+          </li>
+          <li>
+            <span class="footer-text">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+              39 rue Jean Groslier<br />63140 Châtel-Guyon
+            </span>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <div class="footer-bottom">
-      <p class="address">39 rue Jean Groslier — Châtel-Guyon</p>
-      <ul class="social" aria-label="Réseaux sociaux">
-        <li><a href="https://www.instagram.com/klip.klap__/" target="_blank" rel="me noopener">instagram</a></li>
-        <li><a href="https://www.facebook.com/p/KLIP-KLAP-100075680977037/" target="_blank" rel="me noopener">facebook</a></li>
-        <li><a href="https://www.linkedin.com/in/ronan-fayt-5a7227268/" target="_blank" rel="me noopener">linkedin</a></li>
-      </ul>
       <p class="copy">&copy; {year} KLIP KLAP. Tous droits réservés.</p>
+      <a href="/mentions-legales" class="copy-link">mentions légales</a>
     </div>
   </div>
 </footer>
 
 <style>
   /* Le canvas est positionné à cheval sur la limite footer / contenu :
-     30px au-dessus (fond page #000), 30px en dessous (fond footer #0D0D0D).
+     30px au-dessus (fond page #000), 30px en dessous (fond footer).
      Fond transparent — aucune couleur propre. */
   footer {
     background: var(--color-surface);
@@ -54,24 +105,24 @@ const year = new Date().getFullYear();
   .footer-inner {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 56px 32px 40px;
+    padding: 72px 32px 40px;
   }
 
-  .footer-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 40px;
-    margin-bottom: 48px;
+  /* ── Grille 4 colonnes ─────────────────────────────────────────────── */
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1.3fr;
+    gap: 48px;
+    margin-bottom: 64px;
   }
 
   .footer-logo {
+    display: inline-block;
     font-family: var(--font-display);
-    font-size: 28px;
+    font-size: 32px;
     color: var(--color-primary);
     letter-spacing: 2px;
     line-height: 1;
-    flex-shrink: 0;
     transition: color var(--transition-fast);
   }
 
@@ -79,27 +130,72 @@ const year = new Date().getFullYear();
     color: var(--color-primary-glow);
   }
 
-  nav ul {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 32px;
-    justify-content: flex-end;
+  .footer-tagline {
+    margin-top: 20px;
+    max-width: 28ch;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.5;
+    letter-spacing: 0;
+    color: var(--color-text-muted);
   }
 
-  nav a {
+  /* Petit repère doré au-dessus de chaque colonne (direction « La Coupe ») */
+  .footer-label {
+    margin-bottom: 20px;
     font-family: var(--font-body);
     font-size: 16px;
     font-weight: 300;
     letter-spacing: 0;
+    color: var(--color-primary);
+  }
+
+  .footer-col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .footer-col a,
+  .footer-text {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.4;
+    letter-spacing: 0;
+    color: var(--color-text-muted);
+    transition: color var(--transition-fast);
+  }
+
+  .footer-col a:hover {
+    color: var(--color-text);
+  }
+
+  /* Icônes au trait, alignées sur la graisse 300 du texte */
+  .icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
     color: var(--color-text-subtle);
     transition: color var(--transition-fast);
   }
 
-  nav a:hover {
-    color: var(--color-text);
+  .footer-col a:hover .icon {
+    color: var(--color-primary);
   }
 
+  /* ── Barre du bas ──────────────────────────────────────────────────── */
   .footer-bottom {
     border-top: 1px solid var(--color-border);
     padding-top: 24px;
@@ -110,54 +206,46 @@ const year = new Date().getFullYear();
     flex-wrap: wrap;
   }
 
-  .address {
+  .copy,
+  .copy-link {
     font-family: var(--font-body);
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 300;
     letter-spacing: 0;
     color: var(--color-text-subtle);
   }
 
-  .social {
-    list-style: none;
-    display: flex;
-    gap: 8px 32px;
-    flex-wrap: wrap;
-  }
-
-  .social a {
-    font-family: var(--font-body);
-    font-size: 16px;
-    font-weight: 300;
-    letter-spacing: 0;
-    color: var(--color-text-subtle);
+  .copy-link {
     transition: color var(--transition-fast);
   }
 
-  .social a:hover {
-    color: var(--color-primary);
+  .copy-link:hover {
+    color: var(--color-text);
   }
 
-  .copy {
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 300;
-    letter-spacing: 0;
-    color: var(--color-text-subtle);
+  /* ── Tablette : 2 colonnes ─────────────────────────────────────────── */
+  @media (max-width: 1024px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 48px 32px;
+    }
   }
 
-  @media (max-width: 768px) {
+  /* ── Mobile : identité pleine largeur, puis colonnes empilées ─────── */
+  @media (max-width: 640px) {
     .footer-inner {
-      padding: 40px 20px 32px;
+      padding: 56px 20px 32px;
     }
 
-    .footer-top {
-      flex-direction: column;
-      gap: 24px;
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 40px 24px;
+      margin-bottom: 48px;
     }
 
-    nav ul {
-      justify-content: flex-start;
+    .footer-brand,
+    .footer-grid > .footer-col:last-child {
+      grid-column: 1 / -1;
     }
 
     .footer-bottom {
